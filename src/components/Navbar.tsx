@@ -35,13 +35,22 @@ function Navbar() {
             </button>
           </div>
           <div className="hidden md:flex items-center space-x-4 px-6">
-            <a href="#" className="text-gray-500 hover:text-black">
+            <a
+              href="#"
+              className="text-gray-500 hover:text-black dark:text-white"
+            >
               Pricing
             </a>
-            <a href="#" className="text-gray-500 hover:text-black">
+            <a
+              href="#"
+              className="text-gray-500 hover:text-black dark:text-white"
+            >
               Services
             </a>
-            <a href="#" className="text-gray-500 hover:text-black">
+            <a
+              href="#"
+              className="text-gray-500 hover:text-black dark:text-white"
+            >
               Sign In
             </a>
           </div>

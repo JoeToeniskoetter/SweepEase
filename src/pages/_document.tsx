@@ -10,6 +10,7 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@100;400&display=swap"
           rel="stylesheet"
         />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <body>
         <Main />

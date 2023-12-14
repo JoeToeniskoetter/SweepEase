@@ -20,6 +20,7 @@ export const PricingSection: React.FC = () => {
             price="Free"
             options={[
               "Store up to 200 customers",
+              "Up to 3 months appointment history",
               "Basic inspection report templates",
               "No setup, or hidden fees",
               "Basic email support",
