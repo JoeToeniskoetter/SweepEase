@@ -1,6 +1,9 @@
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import React, { useState } from "react";
 
 function Navbar() {
+  const { data } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -35,24 +38,24 @@ function Navbar() {
             </button>
           </div>
           <div className="hidden md:flex items-center space-x-4 px-6">
-            <a
+            <Link
               href="#"
               className="text-gray-500 hover:text-black dark:text-white"
             >
               Pricing
-            </a>
-            <a
+            </Link>
+            <Link
               href="#"
               className="text-gray-500 hover:text-black dark:text-white"
             >
               Services
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              href={data?.user ? "/api/auth/signout" : "/api/auth/signin"}
               className="text-gray-500 hover:text-black dark:text-white"
             >
-              Sign In
-            </a>
+              {data?.user ? "Sign Out" : "Sign In"}
+            </Link>
           </div>
         </div>
       </div>
@@ -61,18 +64,18 @@ function Navbar() {
           isMobileMenuOpen ? "" : "hidden"
         }`}
       >
-        <a href="#" className="block">
+        <Link href="#" className="block">
           Home
-        </a>
-        <a href="#" className="block">
+        </Link>
+        <Link href="#" className="block">
           About
-        </a>
-        <a href="#" className="block">
+        </Link>
+        <Link href="#" className="block">
           Services
-        </a>
-        <a href="#" className="block">
+        </Link>
+        <Link href="#" className="block">
           Contact
-        </a>
+        </Link>
       </div>
     </nav>
   );
