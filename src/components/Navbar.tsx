@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useState } from "react";
+import { UserProfileDropdown } from "./dashboard/UserProfileDropdown";
 
 function Navbar() {
   const { data } = useSession();
@@ -50,12 +51,17 @@ function Navbar() {
             >
               Services
             </Link>
-            <Link
-              href={data?.user ? "/api/auth/signout" : "/api/auth/signin"}
-              className="text-gray-500 hover:text-black dark:text-white"
-            >
-              {data?.user ? "Sign Out" : "Sign In"}
-            </Link>
+
+            {data?.user ? (
+              <UserProfileDropdown />
+            ) : (
+              <Link
+                href={"/api/auth/signin"}
+                className="text-gray-500 hover:text-black dark:text-white"
+              >
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       </div>

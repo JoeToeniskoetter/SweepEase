@@ -1,5 +1,5 @@
-import React from "react";
 import { Logo } from "../Logo";
+import { UserProfileDropdown } from "./UserProfileDropdown";
 
 export const SidebarLayout: React.FC = ({}) => {
   return (
@@ -30,10 +30,11 @@ export const SidebarLayout: React.FC = ({}) => {
                   ></path>
                 </svg>
               </button>
-              <a href="https://flowbite.com" className="flex ms-2 md:me-24">
+              <div className="flex ms-2 md:me-24">
                 <Logo />
-              </a>
+              </div>
             </div>
+            <UserProfileDropdown />
           </div>
         </div>
       </nav>

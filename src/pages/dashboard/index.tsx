@@ -1,8 +1,7 @@
-import React from "react";
 import { SidebarLayout } from "~/components/dashboard/SidebarLayout";
 
-const index: React.FC = ({}) => {
+const dashboard: React.FC = ({}) => {
   return <SidebarLayout />;
 };
 
-export default index;
+export default dashboard;
