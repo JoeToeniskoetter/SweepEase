@@ -6,6 +6,7 @@ import {
   integer,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
+import { sql } from "drizzle-orm";
 
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
@@ -56,3 +57,38 @@ export const verificationTokens = pgTable(
     compoundKey: primaryKey(vt.identifier, vt.token),
   })
 );
+
+export const company = pgTable("company", {
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  logo: text("logo"),
+  created_at: timestamp("created_at", { mode: "date" })
+    .notNull()
+    .default(sql`now()`),
+  created_by: text("created_by").notNull(),
+});
+
+export const customer = pgTable("customer", {
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .default(sql`gen_random_uuid()`),
+  company_id: text("company_id")
+    .notNull()
+    .references(() => company.id),
+  first_name: text("first_name").notNull(),
+  last_name: text("last_name").notNull(),
+  address: text("address").notNull(),
+  city: text("city").notNull(),
+  state: text("state").notNull(),
+  zip: text("zip").notNull(),
+  email: text("email"),
+  phone: text("phone"),
+  created_at: timestamp("created_at", { mode: "date" })
+    .notNull()
+    .default(sql`now()`),
+  created_by: text("created_by").notNull(),
+});
