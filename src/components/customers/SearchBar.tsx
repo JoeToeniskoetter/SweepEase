@@ -1,35 +1,109 @@
-import React from "react";
+import React, { useState } from "react";
 import SearchOptions from "./SearchOptions";
 
 interface SearchBarProps {
   filters: [];
 }
 
+const filterOptions = [
+  { name: "Name" },
+  { name: "Address" },
+  { name: "Phone" },
+];
+
 export const SearchBar: React.FC<SearchBarProps> = ({}) => {
+  const [filterText, setFilterText] = useState<string>("");
+  const [filter, setFilter] = useState<{ name: string }>(filterOptions[0]!);
+  const [filters, setFilters] = useState<Map<string, string>>(
+    new Map<string, string>()
+  );
+
+  const addFilter = (k: string) => {
+    const copy = new Map(filters);
+    copy.set(filter.name, filterText);
+    setFilters(copy);
+    setFilterText("");
+  };
+  const removeFilter = (k: string) => {
+    const copy = new Map(filters);
+    copy.delete(k);
+    setFilters(copy);
+  };
+
+  const renderChips = () => {
+    const chips: React.ReactNode[] = [];
+    filters.forEach((v, k) => {
+      chips.push(
+        <div className="bg-secondary text-white px-3 py-1 w-fit rounded-xl text-sm flex items-center shadow-lg gap-2">
+          <p>
+            <span className="font-bold">{k}</span>: {v}
+          </p>
+          <button
+            onClick={() => {
+              removeFilter(k);
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="white"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="black"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </button>
+        </div>
+      );
+    });
+    return chips;
+  };
+
   return (
-    <div className="w-full bg-secondary rounded flex p-2 gap-2 items-center shadow-md">
-      <input
-        className=" bg-white py-2 pl-3 rounded-lg shadow-md placeholder-black h-9"
-        placeholder="Search"
-      />
-      <SearchOptions />
-      <button className="px-4 bg-mrts-orange text-white shadow-md rounded-lg flex items-center justify-center gap-2 h-9">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          className="w-4 h-4"
+    <div className="flex flex-col">
+      <div className="w-full bg-secondary rounded flex p-2 gap-2 items-center shadow-md">
+        <input
+          value={filterText}
+          onChange={(e) => {
+            setFilterText(e.target.value);
+          }}
+          className=" bg-white py-2 pl-3 rounded-lg shadow-md placeholder-black h-9"
+          placeholder="Search"
+        />
+        <SearchOptions
+          filters={filterOptions}
+          selectedFilter={filter ?? { name: filterOptions[0]?.name }}
+          setSelectedFilter={setFilter}
+        />
+        <button
+          className="px-4 bg-mrts-orange text-white shadow-md rounded-lg flex items-center justify-center gap-2 h-9"
+          onClick={() => {
+            addFilter(filter.name);
+          }}
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-          />
-        </svg>
-        Search
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            className="w-4 h-4"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+            />
+          </svg>
+          Search
+        </button>
+      </div>
+      <div className="flex gap-2 p-2">{renderChips()}</div>
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { CustomersTab } from "~/components/customers/CustomersTab";
-import { CustomersTable } from "~/components/customers/CustomersTable";
 import { SidebarLayout } from "~/components/dashboard/SidebarLayout";
 
 const dashboard: React.FC = ({}) => {
@@ -20,7 +19,9 @@ const dashboard: React.FC = ({}) => {
     }
   };
   return (
-    <SidebarLayout activeTab={router.query.tab}>{getComponent()}</SidebarLayout>
+    <SidebarLayout activeTab={router.query.tab?.toString()}>
+      {getComponent()}
+    </SidebarLayout>
   );
 };
 
