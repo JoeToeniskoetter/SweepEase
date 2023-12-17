@@ -11,8 +11,17 @@ module.exports = {
       },
       colors: {
         "mrts-orange": "#F57F37",
+        primary: "#F57F37",
+        secondary: "#A77B71",
       },
     },
   },
   plugins: [require("flowbite/plugin")],
 };
+
+/*
+#F57F37
+#A77B71
+#7E4438
+#35231F
+*/
