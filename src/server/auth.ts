@@ -1,4 +1,5 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { eq } from "drizzle-orm";
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
@@ -9,6 +10,7 @@ import Auth0Provider from "next-auth/providers/auth0";
 
 import { env } from "~/env";
 import { db } from "~/server/db";
+import { users } from "./db/schema";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -21,7 +23,8 @@ declare module "next-auth" {
     user: {
       id: string;
       // ...other properties
-      // role: UserRole;
+      role: string;
+      company_id: string;
     } & DefaultSession["user"];
   }
 
@@ -38,12 +41,17 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => {
+    session: async ({ session, user }) => {
+      const dbUser = await db.query.users.findFirst({
+        where: eq(users.email, user.email),
+      });
       return {
         ...session,
         user: {
           ...session.user,
+          something: "hello",
           id: user.id,
+          company_id: dbUser?.company_id ?? "",
         },
       };
     },

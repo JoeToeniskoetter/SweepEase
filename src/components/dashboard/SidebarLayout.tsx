@@ -1,11 +1,36 @@
 import Link from "next/link";
 import { Logo } from "../Logo";
 import { UserProfileDropdown } from "./UserProfileDropdown";
+import { useSession } from "next-auth/react";
+import type { Session } from "next-auth";
+
+const LockedIcon = () => {
+  return (
+    <div className="bg-gray-200 rounded-xl p-1">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="black"
+        className="w-6 h-6"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+        />
+      </svg>
+    </div>
+  );
+};
 
 export const SidebarLayout: React.FC<{
   children: React.ReactNode;
   activeTab?: string;
 }> = ({ children, activeTab }) => {
+  const { data, status } = useSession();
+  const locked = data && data?.user.company_id === "";
   const tabs = [
     {
       name: "Overview",
@@ -159,6 +184,7 @@ export const SidebarLayout: React.FC<{
                     <span className="flex-1 ms-3 whitespace-nowrap">
                       {tab.name}
                     </span>
+                    {locked && <LockedIcon />}
                   </Link>
                 </li>
               );

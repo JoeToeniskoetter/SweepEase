@@ -1,10 +1,19 @@
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { CustomersTab } from "~/components/customers/CustomersTab";
 import { SidebarLayout } from "~/components/dashboard/SidebarLayout";
 
-const dashboard: React.FC = ({}) => {
+const dashboard = () => {
+  const { data } = useSession();
+  const locked =
+    data != null &&
+    (data.user.company_id === "" || data?.user.company_id === null);
   const router = useRouter();
   const getComponent = () => {
+    if (locked) {
+      return <div>Setup company to begin</div>;
+    }
+
     switch (router.query.tab) {
       case "overview":
         return <div>Overview</div>;
@@ -20,6 +29,7 @@ const dashboard: React.FC = ({}) => {
   };
   return (
     <SidebarLayout activeTab={router.query.tab?.toString()}>
+      {/* <pre>{JSON.stringify(data, null, 4)}</pre> */}
       {getComponent()}
     </SidebarLayout>
   );

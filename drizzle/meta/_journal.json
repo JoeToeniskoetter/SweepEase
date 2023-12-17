@@ -15,6 +15,13 @@
       "when": 1702826920444,
       "tag": "0001_complex_wallflower",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1702828385079,
+      "tag": "0002_colossal_black_tom",
+      "breakpoints": true
     }
   ]
 }
