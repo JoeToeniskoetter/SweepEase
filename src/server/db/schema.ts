@@ -7,6 +7,7 @@ import {
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 import { sql } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
 
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
@@ -93,3 +94,5 @@ export const customer = pgTable("customer", {
     .default(sql`now()`),
   created_by: text("created_by").notNull(),
 });
+
+export const insertCompanySchema = createInsertSchema(company);

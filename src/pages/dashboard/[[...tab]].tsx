@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { CustomersTab } from "~/components/customers/CustomersTab";
+import { SetupCompanyForm } from "~/components/dashboard/SetupCompanyForm";
 import { SidebarLayout } from "~/components/dashboard/SidebarLayout";
 
 const dashboard = () => {
@@ -11,7 +12,7 @@ const dashboard = () => {
   const router = useRouter();
   const getComponent = () => {
     if (locked) {
-      return <div>Setup company to begin</div>;
+      return <SetupCompanyForm />;
     }
 
     switch (router.query.tab) {

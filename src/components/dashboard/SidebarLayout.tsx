@@ -6,14 +6,14 @@ import type { Session } from "next-auth";
 
 const LockedIcon = () => {
   return (
-    <div className="bg-gray-200 rounded-xl p-1">
+    <div className="bg-gray-100 rounded-xl p-1 shadow">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="black"
-        className="w-6 h-6"
+        className="w-4 h-4"
       >
         <path
           strokeLinecap="round"
@@ -193,7 +193,7 @@ export const SidebarLayout: React.FC<{
         </div>
       </aside>
 
-      <div className="p-4 sm:ml-64">
+      <div className="pt-4 sm:ml-64">
         <div className="rounded-lg dark:border-gray-700 mt-14 w-full">
           <div className="flex items-center  mb-4 rounded bg-gray-50 dark:bg-gray-800">
             {children}
