@@ -2,71 +2,68 @@ import React, { useState } from "react";
 import SearchOptions from "./SearchOptions";
 
 interface SearchBarProps {
-  filters: [];
+  filters?: Record<string, string>;
+  removeFilter: (k: string) => void;
+  addFilter: (k: string, v: string) => void;
 }
 
 const filterOptions = [
-  { name: "Name" },
-  { name: "Address" },
-  { name: "Phone" },
+  { name: "First name", key: "first_name" },
+  { name: "Last name", key: "last_name" },
+  { name: "Address", key: "address" },
+  { name: "Phone", key: "phone" },
 ];
 
-export const SearchBar: React.FC<SearchBarProps> = ({}) => {
-  const [filterText, setFilterText] = useState<string>("");
-  const [filter, setFilter] = useState<{ name: string }>(filterOptions[0]!);
-  const [filters, setFilters] = useState<Map<string, string>>(
-    new Map<string, string>()
+export const SearchBar: React.FC<SearchBarProps> = ({
+  filters,
+  addFilter,
+  removeFilter,
+}) => {
+  const [filter, setFilter] = useState<{ name: string; key: string }>(
+    filterOptions[0]!
   );
-
-  const addFilter = (k: string) => {
-    const copy = new Map(filters);
-    copy.set(filter.name, filterText);
-    setFilters(copy);
-    setFilterText("");
-  };
-  const removeFilter = (k: string) => {
-    const copy = new Map(filters);
-    copy.delete(k);
-    setFilters(copy);
-  };
-
+  const [filterText, setFilterText] = useState<string>("");
   const renderChips = () => {
     const chips: React.ReactNode[] = [];
-    filters.forEach((v, k) => {
-      chips.push(
-        <div className="bg-secondary text-white px-3 py-1 w-fit rounded-xl text-sm flex items-center shadow-lg gap-2">
-          <p>
-            <span className="font-bold">{k}</span>: {v}
-          </p>
-          <button
-            onClick={() => {
-              removeFilter(k);
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="white"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="black"
-              className="w-6 h-6"
+    filters &&
+      Object.entries(filters).forEach((v, _) => {
+        chips.push(
+          <div className="bg-secondary text-white px-3 py-1 w-fit rounded-xl text-sm flex items-center shadow-lg gap-2">
+            <p>
+              <span className="font-bold">
+                {filterOptions.find((opt) => opt.key === v[0])?.name}
+              </span>
+              : {v[1]}
+            </p>
+            <button
+              onClick={() => {
+                removeFilter(v[0]);
+              }}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </button>
-        </div>
-      );
-    });
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="white"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="black"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </button>
+          </div>
+        );
+      });
     return chips;
   };
 
   return (
     <div className="flex flex-col">
-      <div className="w-full bg-secondary rounded flex p-2 gap-2 items-center shadow-md">
+      <div className=" bg-secondary rounded flex p-2 gap-2 items-center shadow-md">
         <input
           value={filterText}
           onChange={(e) => {
@@ -83,8 +80,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({}) => {
         <button
           className="px-4 bg-mrts-orange text-white shadow-md rounded-lg flex items-center justify-center gap-2 h-9"
           onClick={() => {
-            addFilter(filter.name);
+            addFilter(filter.key, filterText);
           }}
+          disabled={filterText == ""}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

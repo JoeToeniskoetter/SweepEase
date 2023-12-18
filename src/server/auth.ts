@@ -41,21 +41,31 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: async ({ session, user }) => {
-      const dbUser = await db.query.users.findFirst({
-        where: eq(users.email, user.email),
-      });
+    jwt: async ({ token, user }) => {
+      if (user?.email) {
+        const dbUser = await db.query.users.findFirst({
+          where: eq(users.email, user.email),
+        });
+        return {
+          ...token,
+          id: user.id,
+          company_id: dbUser?.company_id,
+        };
+      }
+      return token;
+    },
+    session: async ({ session, token }) => {
       return {
         ...session,
         user: {
           ...session.user,
-          something: "hello",
-          id: user.id,
-          company_id: dbUser?.company_id ?? "",
+          id: token.id,
+          company_id: token.company_id,
         },
       };
     },
   },
+  secret: env.NEXTAUTH_SECRET,
   adapter: DrizzleAdapter(db),
   providers: [
     Auth0Provider({
@@ -64,7 +74,8 @@ export const authOptions: NextAuthOptions = {
       issuer: env.AUTH0_DOMAIN,
     }),
   ],
-  debug: true,
+  session: { strategy: "jwt" },
+  // debug: true,
 };
 
 /**

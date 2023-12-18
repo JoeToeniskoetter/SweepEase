@@ -5,7 +5,7 @@ import { SetupCompanyForm } from "~/components/dashboard/SetupCompanyForm";
 import { SidebarLayout } from "~/components/dashboard/SidebarLayout";
 
 const dashboard = () => {
-  const { data } = useSession();
+  const { data } = useSession({ required: true });
   const locked =
     data != null &&
     (data.user.company_id === "" || data?.user.company_id === null);

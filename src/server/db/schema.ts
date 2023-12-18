@@ -6,7 +6,7 @@ import {
   integer,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
-import { sql } from "drizzle-orm";
+import { sql, InferSelectModel } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const users = pgTable("user", {
@@ -97,3 +97,4 @@ export const customer = pgTable("customer", {
 
 export const insertCompanySchema = createInsertSchema(company);
 export const selectCustomerSchema = createSelectSchema(customer);
+export type Customer = InferSelectModel<typeof customer>;
