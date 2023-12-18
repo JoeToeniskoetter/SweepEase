@@ -6,6 +6,7 @@ interface SearchBarProps {
   filters?: CustomerFilters;
   removeFilter: (k: keyof CustomerFilters) => void;
   addFilter: (k: keyof CustomerFilters, v: string) => void;
+  children?: React.ReactNode;
 }
 
 interface FilterOption {
@@ -24,6 +25,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   filters,
   addFilter,
   removeFilter,
+  children,
 }) => {
   const [filter, setFilter] = useState<FilterOption>(filterOptions[0]!);
   const [filterText, setFilterText] = useState<string>("");
@@ -105,6 +107,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           </svg>
           Search
         </button>
+        {children}
       </div>
       <div className="flex gap-2 p-2">{renderChips()}</div>
     </div>

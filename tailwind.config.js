@@ -15,6 +15,7 @@ module.exports = {
         "mrts-orange": "#F57F37",
         primary: "#F57F37",
         secondary: "#A77B71",
+        highlight: "#35231F",
       },
     },
   },

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { SearchBar } from "./SearchBar";
 import { CustomersTable } from "./CustomersTable";
 import { api } from "~/utils/api";
+import { CreateCustomerModal } from "./CreateCustomerModal";
 
 export type CustomerFilters = {
   first_name?: string;
@@ -12,6 +13,15 @@ export type CustomerFilters = {
 };
 
 export const CustomersTab: React.FC = ({}) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  function openModal() {
+    setIsOpen(true);
+  }
   const [page, setPage] = useState<number>(1);
   const [filters, setFilters] = useState<CustomerFilters>();
   const { data } = api.customer.getAll.useQuery(
@@ -36,12 +46,37 @@ export const CustomersTab: React.FC = ({}) => {
   };
   return (
     <div className="flex flex-col w-full p-4 bg-white min-w-fit mx-auto max-w-7xl">
-      <h1 className="text-2xl font-bold py-4 dark:text-white">All Customers</h1>
+      <CreateCustomerModal isOpen={isOpen} closeModal={closeModal} />
+      <div className="flex py-4 gap-2">
+        <h1 className="text-2xl font-bold dark:text-white">All Customers</h1>
+      </div>
       <SearchBar
         addFilter={addFilter}
         removeFilter={removeFilter}
         filters={filters}
-      />
+      >
+        <button
+          onClick={openModal}
+          className="px-4 bg-highlight text-white shadow-md rounded-lg flex
+        items-center justify-center gap-2 h-9"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-4 h-4"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          Create Customer
+        </button>
+      </SearchBar>
       <CustomersTable
         customers={data?.data}
         page={page}
