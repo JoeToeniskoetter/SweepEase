@@ -1,10 +1,14 @@
 import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { CustomerFilters } from "./CustomersTab";
 
 interface SearchOptionsProps {
-  selectedFilter: { name: string; key: string };
-  setSelectedFilter: (filter: { name: string; key: string }) => void;
+  selectedFilter: { name: string; key: keyof CustomerFilters };
+  setSelectedFilter: (filter: {
+    name: string;
+    key: keyof CustomerFilters;
+  }) => void;
   filters: { name: string }[];
 }
 

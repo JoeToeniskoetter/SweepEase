@@ -13,7 +13,9 @@ export const SetupCompanyForm: React.FC = ({}) => {
   const { update } = useSession();
   const { mutateAsync } = api.company.create.useMutation({
     async onSuccess(data, _variables, _context) {
-      await update({ company_id: data.id });
+      if (data) {
+        await update({ company_id: data?.id });
+      }
     },
   });
   const {

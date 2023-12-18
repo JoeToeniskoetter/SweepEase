@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import SearchOptions from "./SearchOptions";
+import { CustomerFilters } from "./CustomersTab";
 
 interface SearchBarProps {
-  filters?: Record<string, string>;
-  removeFilter: (k: string) => void;
-  addFilter: (k: string, v: string) => void;
+  filters?: CustomerFilters;
+  removeFilter: (k: keyof CustomerFilters) => void;
+  addFilter: (k: keyof CustomerFilters, v: string) => void;
 }
 
-const filterOptions = [
+interface FilterOption {
+  name: string;
+  key: keyof CustomerFilters;
+}
+
+const filterOptions: FilterOption[] = [
   { name: "First name", key: "first_name" },
   { name: "Last name", key: "last_name" },
   { name: "Address", key: "address" },
@@ -19,45 +25,44 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   addFilter,
   removeFilter,
 }) => {
-  const [filter, setFilter] = useState<{ name: string; key: string }>(
-    filterOptions[0]!
-  );
+  const [filter, setFilter] = useState<FilterOption>(filterOptions[0]!);
   const [filterText, setFilterText] = useState<string>("");
   const renderChips = () => {
     const chips: React.ReactNode[] = [];
-    filters &&
-      Object.entries(filters).forEach((v, _) => {
-        chips.push(
-          <div className="bg-secondary text-white px-3 py-1 w-fit rounded-xl text-sm flex items-center shadow-lg gap-2">
-            <p>
-              <span className="font-bold">
-                {filterOptions.find((opt) => opt.key === v[0])?.name}
-              </span>
-              : {v[1]}
-            </p>
-            <button
-              onClick={() => {
-                removeFilter(v[0]);
-              }}
+
+    for (const key in filters) {
+      const k = key as keyof CustomerFilters;
+      chips.push(
+        <div className="bg-secondary text-white px-3 py-1 w-fit rounded-xl text-sm flex items-center shadow-lg gap-2">
+          <p>
+            <span className="font-bold">
+              {filterOptions.find((opt) => opt.key === key)?.name}
+            </span>
+            : {filters[k]}
+          </p>
+          <button
+            onClick={() => {
+              removeFilter(k);
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="white"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="black"
+              className="w-6 h-6"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="white"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="black"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </button>
-          </div>
-        );
-      });
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </button>
+        </div>
+      );
+    }
     return chips;
   };
 

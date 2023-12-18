@@ -98,3 +98,4 @@ export const customer = pgTable("customer", {
 export const insertCompanySchema = createInsertSchema(company);
 export const selectCustomerSchema = createSelectSchema(customer);
 export type Customer = InferSelectModel<typeof customer>;
+export type Company = InferSelectModel<typeof company>;

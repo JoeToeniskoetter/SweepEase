@@ -3,14 +3,12 @@ import { SearchBar } from "./SearchBar";
 import { CustomersTable } from "./CustomersTable";
 import { api } from "~/utils/api";
 
-type CustomerFilters = {
+export type CustomerFilters = {
   first_name?: string;
   last_name?: string;
   address?: string;
   phone?: string;
   email?: string;
-  page: number;
-  page_size: number;
 };
 
 export const CustomersTab: React.FC = ({}) => {
@@ -31,7 +29,7 @@ export const CustomersTab: React.FC = ({}) => {
     setPage(1);
     setFilters({ ...filters, [k]: v });
   };
-  const removeFilter = (k: string) => {
+  const removeFilter = (k: keyof CustomerFilters) => {
     const copy = Object.assign({}, filters);
     delete copy[k];
     setFilters(copy);
