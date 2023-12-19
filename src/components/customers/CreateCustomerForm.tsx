@@ -36,7 +36,14 @@ export const CreateCustomerForm: React.FC<{
     formState: { errors, isValid },
   } = useForm<CreateCustomerForm>({
     reValidateMode: "onSubmit",
-    defaultValues: customer !== null ? { ...customer } : undefined,
+    defaultValues:
+      customer === null
+        ? undefined
+        : {
+            ...customer,
+            phone: customer.phone ?? "",
+            email: customer.email ?? "",
+          },
   });
 
   const onSubmit = async (values: CreateCustomerForm) => {
