@@ -1,7 +1,8 @@
 import "../styles/global.css";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import type { AppType } from "next/app";
 
@@ -14,7 +15,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <Component {...pageProps} />
-      <ReactQueryDevtools />
+      <ToastContainer />
     </SessionProvider>
   );
 };

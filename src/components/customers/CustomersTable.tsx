@@ -1,7 +1,7 @@
 import React from "react";
 import { Customer } from "~/server/db/schema";
 import CustomerOptionsButton from "./CustomerOptionsButton";
-import { useCustomer } from "./CustomerProvider";
+import { useCustomerStore } from "~/stores/customerStore";
 
 const columns = ["Name", "Address", "City", "State", "Zip", "Phone", "Options"];
 
@@ -20,7 +20,7 @@ export const CustomersTable: React.FC<CustomersTableProps> = ({
   nextPage,
   prevPage,
 }) => {
-  const { customer, setCustomer } = useCustomer();
+  const { customer, setCustomer } = useCustomerStore();
   const renderPages = () => {
     const pages = [];
     const maxPagesToShow = 10;

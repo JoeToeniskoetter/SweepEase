@@ -1,7 +1,8 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { api } from "~/utils/api";
-import { useCustomer } from "./CustomerProvider";
+import { toast } from "react-toastify";
+import { useCustomerStore } from "~/stores/customerStore";
 
 interface CreateCustomerForm {
   first_name: string;
@@ -17,7 +18,7 @@ interface CreateCustomerForm {
 export const CreateCustomerForm: React.FC<{
   afterCreate: () => void;
 }> = ({ afterCreate }) => {
-  const { customer } = useCustomer();
+  const { customer } = useCustomerStore();
   const { mutateAsync: createCustomer } = api.customer.create.useMutation({
     onSuccess: () => {
       afterCreate();
@@ -48,9 +49,17 @@ export const CreateCustomerForm: React.FC<{
 
   const onSubmit = async (values: CreateCustomerForm) => {
     if (customer !== null) {
-      await updateCustomer({ ...values, id: customer.id });
+      void toast.promise(updateCustomer({ ...values, id: customer.id }), {
+        success: "Customer Updated",
+        pending: "Updating Customer",
+        error: "Failed to Update Customer",
+      });
     } else {
-      await createCustomer(values);
+      void toast.promise(createCustomer(values), {
+        success: "Customer Created",
+        pending: "Creating Customer",
+        error: "Failed to Create Customer",
+      });
     }
   };
 

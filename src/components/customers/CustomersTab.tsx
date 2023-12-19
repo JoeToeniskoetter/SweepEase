@@ -3,8 +3,8 @@ import { SearchBar } from "./SearchBar";
 import { CustomersTable } from "./CustomersTable";
 import { api } from "~/utils/api";
 import { CreateCustomerModal } from "./CreateCustomerModal";
-import { useCustomer } from "./CustomerProvider";
 import { useQueryClient } from "@tanstack/react-query";
+import { useCustomerStore } from "~/stores/customerStore";
 
 export type CustomerFilters = {
   first_name?: string;
@@ -17,7 +17,7 @@ export type CustomerFilters = {
 export const CustomersTab: React.FC = ({}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
-  const { customer, setCustomer } = useCustomer();
+  const { customer, setCustomer } = useCustomerStore();
   function closeModal() {
     setIsOpen(false);
     setCustomer(null);
