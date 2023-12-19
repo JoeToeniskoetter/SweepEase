@@ -46,7 +46,7 @@ export const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({
                   >
                     Create New Customer
                   </Dialog.Title>
-                  <CreateCustomerForm />
+                  <CreateCustomerForm afterCreate={closeModal} />
                 </Dialog.Panel>
               </Transition.Child>
             </div>

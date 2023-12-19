@@ -1,8 +1,38 @@
 import React from "react";
+import { useForm } from "react-hook-form";
+import { api } from "~/utils/api";
 
-export const CreateCustomerForm: React.FC = ({}) => {
+interface CreateCustomerForm {
+  first_name: string;
+  last_name: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  phone: string;
+  email?: string;
+}
+
+export const CreateCustomerForm: React.FC<{
+  afterCreate: () => void;
+}> = ({ afterCreate }) => {
+  const { mutateAsync } = api.customer.create.useMutation({
+    onSuccess: () => {
+      afterCreate();
+    },
+  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<CreateCustomerForm>({ reValidateMode: "onSubmit" });
+
+  const onSubmit = async (values: CreateCustomerForm) => {
+    await mutateAsync(values);
+  };
+
   return (
-    <form className="w-full max-w-lg">
+    <div className="w-full max-w-lg">
       <div className="flex flex-wrap -mx-3">
         <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
           <label
@@ -12,11 +42,11 @@ export const CreateCustomerForm: React.FC = ({}) => {
             First Name
           </label>
           <input
+            {...register("first_name", { required: true })}
             className="border-gray-200 appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-            id="grid-first-name"
-            type="text"
             placeholder="Jane"
           />
+          <p className="text-red-200">{errors.first_name?.message}</p>
         </div>
         <div className="w-full md:w-1/2 px-3">
           <label
@@ -27,10 +57,10 @@ export const CreateCustomerForm: React.FC = ({}) => {
           </label>
           <input
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="grid-last-name"
-            type="text"
+            {...register("last_name", { required: true })}
             placeholder="Doe"
           />
+          {<p>{errors.last_name?.message}</p>}
         </div>
       </div>
       <div className="flex flex-wrap -mx-3 mb-6">
@@ -43,9 +73,10 @@ export const CreateCustomerForm: React.FC = ({}) => {
           </label>
           <input
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="grid-password"
+            {...register("address", { required: true })}
             placeholder="124 Address"
           />
+          {<p>{errors.address?.message}</p>}
         </div>
       </div>
       <div className="flex flex-wrap -mx-3 mb-2">
@@ -58,8 +89,7 @@ export const CreateCustomerForm: React.FC = ({}) => {
           </label>
           <input
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="grid-city"
-            type="text"
+            {...register("city", { required: true })}
             placeholder="Albuquerque"
           />
         </div>
@@ -72,6 +102,7 @@ export const CreateCustomerForm: React.FC = ({}) => {
           </label>
           <div className="relative">
             <select
+              {...register("state", { required: true })}
               className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               id="grid-state"
             >
@@ -98,6 +129,7 @@ export const CreateCustomerForm: React.FC = ({}) => {
             Zip
           </label>
           <input
+            {...register("zip", { required: true })}
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             id="grid-zip"
             type="text"
@@ -115,8 +147,7 @@ export const CreateCustomerForm: React.FC = ({}) => {
           </label>
           <input
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="grid-zip"
-            type="email"
+            {...register("email")}
             placeholder="email@email.com"
           />
         </div>
@@ -129,17 +160,22 @@ export const CreateCustomerForm: React.FC = ({}) => {
           </label>
           <input
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="grid-zip"
-            type="text"
+            {...register("phone", { required: true })}
             placeholder="555-555-5555"
           />
         </div>
       </div>
       <div className="w-full mt-4">
-        <button className="bg-mrts-orange hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full  mb-6 md:mb-0">
+        <button
+          disabled={!isValid}
+          onClick={handleSubmit(onSubmit)}
+          className={`${
+            !isValid ? "bg-gray-300" : "bg-mrts-orange"
+          } text-white font-bold py-2 px-4 rounded w-full  mb-6 md:mb-0`}
+        >
           CREATE
         </button>
       </div>
-    </form>
+    </div>
   );
 };

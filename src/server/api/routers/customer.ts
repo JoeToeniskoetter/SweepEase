@@ -1,6 +1,6 @@
 import { and, eq, or, ilike, sql, desc, asc } from "drizzle-orm";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { customer, selectCustomerSchema } from "~/server/db/schema";
+import { createCustomerSchema, customer } from "~/server/db/schema";
 import { z } from "zod";
 
 export const customerRouter = createTRPCRouter({
@@ -75,5 +75,25 @@ export const customerRouter = createTRPCRouter({
           total_pages: Math.ceil(count[0].count / input.page_size),
         },
       };
+    }),
+  create: protectedProcedure
+    .input(
+      z.object({
+        first_name: z.string().min(1),
+        last_name: z.string().min(1),
+        address: z.string().min(1),
+        city: z.string().min(1),
+        state: z.string().min(1),
+        zip: z.string().min(5),
+        phone: z.string().min(10),
+        email: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.insert(customer).values({
+        ...input,
+        created_by: ctx.session.user.id,
+        company_id: ctx.session.user.company_id,
+      });
     }),
 });

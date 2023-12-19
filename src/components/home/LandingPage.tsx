@@ -10,7 +10,7 @@ export const LandingPage: React.FC = () => {
       <Head>
         <title>SweepEase.</title>
       </Head>
-      <div className="bg-white dark:bg-gray-900 h-screen">
+      <div className="bg-white dark:bg-gray-900">
         <Navbar />
         <HeroSection />
         <PricingSection />
