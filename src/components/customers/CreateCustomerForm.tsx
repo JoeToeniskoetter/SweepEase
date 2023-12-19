@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { api } from "~/utils/api";
+import { useCustomer } from "./CustomerProvider";
 
 interface CreateCustomerForm {
   first_name: string;
@@ -16,19 +17,34 @@ interface CreateCustomerForm {
 export const CreateCustomerForm: React.FC<{
   afterCreate: () => void;
 }> = ({ afterCreate }) => {
-  const { mutateAsync } = api.customer.create.useMutation({
+  const { customer } = useCustomer();
+  const { mutateAsync: createCustomer } = api.customer.create.useMutation({
     onSuccess: () => {
       afterCreate();
     },
   });
+
+  const { mutateAsync: updateCustomer } = api.customer.update.useMutation({
+    onSuccess: () => {
+      afterCreate();
+    },
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<CreateCustomerForm>({ reValidateMode: "onSubmit" });
+  } = useForm<CreateCustomerForm>({
+    reValidateMode: "onSubmit",
+    defaultValues: customer !== null ? { ...customer } : undefined,
+  });
 
   const onSubmit = async (values: CreateCustomerForm) => {
-    await mutateAsync(values);
+    if (customer !== null) {
+      await updateCustomer({ ...values, id: customer.id });
+    } else {
+      await createCustomer(values);
+    }
   };
 
   return (
@@ -173,7 +189,7 @@ export const CreateCustomerForm: React.FC<{
             !isValid ? "bg-gray-300" : "bg-mrts-orange"
           } text-white font-bold py-2 px-4 rounded w-full  mb-6 md:mb-0`}
         >
-          CREATE
+          {customer !== null ? "UPDATE" : "CREATE"}
         </button>
       </div>
     </div>

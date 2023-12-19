@@ -96,4 +96,28 @@ export const customerRouter = createTRPCRouter({
         company_id: ctx.session.user.company_id,
       });
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        first_name: z.string().min(1),
+        last_name: z.string().min(1),
+        address: z.string().min(1),
+        city: z.string().min(1),
+        state: z.string().min(1),
+        zip: z.string().min(5),
+        phone: z.string().min(10),
+        email: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db
+        .update(customer)
+        .set({
+          ...input,
+          created_by: ctx.session.user.id,
+          company_id: ctx.session.user.company_id,
+        })
+        .where(eq(customer.id, input.id));
+    }),
 });

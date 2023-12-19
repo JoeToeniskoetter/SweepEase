@@ -3,6 +3,8 @@ import { SearchBar } from "./SearchBar";
 import { CustomersTable } from "./CustomersTable";
 import { api } from "~/utils/api";
 import { CreateCustomerModal } from "./CreateCustomerModal";
+import { useCustomer } from "./CustomerProvider";
+import { useQueryClient } from "@tanstack/react-query";
 
 export type CustomerFilters = {
   first_name?: string;
@@ -14,9 +16,11 @@ export type CustomerFilters = {
 
 export const CustomersTab: React.FC = ({}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
+  const queryClient = useQueryClient();
+  const { customer, setCustomer } = useCustomer();
   function closeModal() {
     setIsOpen(false);
+    setCustomer(null);
   }
 
   function openModal() {
@@ -46,7 +50,13 @@ export const CustomersTab: React.FC = ({}) => {
   };
   return (
     <div className="flex flex-col w-full p-4 bg-white min-w-fit mx-auto max-w-7xl">
-      <CreateCustomerModal isOpen={isOpen} closeModal={closeModal} />
+      <CreateCustomerModal
+        isOpen={isOpen || customer != null}
+        closeModal={async () => {
+          await queryClient.invalidateQueries([["customer", "getAll"]]);
+          closeModal();
+        }}
+      />
       <div className="flex py-4 gap-2">
         <h1 className="text-2xl font-bold dark:text-white">All Customers</h1>
       </div>

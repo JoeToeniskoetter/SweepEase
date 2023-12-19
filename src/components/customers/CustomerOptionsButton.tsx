@@ -1,8 +1,15 @@
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, type SVGProps } from "react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
+import { Customer } from "~/server/db/schema";
 
-export default function CustomerOptionsButton() {
+interface CustomerOptionsButtonProps {
+  onEdit: () => void;
+}
+
+export default function CustomerOptionsButton(
+  props: CustomerOptionsButtonProps
+) {
   return (
     <div className="top-16 w-56 z-50">
       <Menu as="div" className="relative inline-block text-left">
@@ -28,6 +35,7 @@ export default function CustomerOptionsButton() {
               <Menu.Item>
                 {({ active }) => (
                   <button
+                    onClick={props.onEdit}
                     className={`${
                       active ? "bg-mrts-orange text-white" : "text-gray-900"
                     } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
