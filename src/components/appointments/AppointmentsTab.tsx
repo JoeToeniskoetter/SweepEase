@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
 import {
@@ -6,10 +6,19 @@ import {
   ArrowRightIcon,
   CalendarIcon,
 } from "@heroicons/react/24/solid";
+import { api } from "~/utils/api";
 
 interface AppointmentsTabProps {}
 
 export const AppointmentsTab: React.FC<AppointmentsTabProps> = ({}) => {
+  const [dateRange, setDateRange] = useState<{
+    startDate: string;
+    endDate: string;
+  }>({
+    startDate: new Date().toUTCString(),
+    endDate: new Date().toUTCString(),
+  });
+  const { data } = api.appointment.getAll.useQuery(dateRange);
   const calendarRef = useRef<FullCalendar>(null);
 
   const CalendarHeader = () => {
@@ -49,7 +58,7 @@ export const AppointmentsTab: React.FC<AppointmentsTabProps> = ({}) => {
     );
   };
   return (
-    <div className="w-11/12 p-1 bg-white">
+    <div className="w-11/12 p-1 bg-white pt-8 pl-4">
       <CalendarHeader />
       <FullCalendar
         ref={calendarRef}
@@ -68,6 +77,12 @@ export const AppointmentsTab: React.FC<AppointmentsTabProps> = ({}) => {
           left: "",
           right: "",
           center: "",
+        }}
+        datesSet={(args) => {
+          setDateRange({
+            startDate: args.start.toUTCString(),
+            endDate: args.end.toUTCString(),
+          });
         }}
       />
     </div>

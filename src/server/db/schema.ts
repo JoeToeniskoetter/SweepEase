@@ -4,6 +4,7 @@ import {
   text,
   primaryKey,
   integer,
+  date,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 import { sql, InferSelectModel, relations } from "drizzle-orm";
@@ -150,6 +151,7 @@ export const appointment = pgTable("appointment", {
   service_id: text("service_id")
     .notNull()
     .references(() => service.id),
+  date: date("date").notNull(),
   start_time: timestamp("start_time", { mode: "date" }).notNull(),
   end_time: timestamp("end_time", { mode: "date" }).notNull(),
   created_at: timestamp("created_at", { mode: "date" })
