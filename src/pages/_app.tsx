@@ -1,4 +1,5 @@
 import "../styles/global.css";
+import "../styles/appointments.css";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { ToastContainer } from "react-toastify";

@@ -17,6 +17,9 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^0.3.6",
+    "@fullcalendar/core": "^6.1.10",
+    "@fullcalendar/daygrid": "^6.1.10",
+    "@fullcalendar/react": "^6.1.10",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@t3-oss/env-nextjs": "^0.7.1",

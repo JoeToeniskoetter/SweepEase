@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { AppointmentsTab } from "~/components/appointments/AppointmentsTab";
 import { CustomersTab } from "~/components/customers/CustomersTab";
 import { SetupCompanyForm } from "~/components/dashboard/SetupCompanyForm";
 import { SidebarLayout } from "~/components/dashboard/SidebarLayout";
@@ -21,7 +22,7 @@ const dashboard = () => {
       case "customers":
         return <CustomersTab />;
       case "appointments":
-        return <div>appointments</div>;
+        return <AppointmentsTab />;
       case "certifications":
         return <div>certifications</div>;
       default:

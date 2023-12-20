@@ -1,0 +1,24 @@
+.fc-dayGridMonth-view {
+    @apply shadow-md rounded-xl;
+}
+
+.fc-view-harness {
+    @apply border-8 border-red-400 border-none;
+}
+/* fc-view-harness-active */
+
+.fc-daygrid{
+    @apply border-none;
+}
+
+.fc {
+   @apply font-poppins;
+}
+
+.fc td {
+    @apply border-none;
+}
+
+.fc th {
+    @apply border-none bg-secondary rounded-sm text-white;
+}

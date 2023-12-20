@@ -128,8 +128,6 @@ export const customerRouter = createTRPCRouter({
           })
           .returning();
 
-        console.log(newAddressResult);
-
         if (
           newAddressResult == undefined ||
           newAddressResult.length < 1 ||
