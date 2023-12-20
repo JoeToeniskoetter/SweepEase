@@ -25,6 +25,8 @@ const dashboard = () => {
         return <AppointmentsTab />;
       case "certifications":
         return <div>certifications</div>;
+      case "services":
+        return <div>services</div>;
       default:
         return <div>default</div>;
     }

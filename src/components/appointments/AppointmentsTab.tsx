@@ -8,9 +8,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { api } from "~/utils/api";
 
-interface AppointmentsTabProps {}
-
-export const AppointmentsTab: React.FC<AppointmentsTabProps> = ({}) => {
+export const AppointmentsTab: React.FC = ({}) => {
   const [dateRange, setDateRange] = useState<{
     startDate: string;
     endDate: string;
@@ -27,9 +25,9 @@ export const AppointmentsTab: React.FC<AppointmentsTabProps> = ({}) => {
         <p className="text-2xl font-bold md:text-3xl max-w-fit font-poppins">
           {calendarRef.current?.getApi().view.title}
         </p>
-        <div className="flex w-full shadow-sm md:w-fit">
+        <div className="flex shadow-lg md:w-fit">
           <button
-            className="w-full rounded-none rounded-l-md bg-slate-500"
+            className="rounded-none rounded-l-md bg-highlight w-12 items-center justify-center flex"
             onClick={() => {
               calendarRef.current?.getApi().prev();
             }}
@@ -37,8 +35,7 @@ export const AppointmentsTab: React.FC<AppointmentsTabProps> = ({}) => {
             <ArrowLeftIcon className="h-5 w-5 text-white" />
           </button>
           <button
-            color="light"
-            className="w-full rounded-none md:w-fit"
+            className="rounded-none md:w-fit p-2"
             onClick={() => {
               calendarRef.current?.getApi().today();
             }}
@@ -46,7 +43,7 @@ export const AppointmentsTab: React.FC<AppointmentsTabProps> = ({}) => {
             Today
           </button>
           <button
-            className="w-full rounded-none rounded-r-md md:w-fit bg-slate-500"
+            className="rounded-none rounded-r-md bg-highlight w-12 items-center justify-center flex"
             onClick={() => {
               calendarRef.current?.getApi().next();
             }}
@@ -58,9 +55,12 @@ export const AppointmentsTab: React.FC<AppointmentsTabProps> = ({}) => {
     );
   };
   return (
-    <div className="w-11/12 p-1 bg-white pt-8 pl-4">
+    <div className="w-full p-1 bg-white pt-8 px-8">
       <CalendarHeader />
       <FullCalendar
+        select={(args) => {
+          console.log(args);
+        }}
         ref={calendarRef}
         plugins={[dayGridPlugin]}
         initialView="dayGridMonth"
@@ -68,6 +68,7 @@ export const AppointmentsTab: React.FC<AppointmentsTabProps> = ({}) => {
         droppable
         editable
         timeZone="UTC"
+        events={data}
         customButtons={{
           test: {
             text: "sup",

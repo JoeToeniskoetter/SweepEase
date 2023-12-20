@@ -49,7 +49,7 @@ export const CustomersTab: React.FC = ({}) => {
     setFilters(copy);
   };
   return (
-    <div className="flex flex-col w-full p-4 bg-white min-w-fit mx-auto max-w-7xl">
+    <div className="flex flex-col w-full p-4 bg-white min-w-fit mx-auto max-w-fit">
       <CreateCustomerModal
         isOpen={isOpen || customer != null}
         closeModal={async () => {
