@@ -1,33 +1,36 @@
-// /* eslint-disable @typescript-eslint/ban-ts-comment */
-// /* eslint-disable @typescript-eslint/no-unsafe-call */
-// //@ts-nocheck
-// import { customer } from "./schema";
-// import { faker } from "@faker-js/faker";
-// import { db } from ".";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+//@ts-nocheck
+import { address, customer } from "./schema";
+import { faker } from "@faker-js/faker";
+import { db } from ".";
 
-// const main = async () => {
-//   const data: (typeof customer)[] = [];
+const main = async () => {
+  // const company = await db.
+  for (let i = 0; i < 200; i++) {
+    const a = await db
+      .insert(address)
+      .values({
+        address1: faker.location.streetAddress(),
+        address2: faker.location.secondaryAddress(),
+        city: faker.location.city(),
+        state: faker.location.state(),
+        zip: faker.location.zipCode(),
+        phone: faker.phone.number(),
+        created_by: "17024737-2d58-4ec0-a5aa-311c28451e7d",
+      })
+      .returning();
 
-//   for (let i = 0; i < 200; i++) {
-//     data.push({
-//       first_name: faker.person.firstName(),
-//       last_name: faker.person.lastName(),
-//       address: faker.location.streetAddress(),
-//       city: faker.location.city(),
-//       state: faker.location.state(),
-//       zip: faker.location.zipCode(),
-//       phone: faker.phone.number(),
-//       company_id: "d583e7fd-d50c-4bf6-b1ca-cbd6e71a2fd3",
-//       created_by: "5003a576-1d5c-4295-bec2-af05276cac72",
-//     });
-//   }
-//   console.log(data);
+    await db.insert(customer).values({
+      first_name: faker.person.firstName(),
+      last_name: faker.person.lastName(),
+      address_id: a[0]?.id,
+      phone: faker.phone.number(),
+      company_id: "5fa87dcd-16e6-49ad-a99d-98e6e6a6164b",
+      created_by: "17024737-2d58-4ec0-a5aa-311c28451e7d",
+    });
+  }
+};
 
-//   console.log("Seed start");
-//   await db.insert(customer).values(data);
-//   console.log("Seed done");
-// };
-
-// main().then(() => {
-//   console.log("done");
-// });
+main().then(() => {
+  console.log("done");
+});

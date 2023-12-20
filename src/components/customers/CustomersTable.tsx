@@ -1,12 +1,12 @@
 import React from "react";
-import { Customer } from "~/server/db/schema";
+import type { CustomerWithAddress } from "~/server/db/schema";
 import CustomerOptionsButton from "./CustomerOptionsButton";
 import { useCustomerStore } from "~/stores/customerStore";
 
 const columns = ["Name", "Address", "City", "State", "Zip", "Phone", "Options"];
 
 interface CustomersTableProps {
-  customers?: Customer[];
+  customers?: CustomerWithAddress[];
   page: number;
   total_pages: number;
   nextPage: () => void;
@@ -20,7 +20,7 @@ export const CustomersTable: React.FC<CustomersTableProps> = ({
   nextPage,
   prevPage,
 }) => {
-  const { customer, setCustomer } = useCustomerStore();
+  const { setCustomer } = useCustomerStore();
   const renderPages = () => {
     const pages = [];
     const maxPagesToShow = 10;
@@ -99,10 +99,10 @@ export const CustomersTable: React.FC<CustomersTableProps> = ({
                 >
                   {customer.first_name} {customer.last_name}
                 </th>
-                <td className="px-6 py-4">{customer.address}</td>
-                <td className="px-6 py-4">{customer.city}</td>
-                <td className="px-6 py-4">{customer.state}</td>
-                <td className="px-6 py-4">{customer.zip}</td>
+                <td className="px-6 py-4">{customer.address?.address1}</td>
+                <td className="px-6 py-4">{customer.address?.city}</td>
+                <td className="px-6 py-4">{customer.address?.state}</td>
+                <td className="px-6 py-4">{customer.address?.zip}</td>
                 <td className="px-6 py-4">{customer.phone}</td>
                 <td className="px-6 py-4">
                   <CustomerOptionsButton onEdit={() => setCustomer(customer)} />

@@ -7,7 +7,8 @@ import { useCustomerStore } from "~/stores/customerStore";
 interface CreateCustomerForm {
   first_name: string;
   last_name: string;
-  address: string;
+  address1: string;
+  address2: string;
   city: string;
   state: string;
   zip: string;
@@ -44,16 +45,28 @@ export const CreateCustomerForm: React.FC<{
             ...customer,
             phone: customer.phone ?? "",
             email: customer.email ?? "",
+            address1: customer.address.address1,
+            address2: customer.address.address2 ?? "",
+            city: customer.address.city,
+            state: customer.address.state,
+            zip: customer.address.zip,
           },
   });
 
   const onSubmit = async (values: CreateCustomerForm) => {
     if (customer !== null) {
-      void toast.promise(updateCustomer({ ...values, id: customer.id }), {
-        success: "Customer Updated",
-        pending: "Updating Customer",
-        error: "Failed to Update Customer",
-      });
+      void toast.promise(
+        updateCustomer({
+          ...values,
+          id: customer.id,
+          address_id: customer.address.id,
+        }),
+        {
+          success: "Customer Updated",
+          pending: "Updating Customer",
+          error: "Failed to Update Customer",
+        }
+      );
     } else {
       void toast.promise(createCustomer(values), {
         success: "Customer Created",
@@ -95,7 +108,7 @@ export const CreateCustomerForm: React.FC<{
           {<p>{errors.last_name?.message}</p>}
         </div>
       </div>
-      <div className="flex flex-wrap -mx-3 mb-6">
+      <div className="flex flex-wrap -mx-3">
         <div className="w-full px-3">
           <label
             className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -105,10 +118,26 @@ export const CreateCustomerForm: React.FC<{
           </label>
           <input
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            {...register("address", { required: true })}
+            {...register("address1", { required: true })}
             placeholder="124 Address"
           />
-          {<p>{errors.address?.message}</p>}
+          {<p>{errors.address1?.message}</p>}
+        </div>
+      </div>
+      <div className="flex flex-wrap -mx-3">
+        <div className="w-full px-3">
+          <label
+            className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+            htmlFor="grid-password"
+          >
+            Address line 2
+          </label>
+          <input
+            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            {...register("address2")}
+            placeholder="Apt. 1"
+          />
+          {<p>{errors.address1?.message}</p>}
         </div>
       </div>
       <div className="flex flex-wrap -mx-3 mb-2">

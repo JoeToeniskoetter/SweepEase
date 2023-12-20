@@ -6,7 +6,7 @@ import {
   integer,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
-import { sql, InferSelectModel } from "drizzle-orm";
+import { sql, InferSelectModel, relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const users = pgTable("user", {
@@ -83,20 +83,46 @@ export const customer = pgTable("customer", {
     .references(() => company.id),
   first_name: text("first_name").notNull(),
   last_name: text("last_name").notNull(),
-  address: text("address").notNull(),
-  city: text("city").notNull(),
-  state: text("state").notNull(),
-  zip: text("zip").notNull(),
   email: text("email"),
   phone: text("phone"),
+  address_id: text("address_id")
+    .notNull()
+    .references(() => address.id),
   created_at: timestamp("created_at", { mode: "date" })
     .notNull()
     .default(sql`now()`),
   created_by: text("created_by").notNull(),
 });
+export const customerRelations = relations(customer, ({ one }) => ({
+  address: one(address, {
+    fields: [customer.address_id],
+    references: [address.id],
+  }),
+}));
+
+export const address = pgTable("address", {
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .default(sql`gen_random_uuid()`),
+  address1: text("address1").notNull(),
+  address2: text("address2"),
+  city: text("city").notNull(),
+  state: text("state").notNull(),
+  zip: text("zip").notNull(),
+  created_at: timestamp("created_at", { mode: "date" })
+    .notNull()
+    .default(sql`now()`),
+  created_by: text("created_by").notNull(),
+});
+export const addressRelations = relations(address, ({ one }) => ({
+  address: one(customer),
+}));
 
 export const insertCompanySchema = createInsertSchema(company);
 export const selectCustomerSchema = createSelectSchema(customer);
 export const createCustomerSchema = createInsertSchema(customer);
 export type Customer = InferSelectModel<typeof customer>;
+export type Address = InferSelectModel<typeof address>;
+export type CustomerWithAddress = Customer & { address: Address };
 export type Company = InferSelectModel<typeof company>;

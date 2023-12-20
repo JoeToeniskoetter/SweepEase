@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1702389239466,
-      "tag": "0000_jazzy_echo",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1702826920444,
-      "tag": "0001_complex_wallflower",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1702828385079,
-      "tag": "0002_colossal_black_tom",
+      "when": 1703017915347,
+      "tag": "0000_greedy_azazel",
       "breakpoints": true
     }
   ]
