@@ -8,6 +8,7 @@ import {
 import type { AdapterAccount } from "@auth/core/adapters";
 import { sql, InferSelectModel, relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { time } from "console";
 
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
@@ -117,6 +118,61 @@ export const address = pgTable("address", {
 });
 export const addressRelations = relations(address, ({ one }) => ({
   address: one(customer),
+}));
+
+export const service = pgTable("service", {
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  type: text("type").notNull(),
+  description: text("description").notNull(),
+  created_at: timestamp("created_at", { mode: "date" })
+    .notNull()
+    .default(sql`now()`),
+  created_by: text("created_by")
+    .notNull()
+    .references(() => users.id),
+});
+
+export const appointment = pgTable("appointment", {
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .default(sql`gen_random_uuid()`),
+  customer_id: text("id")
+    .notNull()
+    .references(() => customer.id),
+  company_id: text("company_id")
+    .notNull()
+    .references(() => company.id),
+  service_id: text("service_id")
+    .notNull()
+    .references(() => service.id),
+  start_time: timestamp("start_time", { mode: "date" }).notNull(),
+  end_time: timestamp("end_time", { mode: "date" }).notNull(),
+  created_at: timestamp("created_at", { mode: "date" })
+    .notNull()
+    .default(sql`now()`),
+  created_by: text("created_by")
+    .notNull()
+    .references(() => users.id),
+  completed_at: timestamp("created_at", { mode: "date" }),
+});
+export const appointmentRelations = relations(appointment, ({ one }) => ({
+  service: one(service, {
+    fields: [appointment.service_id],
+    references: [service.id],
+  }),
+  company: one(company, {
+    fields: [appointment.company_id],
+    references: [company.id],
+  }),
+  customer: one(customer, {
+    fields: [appointment.customer_id],
+    references: [customer.id],
+  }),
 }));
 
 export const insertCompanySchema = createInsertSchema(company);

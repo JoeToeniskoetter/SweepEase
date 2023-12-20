@@ -2,7 +2,6 @@
   "name": "sweep-ease",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "next build",
     "db:push": "dotenv drizzle-kit push:pg",
@@ -69,7 +68,8 @@
   "packageManager": "npm@10.2.4",
   "ts-node": {
     "compilerOptions": {
-      "module": "commonjs"
+      "module": "commonjs",
+      "type": "module"
     }
   }
 }
