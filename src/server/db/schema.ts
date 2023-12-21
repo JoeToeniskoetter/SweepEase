@@ -5,6 +5,7 @@ import {
   primaryKey,
   integer,
   date,
+  numeric,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 import { sql, InferSelectModel, relations } from "drizzle-orm";
@@ -128,7 +129,11 @@ export const service = pgTable("service", {
     .default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   type: text("type").notNull(),
+  price: numeric("price", { precision: 10, scale: 2 }),
   description: text("description").notNull(),
+  company_id: text("company_id")
+    .notNull()
+    .references(() => company.id),
   created_at: timestamp("created_at", { mode: "date" })
     .notNull()
     .default(sql`now()`),

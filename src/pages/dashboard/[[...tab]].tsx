@@ -4,6 +4,7 @@ import { AppointmentsTab } from "~/components/appointments/AppointmentsTab";
 import { CustomersTab } from "~/components/customers/CustomersTab";
 import { SetupCompanyForm } from "~/components/dashboard/SetupCompanyForm";
 import { SidebarLayout } from "~/components/dashboard/SidebarLayout";
+import { ServicesTab } from "~/components/services/ServicesTab";
 
 const dashboard = () => {
   const { data } = useSession({ required: true });
@@ -26,7 +27,7 @@ const dashboard = () => {
       case "certifications":
         return <div>certifications</div>;
       case "services":
-        return <div>services</div>;
+        return <ServicesTab />;
       default:
         return <div>default</div>;
     }

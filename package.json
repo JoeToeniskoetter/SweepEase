@@ -68,8 +68,9 @@
   "packageManager": "npm@10.2.4",
   "ts-node": {
     "compilerOptions": {
-      "module": "commonjs",
-      "type": "module"
+      "type": "commonjs",
+      "module": "es6",
+      "target": "es5"
     }
   }
 }
