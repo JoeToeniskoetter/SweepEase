@@ -58,7 +58,9 @@ export const CustomersTab: React.FC = ({}) => {
         }}
       />
       <div className="flex py-4 gap-2">
-        <h1 className="text-2xl font-bold dark:text-white">All Customers</h1>
+        <h1 className="text-2xl font-bold dark:text-white font-poppins">
+          All Customers
+        </h1>
       </div>
       <SearchBar
         addFilter={addFilter}

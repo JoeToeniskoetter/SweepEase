@@ -189,3 +189,4 @@ export type Customer = InferSelectModel<typeof customer>;
 export type Address = InferSelectModel<typeof address>;
 export type CustomerWithAddress = Customer & { address: Address };
 export type Company = InferSelectModel<typeof company>;
+export type Service = InferSelectModel<typeof service>;

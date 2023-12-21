@@ -1,19 +1,19 @@
 import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
-import { CreateCustomerForm } from "./CreateCustomerForm";
-import { useCustomerStore } from "~/stores/customerStore";
+import { Fragment, useState } from "react";
+import { NewServiceForm } from "./CreateServiceForm";
+import { useServiceStore } from "~/stores/serviceStore";
 
-interface CreateCustomerModalProps {
+interface CreateServiceModalProps {
   isOpen: boolean;
   closeModal: () => void;
 }
 
-export const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({
+export const CreateServiceModal: React.FC<CreateServiceModalProps> = ({
   isOpen,
   closeModal,
 }) => {
-  const { customer } = useCustomerStore();
+  const { service } = useServiceStore();
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -46,9 +46,9 @@ export const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 pb-2"
                   >
-                    {customer ? "Update Customer" : "Create New Customer"}
+                    {service ? "Update Service" : "Create New Service"}
                   </Dialog.Title>
-                  <CreateCustomerForm afterCreate={closeModal} />
+                  <NewServiceForm afterCreate={closeModal} />
                 </Dialog.Panel>
               </Transition.Child>
             </div>
