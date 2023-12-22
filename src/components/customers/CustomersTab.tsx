@@ -49,7 +49,7 @@ export const CustomersTab: React.FC = ({}) => {
     setFilters(copy);
   };
   return (
-    <div className="flex flex-col w-full p-4 bg-white min-w-fit mx-auto max-w-fit">
+    <div className="flex flex-col w-full p-4 bg-white">
       <CreateCustomerModal
         isOpen={isOpen || customer != null}
         closeModal={async () => {
@@ -57,55 +57,57 @@ export const CustomersTab: React.FC = ({}) => {
           closeModal();
         }}
       />
-      <div className="flex py-4 gap-2">
-        <h1 className="text-2xl font-bold dark:text-white font-poppins">
-          All Customers
-        </h1>
-      </div>
-      <SearchBar
-        addFilter={addFilter}
-        removeFilter={removeFilter}
-        filters={filters}
-      >
-        <button
-          onClick={openModal}
-          className="px-4 bg-highlight text-white shadow-md rounded-lg flex
-        items-center justify-center gap-2 h-9"
+      <div className="max-w-11/12 mx-auto">
+        <div className="flex py-4 gap-2">
+          <h1 className="text-2xl font-bold dark:text-white font-poppins">
+            All Customers
+          </h1>
+        </div>
+        <SearchBar
+          addFilter={addFilter}
+          removeFilter={removeFilter}
+          filters={filters}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-4 h-4"
+          <button
+            onClick={openModal}
+            className="px-4 bg-highlight text-white shadow-md rounded-lg flex
+        items-center justify-center gap-2 h-9"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
-          Create Customer
-        </button>
-      </SearchBar>
-      <CustomersTable
-        customers={data?.data}
-        page={page}
-        total_pages={data?.meta.total_pages ?? 0}
-        nextPage={() => {
-          if (page === data?.meta.total_pages) {
-            return;
-          }
-          setPage(page + 1);
-        }}
-        prevPage={() => {
-          if (page === 1) {
-            return;
-          }
-          setPage(page - 1);
-        }}
-      />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+            Create Customer
+          </button>
+        </SearchBar>
+        <CustomersTable
+          customers={data?.data}
+          page={page}
+          total_pages={data?.meta.total_pages ?? 0}
+          nextPage={() => {
+            if (page === data?.meta.total_pages) {
+              return;
+            }
+            setPage(page + 1);
+          }}
+          prevPage={() => {
+            if (page === 1) {
+              return;
+            }
+            setPage(page - 1);
+          }}
+        />
+      </div>
     </div>
   );
 };

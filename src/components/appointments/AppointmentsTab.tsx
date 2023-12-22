@@ -1,12 +1,9 @@
 import React, { useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  CalendarIcon,
-} from "@heroicons/react/24/solid";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
 import { api } from "~/utils/api";
+import Link from "next/link";
 
 export const AppointmentsTab: React.FC = ({}) => {
   const [dateRange, setDateRange] = useState<{
@@ -25,31 +22,39 @@ export const AppointmentsTab: React.FC = ({}) => {
         <p className="text-2xl font-bold md:text-3xl max-w-fit font-poppins">
           {calendarRef.current?.getApi().view.title}
         </p>
-        <div className="flex shadow-lg md:w-fit">
-          <button
-            className="rounded-none rounded-l-md bg-highlight w-12 items-center justify-center flex"
-            onClick={() => {
-              calendarRef.current?.getApi().prev();
-            }}
+        <div className="flex md:w-fit gap-4">
+          <Link
+            href={"/appointment/new"}
+            className="bg-mrts-orange text-white p-2 rounded-lg shadow-lg "
           >
-            <ArrowLeftIcon className="h-5 w-5 text-white" />
-          </button>
-          <button
-            className="rounded-none md:w-fit p-2"
-            onClick={() => {
-              calendarRef.current?.getApi().today();
-            }}
-          >
-            Today
-          </button>
-          <button
-            className="rounded-none rounded-r-md bg-highlight w-12 items-center justify-center flex"
-            onClick={() => {
-              calendarRef.current?.getApi().next();
-            }}
-          >
-            <ArrowRightIcon className="h-5 w-5 text-white" />
-          </button>
+            New Appointment
+          </Link>
+          <div className="flex shadow-lg ">
+            <button
+              className="rounded-none rounded-l-md bg-highlight w-12 items-center justify-center flex"
+              onClick={() => {
+                calendarRef.current?.getApi().prev();
+              }}
+            >
+              <ArrowLeftIcon className="h-5 w-5 text-white" />
+            </button>
+            <button
+              className="rounded-none md:w-fit p-2"
+              onClick={() => {
+                calendarRef.current?.getApi().today();
+              }}
+            >
+              Today
+            </button>
+            <button
+              className="rounded-none rounded-r-md bg-highlight w-12 items-center justify-center flex"
+              onClick={() => {
+                calendarRef.current?.getApi().next();
+              }}
+            >
+              <ArrowRightIcon className="h-5 w-5 text-white" />
+            </button>
+          </div>
         </div>
       </div>
     );

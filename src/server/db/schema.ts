@@ -10,7 +10,6 @@ import {
 import type { AdapterAccount } from "@auth/core/adapters";
 import { sql, InferSelectModel, relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { time } from "console";
 
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
@@ -190,3 +189,4 @@ export type Address = InferSelectModel<typeof address>;
 export type CustomerWithAddress = Customer & { address: Address };
 export type Company = InferSelectModel<typeof company>;
 export type Service = InferSelectModel<typeof service>;
+export type Appointment = InferSelectModel<typeof appointment>;

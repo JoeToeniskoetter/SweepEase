@@ -2,6 +2,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useState } from "react";
 import { UserProfileDropdown } from "./dashboard/UserProfileDropdown";
+import { Logo } from "./Logo";
 
 function Navbar() {
   const { data } = useSession();
@@ -12,76 +13,38 @@ function Navbar() {
   };
 
   return (
-    <nav>
-      <div className="px-4 dark:bg-gray-900">
-        <div className="flex items-center justify-between h-16  ">
-          <h1 className="px-4 font-['Lobster'] text-gray-900 text-2xl dark:text-white">
-            SweepEase.
-          </h1>
-          <div className="flex md:hidden">
+    <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+      <div className="px-3 py-3 lg:px-5 lg:pl-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center justify-start rtl:justify-end">
             <button
-              onClick={toggleMobileMenu}
-              className="text-gray-300 hover:text-black focus:outline-none focus:text-black"
+              data-drawer-target="logo-sidebar"
+              data-drawer-toggle="logo-sidebar"
+              aria-controls="logo-sidebar"
+              type="button"
+              className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
             >
+              <span className="sr-only">Open sidebar</span>
               <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+                className="w-6 h-6"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16m-7 6h7"
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
                 ></path>
               </svg>
             </button>
+            <div className="flex ms-2 md:me-24">
+              <Logo />
+            </div>
           </div>
-          <div className="hidden md:flex items-center space-x-4 px-6">
-            <Link
-              href="#"
-              className="text-gray-500 hover:text-black dark:text-white"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="#"
-              className="text-gray-500 hover:text-black dark:text-white"
-            >
-              Services
-            </Link>
-
-            {data?.user ? (
-              <UserProfileDropdown />
-            ) : (
-              <Link
-                href={"/api/auth/signin"}
-                className="text-gray-500 hover:text-black dark:text-white"
-              >
-                Sign In
-              </Link>
-            )}
-          </div>
+          <UserProfileDropdown />
         </div>
-      </div>
-      <div
-        className={`md:hidden bg-gray-700 py-2 px-4 text-gray-300 space-y-2 absolute top-16 left-0 right-0 z-20 ${
-          isMobileMenuOpen ? "" : "hidden"
-        }`}
-      >
-        <Link href="#" className="block">
-          Home
-        </Link>
-        <Link href="#" className="block">
-          About
-        </Link>
-        <Link href="#" className="block">
-          Services
-        </Link>
-        <Link href="#" className="block">
-          Contact
-        </Link>
       </div>
     </nav>
   );
