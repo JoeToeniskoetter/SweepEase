@@ -2,6 +2,7 @@ import React from "react";
 import type { CustomerWithAddress } from "~/server/db/schema";
 import CustomerOptionsButton from "./CustomerOptionsButton";
 import { useCustomerStore } from "~/stores/customerStore";
+import { useRouter } from "next/router";
 
 const columns = ["Name", "Address", "City", "State", "Zip", "Phone", "Options"];
 
@@ -20,6 +21,7 @@ export const CustomersTable: React.FC<CustomersTableProps> = ({
   nextPage,
   prevPage,
 }) => {
+  const router = useRouter();
   const { setCustomer } = useCustomerStore();
   const renderPages = () => {
     const pages = [];
@@ -109,7 +111,10 @@ export const CustomersTable: React.FC<CustomersTableProps> = ({
                 <td className="px-6 py-4">{customer.address?.zip}</td>
                 <td className="px-6 py-4">{customer.phone}</td>
                 <td className="px-6 py-4">
-                  <CustomerOptionsButton onEdit={() => setCustomer(customer)} />
+                  <CustomerOptionsButton
+                    onEdit={() => setCustomer(customer)}
+                    onInfo={() => router.push(`/customer/${customer.id}`)}
+                  />
                 </td>
               </tr>
             );
