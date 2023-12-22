@@ -1,9 +1,10 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
 import { toast } from "react-toastify";
 import { useCustomerStore } from "~/stores/customerStore";
 import { states } from "./states";
+import { PlacesAutocomplete } from "./AutoCompleteAddress";
 
 interface CreateCustomerForm {
   first_name: string;
@@ -36,7 +37,9 @@ export const CreateCustomerForm: React.FC<{
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isValid },
+    setValue,
   } = useForm<CreateCustomerForm>({
     reValidateMode: "onSubmit",
     defaultValues:
@@ -117,10 +120,22 @@ export const CreateCustomerForm: React.FC<{
           >
             Address
           </label>
-          <input
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            {...register("address1", { required: true })}
-            placeholder="124 Address"
+          <Controller
+            control={control}
+            name="address1"
+            render={({ field }) => (
+              <PlacesAutocomplete
+                existingAddress={field.value}
+                onPlaceSelect={(details) => {
+                  field.onChange(
+                    `${details?.streetNumber} ${details?.address}`
+                  );
+                  setValue("city", details?.city ?? "");
+                  setValue("state", details?.state ?? "");
+                  setValue("zip", details?.zipCode ?? "");
+                }}
+              />
+            )}
           />
           {<p>{errors.address1?.message}</p>}
         </div>
@@ -169,7 +184,9 @@ export const CreateCustomerForm: React.FC<{
               id="grid-state"
             >
               {states.map((state) => (
-                <option key={state.abbreviation}>{state.name}</option>
+                <option key={state.abbreviation} value={state.abbreviation}>
+                  {state.name}
+                </option>
               ))}
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
