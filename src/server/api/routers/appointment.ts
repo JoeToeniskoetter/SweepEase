@@ -1,7 +1,7 @@
-import { and, between, eq } from "drizzle-orm";
+import { and, between, eq, gte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { appointment } from "~/server/db/schema";
+import { appointment, customer } from "~/server/db/schema";
 
 export const appointmentRouter = createTRPCRouter({
   getAll: protectedProcedure
@@ -21,6 +21,17 @@ export const appointmentRouter = createTRPCRouter({
           customer: true,
           service: true,
         },
+      });
+    }),
+  upcomingByCustomerId: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.query.appointment.findMany({
+        where: and(
+          eq(appointment.customer_id, input.id),
+          gte(appointment.date, sql`now()`),
+          eq(appointment.company_id, ctx.session.user.company_id)
+        ),
       });
     }),
 });

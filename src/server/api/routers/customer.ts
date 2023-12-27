@@ -6,6 +6,17 @@ import { TRPCClientError } from "@trpc/client";
 import { TRPCError } from "@trpc/server";
 
 export const customerRouter = createTRPCRouter({
+  byId: protectedProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.query.customer.findFirst({
+        with: { address: true },
+        where: and(
+          eq(customer.id, input.id),
+          eq(customer.company_id, ctx.session.user.company_id)
+        ),
+      });
+    }),
   getAll: protectedProcedure
     .input(
       z.object({
