@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateInspectionDto } from './dto/create-inspection.dto';
 import { UpdateInspectionDto } from './dto/update-inspection.dto';
 import { User } from 'src/users/entities/user.entity';
@@ -63,6 +63,7 @@ export class InspectionService {
       const template = this.inspectionTemplateRepo.create({
         id: id,
         name: updateTemplateDto.name,
+        inspectionLevel: updateTemplateDto.inspectionLevel,
       });
       await queryRunner.manager.save(template);
       const newItems = updateTemplateDto.items.map((item) => {
@@ -97,6 +98,17 @@ export class InspectionService {
       console.log('release runner');
       await queryRunner.release();
     }
+  }
+
+  async deleteTemplate(id: string, user: User) {
+    const company = user.company;
+    const template = await this.inspectionTemplateRepo.findOne({
+      where: { company: { id: company.id }, id },
+    });
+    if (!template) {
+      throw new NotFoundException();
+    }
+    return this.inspectionTemplateRepo.softDelete({ id: template.id });
   }
 
   create(createInspectionDto: CreateInspectionDto) {

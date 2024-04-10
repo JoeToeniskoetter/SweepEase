@@ -1,29 +1,88 @@
-import { AddCircleOutline, Article } from "@mui/icons-material";
+import { AddCircleOutline } from "@mui/icons-material";
 import {
   Alert,
   Box,
   Button,
-  CardHeader,
   CircularProgress,
   Container,
-  Grid,
-  IconButton,
+  MenuItem,
   Modal,
+  Skeleton,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { format } from "date-fns";
 import React, { useState } from "react";
-import { useInspectionTemplates } from "../hooks/useInspectionTemplates";
 import { useCreateTemplate } from "../hooks/useCreateTemplate";
-import { Link } from "react-router-dom";
+import { useInspectionTemplates } from "../hooks/useInspectionTemplates";
+import { InspectionTemplateOptions } from "./InspectionTemplateOptions";
 
 interface InspectionTemplatesProps {}
+const columnHelper = createColumnHelper<InspectionTemplate>();
+const columns = [
+  columnHelper.accessor("name", {
+    cell: (info) => info.getValue(),
+    header: () => <Typography fontWeight={"bold"}>Name</Typography>,
+    footer: (info) => info.column.id,
+  }),
+  columnHelper.accessor("inspectionLevel", {
+    header: () => <Typography fontWeight={"bold"}>Inspection Level</Typography>,
+    cell: (info) => info.renderValue(),
+    footer: (info) => info.column.id,
+  }),
+  columnHelper.accessor("createdAt", {
+    header: () => <Typography fontWeight={"bold"}>Created</Typography>,
+    footer: (info) => info.column.id,
+    cell: (info) =>
+      info.getValue() && format(new Date(info.getValue()), "MM/dd/yyyy"),
+  }),
+  columnHelper.accessor("id", {
+    header: () => <Typography hidden>Options</Typography>,
+    footer: (info) => info.column.id,
+    cell: (info) => <InspectionTemplateOptions id={info.renderValue() ?? ""} />,
+  }),
+];
 
 export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const { data } = useInspectionTemplates();
+  const { data, isLoading } = useInspectionTemplates();
   const [templateName, setTemplateName] = useState<string>("");
+  const [inspectionLevel, setInspectionLevel] = useState<
+    "Level One" | "Level Two" | "Level Three"
+  >("Level One");
+
   const { mutateAsync: createTemplate, isPending, error } = useCreateTemplate();
+
+  const tableColumns = React.useMemo(
+    () =>
+      isLoading
+        ? columns.map((column) => ({
+            ...column,
+            Cell: <Skeleton />,
+          }))
+        : columns,
+    [isLoading]
+  );
+  const tableData = React.useMemo(
+    () => (isLoading ? Array(10).fill({}) : data),
+    [isLoading, data]
+  );
+  const table = useReactTable({
+    columns: tableColumns,
+    data: tableData || [],
+    getCoreRowModel: getCoreRowModel(),
+  });
   return (
     <Container disableGutters maxWidth={"lg"}>
       <Box display={"flex"} gap={2} flexDirection={"column"} maxWidth={"md"}>
@@ -31,34 +90,43 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
           <Typography variant="h4" fontWeight={"bold"}>
             Templates
           </Typography>
-          <IconButton onClick={() => setOpenModal(true)}>
-            <AddCircleOutline color="primary" />
-          </IconButton>
+          <Button
+            onClick={() => setOpenModal(true)}
+            startIcon={<AddCircleOutline color="primary" fontSize="small" />}
+          >
+            Create Template
+          </Button>
         </Box>
-        <Grid container spacing={2}>
-          {data?.map((template) => (
-            <Grid item minWidth={200}>
-              <Link
-                to={`${template.id}`}
-                style={{ textDecoration: "none", color: "black" }}
-              >
-                <Box
-                  sx={{ cursor: "pointer" }}
-                  display={"flex"}
-                  alignItems={"center"}
-                  maxWidth={200}
-                  border={1}
-                  borderColor={"#c6c6c6"}
-                  borderRadius={5}
-                  p={2}
-                >
-                  <Article fontSize={"large"} />
-                  <CardHeader title={template.name} subheader={"Test"} />
-                </Box>
-              </Link>
-            </Grid>
-          ))}
-        </Grid>
+        {error && <Alert severity="error">Failed to create template</Alert>}
+        <Table>
+          <TableHead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableCell key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableHead>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </Box>
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <Box
@@ -77,14 +145,28 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
           <Typography variant="h5" fontWeight={"bold"}>
             Create Template
           </Typography>
-          <Typography fontWeight={"light"}>Name your template</Typography>
+          <Typography fontWeight={"light"}>
+            Add something information about this template
+          </Typography>
           <Box display={"flex"} flexDirection={"column"} gap={2} mt={2}>
             <TextField
-              placeholder="Level 1"
+              placeholder="Visual Inspection"
+              label="Template Name"
               fullWidth
               onChange={(e) => setTemplateName(e.target.value)}
               value={templateName}
             />
+            <TextField
+              select
+              fullWidth
+              defaultValue={inspectionLevel}
+              onChange={(e) => setInspectionLevel(e.target.value)}
+              label="Inspection Level"
+            >
+              <MenuItem value={"Level One"}>Level 1</MenuItem>
+              <MenuItem value={"Level Two"}>Level 2</MenuItem>
+              <MenuItem value={"Level Three"}>Level 3</MenuItem>
+            </TextField>
             {error && <Alert severity="error">Error creating template</Alert>}
             <Button
               variant="contained"
@@ -92,7 +174,10 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
               disabled={templateName.trim() === ""}
               onClick={async () => {
                 try {
-                  createTemplate({ name: templateName });
+                  createTemplate({
+                    name: templateName,
+                    inspectionLevel: inspectionLevel,
+                  });
                   setOpenModal(false);
                 } catch (e) {
                   console.error(e);

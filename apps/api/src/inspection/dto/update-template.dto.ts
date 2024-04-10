@@ -8,6 +8,7 @@ import {
   ValidationArguments,
   ValidationOptions,
 } from 'class-validator';
+import { InspectionLevel } from '../entities/inspection_template.entity';
 
 export function IsNonPrimitiveArray(validationOptions?: ValidationOptions) {
   return (object: any, propertyName: string) => {
@@ -38,9 +39,7 @@ export class UpdateTemplateDto {
   @IsNotEmpty()
   name: string;
 
-  @IsEnum(['Level 1', 'Level 2', 'Level 3'])
-  @IsString()
-  @IsNotEmpty()
+  @IsEnum(InspectionLevel, { each: true })
   inspectionLevel: string;
 
   @ValidateNested({ each: true })

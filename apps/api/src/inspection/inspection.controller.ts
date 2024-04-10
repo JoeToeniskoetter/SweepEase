@@ -62,6 +62,11 @@ export class InspectionController {
     return this.inspectionService.updateTemplate(id, updateTemplateDto, user);
   }
 
+  @Delete('/templates/:id')
+  deleteTemplate(@CurrentUser() user: User, @Param('id') id: string) {
+    return this.inspectionService.deleteTemplate(id, user);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.inspectionService.findOne(+id);

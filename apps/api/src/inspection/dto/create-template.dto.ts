@@ -1,10 +1,11 @@
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { InspectionLevel } from '../entities/inspection_template.entity';
 
 export class CreateTemplateDto {
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @IsEnum(['Level 1', 'Level 2', 'Level 3'])
+  @IsEnum(InspectionLevel, { each: true })
   inspectionLevel: string;
 }

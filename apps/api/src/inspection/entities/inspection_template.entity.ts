@@ -3,6 +3,7 @@ import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -11,6 +12,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { InspectionTemplateItem } from './inspection_template_items.entity';
+
+export enum InspectionLevel {
+  LEVEL_ONE = 'Level One',
+  LEVEL_TWO = 'Level Two',
+  LEVEL_THREE = 'Level Three',
+}
 
 @Entity()
 export class InspectionTemplate {
@@ -31,7 +38,10 @@ export class InspectionTemplate {
   @JoinColumn({ name: 'created_by' })
   createdBy: User;
 
-  @OneToMany(() => InspectionTemplateItem, (item) => item.template)
+  @OneToMany(() => InspectionTemplateItem, (item) => item.template, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   items: InspectionTemplateItem[];
 
   @CreateDateColumn({ name: 'created_at' })
@@ -39,4 +49,7 @@ export class InspectionTemplate {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt: Date;
 }
