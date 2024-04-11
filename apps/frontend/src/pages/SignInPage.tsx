@@ -52,9 +52,9 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
           sx={{ height: 80 }}
           title={
             <Box>
-              <Logo />
+              <Logo variant="dark" />
               <Typography fontWeight={"light"} p={0}>
-                {isSignUp
+                {!isSignUp
                   ? "Sign in to access your account"
                   : "Sign up to create an account"}
               </Typography>

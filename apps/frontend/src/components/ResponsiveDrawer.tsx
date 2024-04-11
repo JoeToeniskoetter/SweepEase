@@ -2,9 +2,10 @@ import {
   ContentPasteTwoTone,
   HomeTwoTone,
   ListAltTwoTone,
+  Logout,
   Menu,
 } from "@mui/icons-material";
-import { useTheme } from "@mui/material";
+import { Button, useTheme } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -20,6 +21,7 @@ import Toolbar from "@mui/material/Toolbar";
 import * as React from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Logo } from "./Logo";
+import { useAuth } from "../context/AuthContext";
 
 const drawerWidth = 240;
 
@@ -46,6 +48,7 @@ const tabs = [
 ];
 
 export default function ResponsiveDrawer(props: Props) {
+  const { signOut } = useAuth();
   const theme = useTheme();
   const location = useLocation();
   const { window } = props;
@@ -77,54 +80,69 @@ export default function ResponsiveDrawer(props: Props) {
   };
 
   const drawer = (
-    <Box px={2} height={"100%"}>
-      <Toolbar sx={{ display: { xs: "none", sm: "flex" } }}>
-        <Logo variant="dark" />
-      </Toolbar>
-      <Divider />
-      <List sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        {tabs.map((tab) => {
-          return (
-            <Link
-              key={tab.name}
-              to={tab.path}
-              style={{
-                textDecoration: "none",
-                color: "grey",
-              }}
-            >
-              <ListItem
+    <Box
+      px={2}
+      height={"100%"}
+      display="flex"
+      flexDirection={"column"}
+      justifyContent={"space-between"}
+    >
+      <Box>
+        <Toolbar sx={{ display: { xs: "none", sm: "flex" } }}>
+          <Logo variant="dark" />
+        </Toolbar>
+        <Divider />
+        <List sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+          {tabs.map((tab) => {
+            return (
+              <Link
                 key={tab.name}
-                disablePadding
-                sx={{
-                  backgroundColor: isActive(tab.path) ? "#faddd7" : "white",
-                  borderRadius: 2,
+                to={tab.path}
+                style={{
+                  textDecoration: "none",
+                  color: "grey",
                 }}
               >
-                <ListItemButton>
-                  <ListItemIcon
-                    sx={{
-                      color: isActive(tab.path)
-                        ? theme.palette.secondary.main
-                        : "grey",
-                    }}
-                  >
-                    {tab.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    sx={{
-                      color: isActive(tab.path)
-                        ? theme.palette.secondary.main
-                        : "grey",
-                    }}
-                    primary={tab.name}
-                  />
-                </ListItemButton>
-              </ListItem>
-            </Link>
-          );
-        })}
-      </List>
+                <ListItem
+                  key={tab.name}
+                  disablePadding
+                  sx={{
+                    backgroundColor: isActive(tab.path) ? "#faddd7" : "white",
+                    borderRadius: 2,
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon
+                      sx={{
+                        color: isActive(tab.path)
+                          ? theme.palette.secondary.main
+                          : "grey",
+                      }}
+                    >
+                      {tab.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      sx={{
+                        color: isActive(tab.path)
+                          ? theme.palette.secondary.main
+                          : "grey",
+                      }}
+                      primary={tab.name}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+            );
+          })}
+        </List>
+      </Box>
+      <Button
+        startIcon={<Logout />}
+        fullWidth
+        onClick={async () => await signOut()}
+      >
+        Sign Out
+      </Button>
     </Box>
   );
 

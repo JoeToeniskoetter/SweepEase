@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { InspectionTemplate } from './entities/inspection_template.entity';
 import { InspectionTemplateItem } from './entities/inspection_template_items.entity';
 import { InspectionTemplateOptions } from './entities/inspection_template_options.entity';
+import { Inspection } from './entities/inspection.entity';
+import { InspectionDetail } from './entities/inspection_detail.entity';
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { InspectionTemplateOptions } from './entities/inspection_template_option
       InspectionTemplate,
       InspectionTemplateItem,
       InspectionTemplateOptions,
+      Inspection,
+      InspectionDetail,
     ]),
   ],
   controllers: [InspectionController],

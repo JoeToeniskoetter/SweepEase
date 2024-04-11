@@ -1,5 +1,6 @@
-import { LandingPage } from "./pages/LandingPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { LandingPage } from "./pages/LandingPage";
 import { SignInPage } from "./pages/SignInPage";
 import { AuthProvider } from "./context/AuthContext";
 import { OnboardedRoutes } from "./components/OnboardedRoutes";
@@ -10,8 +11,13 @@ import { CreateCompanyPage } from "./pages/CreateCompanyPage";
 import { ProtectedRoutes } from "./components/ProtectedRoutes";
 import { InspectionTemplates } from "./components/InspectionTemplates";
 import { EditInspectionTemplate } from "./components/EditInspectionTemplate";
+import { InspectionOrders } from "./components/InspectionOrders";
+import { Inspect } from "./components/Inspect";
+import "react-toastify/dist/ReactToastify.css";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: 10000 } },
+});
 
 function App() {
   return (
@@ -21,23 +27,25 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/signin" element={<SignInPage />} />
-            <Route path="/company-setup" element={<ProtectedRoutes />}>
-              <Route path="" Component={CreateCompanyPage} />
+            <Route element={<ProtectedRoutes />}>
+              <Route path="/company-setup" Component={CreateCompanyPage} />
             </Route>
             <Route element={<OnboardedRoutes />}>
               <Route path="/dashboard" Component={ResponsiveDrawer}>
                 <Route path="" element={<Home />} />
-                <Route path="inspections" element={<div>Inspections</div>} />
+                <Route path="inspections" element={<InspectionOrders />} />
                 <Route path="templates" element={<InspectionTemplates />} />
                 <Route
                   path="templates/:id"
                   element={<EditInspectionTemplate />}
                 />
               </Route>
+              <Route path="/inspections/:id" element={<Inspect />} />
             </Route>
             <Route path="*" element={<div>404</div>} />
           </Routes>
         </BrowserRouter>
+        <ToastContainer position="top-right" limit={1} />
       </QueryClientProvider>
     </AuthProvider>
   );

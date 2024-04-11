@@ -1,20 +1,24 @@
-import { AddCircleOutline } from "@mui/icons-material";
+import { AddCircleOutline, Close } from "@mui/icons-material";
 import {
   Alert,
   Box,
   Button,
   CircularProgress,
   Container,
+  IconButton,
   MenuItem,
   Modal,
+  Paper,
   Skeleton,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import {
   createColumnHelper,
@@ -55,6 +59,7 @@ const columns = [
 ];
 
 export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
+  const theme = useTheme();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const { data, isLoading } = useInspectionTemplates();
   const [templateName, setTemplateName] = useState<string>("");
@@ -69,7 +74,7 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
       isLoading
         ? columns.map((column) => ({
             ...column,
-            Cell: <Skeleton />,
+            cell: <Skeleton />,
           }))
         : columns,
     [isLoading]
@@ -84,8 +89,23 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
     getCoreRowModel: getCoreRowModel(),
   });
   return (
-    <Container disableGutters maxWidth={"lg"}>
-      <Box display={"flex"} gap={2} flexDirection={"column"} maxWidth={"md"}>
+    <Container
+      disableGutters
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 4,
+      }}
+    >
+      <Box
+        display={"flex"}
+        gap={2}
+        flexDirection={"column"}
+        maxWidth={"lg"}
+        width={"100%"}
+      >
         <Box display={"flex"} gap={2}>
           <Typography variant="h4" fontWeight={"bold"}>
             Templates
@@ -98,35 +118,40 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
           </Button>
         </Box>
         {error && <Alert severity="error">Failed to create template</Alert>}
-        <Table>
-          <TableHead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableCell key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableHead>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <TableContainer component={Paper} sx={{ width: "100%" }}>
+          <Table>
+            <TableHead sx={{ backgroundColor: theme.palette.secondary.main }}>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableCell key={header.id} sx={{ color: "white" }}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHead>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <Box
@@ -142,6 +167,11 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
             p: 4,
           }}
         >
+          <Box display={"flex"} justifyContent={"end"}>
+            <IconButton onClick={() => setOpenModal(false)}>
+              <Close />
+            </IconButton>
+          </Box>
           <Typography variant="h5" fontWeight={"bold"}>
             Create Template
           </Typography>

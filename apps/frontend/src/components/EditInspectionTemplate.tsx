@@ -8,7 +8,6 @@ import {
   ExpandMore,
   FireplaceTwoTone,
   InfoTwoTone,
-  Restore,
   Save,
 } from "@mui/icons-material";
 import {
@@ -28,7 +27,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
@@ -103,7 +102,9 @@ const EditTemplateForm = ({
     try {
       await updateTemplate({ ...values, id: id });
       setEdit(false);
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   };
   const [selectedSections, setSelectedSections] = useState<number[]>([]);
   const [openItems, setOpenItems] = useState<Set<number>>(new Set());
@@ -269,6 +270,7 @@ const EditTemplateForm = ({
                 </span>
               </Tooltip>
               <Button
+                color="error"
                 startIcon={<DeleteOutlined fontSize={"small"} />}
                 onClick={() => {
                   remove(selectedSections);
@@ -304,7 +306,7 @@ const EditTemplateForm = ({
                 expandIcon={<ExpandMore fontSize={"large"} />}
                 aria-controls="panel1-content"
                 id="panel1-header"
-                onClick={(e) => {
+                onClick={() => {
                   const newSet = new Set(openItems);
                   if (openItems.has(index)) {
                     newSet.delete(index);
