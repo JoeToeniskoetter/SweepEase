@@ -5,7 +5,7 @@ import { auth } from "../context/firebase";
 export const useUpdateTemplate = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { id: string }): Promise<unknown> => {
+    mutationFn: async (data: { id: string }): Promise<InspectionTemplate> => {
       const token = await auth.currentUser?.getIdToken();
       const resp = await axios.patch(
         `/api/inspection/templates/${data.id}`,

@@ -43,6 +43,7 @@ interface TemplateForm {
   items: {
     id?: string;
     name: string;
+    position: number;
     options: { id?: string; name: string; description: string }[];
   }[];
 }
@@ -54,6 +55,7 @@ const TemplateFormSchema = z.object({
     z.object({
       id: z.string().optional(),
       name: z.string().min(1, { message: "item name is required" }),
+      position: z.number(),
       options: z.array(
         z.object({
           id: z.string().optional(),
@@ -247,6 +249,7 @@ const EditTemplateForm = ({
                     onClick={() => {
                       append({
                         name: "",
+                        position: fields.length + 1,
                         options: [
                           { id: "", name: "NA", description: "Not applicable" },
                           {
@@ -265,7 +268,7 @@ const EditTemplateForm = ({
                       });
                       setOpenItems(new Set(openItems.add(fields.length)));
                     }}
-                    disabled={!isValid || !edit}
+                    disabled={!edit}
                   >
                     Add Item
                   </Button>
@@ -326,7 +329,7 @@ const EditTemplateForm = ({
                     }}
                     width={"100%"}
                   >
-                    <Typography>{index + 1}.</Typography>
+                    <Typography>{field.position}.</Typography>
                     {edit && (
                       <Checkbox
                         onClick={(e) => {

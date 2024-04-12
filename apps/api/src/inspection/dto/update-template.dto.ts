@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsString,
   registerDecorator,
   ValidateNested,
@@ -54,6 +55,9 @@ export class InspectionTemplateSectionDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @IsNumber()
+  position: number;
 
   @ValidateNested({ each: true })
   @IsNonPrimitiveArray()

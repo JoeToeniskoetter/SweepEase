@@ -39,6 +39,7 @@ export class InspectionService {
   async findInspectionDetails(id: string, currentUser: User) {
     const details = await this.inspectionDetailRepo.find({
       where: { inspection: { id, company: { id: currentUser.company.id } } },
+      order: { position: 'ASC' },
     });
     if (details.length == 0) {
       throw new NotFoundException();
@@ -105,6 +106,7 @@ export class InspectionService {
         const detail = this.inspectionDetailRepo.create({
           inspection: { id: inspection.id },
           item: i.name,
+          position: i.position,
           options: i.options.map((o) => ({
             name: o.name,
             description: o.description,
@@ -161,6 +163,7 @@ export class InspectionService {
     return this.inspectionTemplateRepo.findOne({
       where: { id },
       relations: ['items', 'items.options'],
+      order: { items: { position: 'ASC' } },
     });
   }
 
@@ -175,12 +178,13 @@ export class InspectionService {
     await queryRunner.startTransaction();
 
     try {
-      const template = this.inspectionTemplateRepo.create({
-        id: id,
-        name: updateTemplateDto.name,
-        inspectionLevel: updateTemplateDto.inspectionLevel,
+      const template = await this.inspectionTemplateRepo.findOne({
+        where: { id: id, company: { id: currentUser.company.id } },
       });
+      template.name = updateTemplateDto.name;
+      template.inspectionLevel = updateTemplateDto.inspectionLevel;
       await queryRunner.manager.save(template);
+
       const newItems = updateTemplateDto.items.map((item) => {
         const newOptions = item.options.map((o) => {
           return this.inspectionTemplateOptionsRepo.create({
@@ -192,6 +196,7 @@ export class InspectionService {
         const newItem = this.inspectionTemplateItemRepo.create({
           ...(item.id && { id: item.id }),
           name: item.name,
+          position: item.position,
           template: { id },
           options: newOptions,
         });

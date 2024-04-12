@@ -18,6 +18,9 @@ export class InspectionDetail {
   @Column({ name: 'item' })
   item: string;
 
+  @Column({ name: 'position' })
+  position: number;
+
   @Column('jsonb', { name: 'options' })
   options: { name: string; description: string }[];
 

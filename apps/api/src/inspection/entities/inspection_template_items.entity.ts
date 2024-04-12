@@ -18,6 +18,9 @@ export class InspectionTemplateItem extends BaseEntity {
   @Column({ name: 'name' })
   name: string;
 
+  @Column({ name: 'position' })
+  position: number;
+
   @ManyToOne(() => InspectionTemplate, (template) => template.id)
   @JoinColumn({ name: 'template_id' })
   template: InspectionTemplate;
