@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { auth } from "../context/firebase";
+import { toast } from "react-toastify";
 
 export const useCreateCompany = () => {
   const queryClient = useQueryClient();
@@ -16,6 +17,9 @@ export const useCreateCompany = () => {
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+    onError() {
+      toast("Failed to create company", { type: "error" });
     },
   });
 };

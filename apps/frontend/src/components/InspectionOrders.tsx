@@ -39,9 +39,9 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = ({}) => {
 
   const columns = React.useMemo(
     () => [
-      columnHelper.accessor("status", {
-        cell: (info) => <InspectionOrderStatus status={info.getValue()} />,
-        header: () => <Typography fontWeight={"bold"}>Status</Typography>,
+      columnHelper.accessor("customerName", {
+        cell: (info) => info.getValue(),
+        header: () => <Typography fontWeight={"bold"}>Customer</Typography>,
         footer: (info) => info.column.id,
       }),
       columnHelper.accessor("template", {
@@ -53,15 +53,22 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = ({}) => {
         ),
         footer: (info) => info.column.id,
       }),
-      columnHelper.accessor("customerName", {
-        cell: (info) => info.getValue(),
-        header: () => <Typography fontWeight={"bold"}>Customer</Typography>,
+      columnHelper.accessor("address", {
+        cell: ({ row }) => (
+          <Box>
+            <Typography>{row.original.address}</Typography>
+            <Typography fontWeight={"light"}>
+              {row.original.city} {row.original.state} {row.original.zip}
+            </Typography>
+          </Box>
+        ),
+        header: () => <Typography fontWeight={"bold"}>Address</Typography>,
         footer: (info) => info.column.id,
       }),
-      columnHelper.accessor("address", {
-        cell: ({ row }) =>
-          `${row.original.address}, ${row.original.city} ${row.original.state}`,
-        header: () => <Typography fontWeight={"bold"}>Address</Typography>,
+
+      columnHelper.accessor("status", {
+        cell: (info) => <InspectionOrderStatus status={info.getValue()} />,
+        header: () => <Typography fontWeight={"bold"}>Status</Typography>,
         footer: (info) => info.column.id,
       }),
       columnHelper.accessor("id", {
@@ -98,98 +105,110 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = ({}) => {
     getCoreRowModel: getCoreRowModel(),
   });
   return (
-    <Container
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 4,
-      }}
-      disableGutters
-    >
+    <>
       <Box
         display={"flex"}
-        gap={2}
-        alignItems={"center"}
+        alignItems={"start"}
         justifyContent={"start"}
         width={"100%"}
+        bgcolor={theme.palette.secondary.main}
+        sx={{ height: 120, p: 4 }}
+        flexDirection={"column"}
       >
-        <Typography variant="h4" fontWeight={"bold"}>
+        <Typography variant="h5" sx={{ color: "white" }} fontWeight={"bold"}>
           Inspection Orders
         </Typography>
-        <Button
-          onClick={() => setOpenModal(true)}
-          startIcon={<AddCircleOutline color="primary" fontSize="small" />}
-        >
-          Create Order
-        </Button>
+        <Typography sx={{ color: "white", fontWeight: "light" }}>
+          View in progress and upcoming orders
+        </Typography>
       </Box>
-      <TableContainer component={Paper}>
-        <Table size="medium">
-          <TableHead
+      <Container
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 4,
+        }}
+        maxWidth="lg"
+      >
+        <Box display={"flex"}>
+          <Button
+            onClick={() => setOpenModal(true)}
+            startIcon={<AddCircleOutline color="primary" fontSize="small" />}
+          >
+            Create Order
+          </Button>
+        </Box>
+        <TableContainer component={Paper}>
+          <Table size="medium">
+            <TableHead
+              sx={
+                {
+                  // backgroundColor: theme.palette.secondary.main,
+                }
+              }
+            >
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableCell key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHead>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Modal open={openModal} onClose={() => setOpenModal(false)}>
+          <Box
             sx={{
-              backgroundColor: theme.palette.secondary.main,
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              width: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              borderRadius: 5,
+              p: 4,
+              maxHeight: "100%",
+              overflowY: "scroll",
             }}
           >
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableCell key={header.id} sx={{ color: "white" }}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableHead>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            width: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            borderRadius: 5,
-            p: 4,
-            maxHeight: "100%",
-            overflowY: "scroll",
-          }}
-        >
-          <Box display={"flex"} justifyContent={"end"}>
-            <IconButton onClick={() => setOpenModal(false)}>
-              <Close />
-            </IconButton>
+            <Box display={"flex"} justifyContent={"end"}>
+              <IconButton onClick={() => setOpenModal(false)}>
+                <Close />
+              </IconButton>
+            </Box>
+            <Typography variant="h5" fontWeight={"bold"}>
+              Create Inspection Order
+            </Typography>
+            <Typography fontWeight={"light"}>
+              Provide us some details about this inspection
+            </Typography>
+            <InspectionOrderInfoForm onSave={() => setOpenModal(false)} />
           </Box>
-          <Typography variant="h5" fontWeight={"bold"}>
-            Create Inspection Order
-          </Typography>
-          <Typography fontWeight={"light"}>
-            Provide us some details about this inspection
-          </Typography>
-          <InspectionOrderInfoForm onSave={() => setOpenModal(false)} />
-        </Box>
-      </Modal>
-    </Container>
+        </Modal>
+      </Container>
+    </>
   );
 };

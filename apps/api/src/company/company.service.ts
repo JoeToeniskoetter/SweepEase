@@ -33,8 +33,14 @@ export class CompanyService {
       });
     }
 
+    const { name, address, city, state, zip, phone } = createCompanyDto;
     const company = this.companyRepo.create({
-      ...createCompanyDto,
+      name,
+      address,
+      city,
+      state,
+      zip,
+      phone,
       createdBy: currentUser,
     });
 

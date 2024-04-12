@@ -45,7 +45,7 @@ function App() {
             <Route path="*" element={<div>404</div>} />
           </Routes>
         </BrowserRouter>
-        <ToastContainer position="top-right" limit={1} />
+        <ToastContainer position="top-right" />
       </QueryClientProvider>
     </AuthProvider>
   );

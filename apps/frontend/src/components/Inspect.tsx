@@ -1,18 +1,24 @@
-import { FireplaceTwoTone, InfoTwoTone } from "@mui/icons-material";
+import {
+  ArrowCircleLeftTwoTone,
+  FireplaceTwoTone,
+  InfoTwoTone,
+} from "@mui/icons-material";
 import {
   Box,
   Card,
   CardContent,
+  Chip,
   CircularProgress,
   Container,
   Divider,
+  IconButton,
   Paper,
   Typography,
   useTheme,
 } from "@mui/material";
 import { format } from "date-fns";
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useInspectionOrder } from "../hooks/useInspectionOrder";
 import { useInspectionOrderDetails } from "../hooks/useInspectionOrderDetails";
 import { InspectItem } from "./InspectItem";
@@ -22,6 +28,7 @@ interface InspectProps {}
 export const Inspect: React.FC<InspectProps> = () => {
   const theme = useTheme();
   const { id } = useParams();
+  const navigate = useNavigate();
   const [openInspectionItem, setOpenInspectionItem] = useState<string>();
   const { data: inspection } = useInspectionOrder({ id: id ?? "" });
   const { data: inspectionOrderDetails, isLoading } = useInspectionOrderDetails(
@@ -34,6 +41,9 @@ export const Inspect: React.FC<InspectProps> = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 8 }}>
+      <IconButton onClick={() => navigate(-1)}>
+        <ArrowCircleLeftTwoTone sx={{ color: "gray", fontSize: 48 }} />
+      </IconButton>
       <Paper
         elevation={0}
         sx={{
@@ -42,10 +52,13 @@ export const Inspect: React.FC<InspectProps> = () => {
           borderRadius: 0,
         }}
       >
-        <Typography variant="h5" fontWeight={"bold"} color={"white"}>
-          Inspection:{" "}
-          <span style={{ fontWeight: "lighter" }}>{inspection?.id}</span>
-        </Typography>
+        <Box display={"flex"} justifyContent={"space-between"}>
+          <Typography variant="h5" fontWeight={"bold"} color={"white"}>
+            Inspection:{" "}
+            <span style={{ fontWeight: "lighter" }}>{inspection?.id}</span>
+          </Typography>
+          <Chip label={inspection?.status} sx={{ color: "white" }} />
+        </Box>
       </Paper>
       <Card>
         <CardContent>
