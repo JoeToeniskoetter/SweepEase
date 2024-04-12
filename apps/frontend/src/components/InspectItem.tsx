@@ -38,6 +38,40 @@ export const InspectItem: React.FC<InspectItemProps> = ({
   const { mutateAsync: updateInspectionOrderDetails } =
     useUpdateInspectionOrderDetails();
   const [item, setItem] = useState<InspectionDetail>(defaultItem);
+  const [photo, setPhoto] = useState<File>();
+  const [file, setFile] = useState<string>();
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+
+    if (!files || files?.length == 0) {
+      return;
+    }
+
+    const firstFile = files[0];
+
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(URL.createObjectURL(firstFile));
+      setPhoto(firstFile);
+    }
+  }
+
+  const renderImage = () => {
+    if (file) {
+      return (
+        <Box py={2}>
+          <img src={file} width={250} />
+        </Box>
+      );
+    }
+    if (defaultItem.photoUrl) {
+      return (
+        <Box py={2}>
+          <img src={defaultItem.photoUrl} width={250} />
+        </Box>
+      );
+    }
+    return null;
+  };
 
   return (
     <Accordion
@@ -114,7 +148,13 @@ export const InspectItem: React.FC<InspectItemProps> = ({
           </Box>
           <Box>
             <Typography fontWeight={"bold"}>Upload Photo</Typography>
-            <TextField type="file" fullWidth />
+            <TextField
+              type="file"
+              inputProps={{ accept: "image/*" }}
+              fullWidth
+              onChange={handleChange}
+            />
+            {renderImage()}
           </Box>
         </Box>
       </AccordionDetails>
@@ -127,7 +167,7 @@ export const InspectItem: React.FC<InspectItemProps> = ({
               const result = await toast.promise(
                 updateInspectionOrderDetails({
                   inspectionId,
-                  data: item,
+                  data: { ...item, photo: photo },
                 }),
                 {
                   pending: "Saving Report",

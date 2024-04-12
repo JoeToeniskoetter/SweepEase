@@ -14,6 +14,7 @@ import { EditInspectionTemplate } from "./components/EditInspectionTemplate";
 import { InspectionOrders } from "./components/InspectionOrders";
 import { Inspect } from "./components/Inspect";
 import "react-toastify/dist/ReactToastify.css";
+import { ReviewAndFinish } from "./pages/ReviewAndFinish";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 10000 } },
@@ -40,7 +41,10 @@ function App() {
                   element={<EditInspectionTemplate />}
                 />
               </Route>
-              <Route path="/inspections/:id" element={<Inspect />} />
+              <Route path="/inspections">
+                <Route path=":id/review" element={<ReviewAndFinish />} />
+                <Route path=":id" element={<Inspect />} />
+              </Route>
             </Route>
             <Route path="*" element={<div>404</div>} />
           </Routes>

@@ -7,6 +7,10 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  FileTypeValidator,
 } from '@nestjs/common';
 import { InspectionService } from './inspection.service';
 import { CreateInspectionDto } from './dto/create-inspection.dto';
@@ -17,6 +21,7 @@ import { FirebaseAuthGuard } from 'src/firebase/firebase.guard';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { UpdateTemplateDto } from './dto/update-template.dto';
 import { updateInspectionDetailItem } from './dto/update-inspection-detail-item';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(FirebaseAuthGuard)
 @Controller('inspection')
@@ -29,16 +34,29 @@ export class InspectionController {
   }
 
   @Post('/details/:inspectionId/item/:itemId')
+  @UseInterceptors(FileInterceptor('photo'))
   updateInspectionDetailItem(
     @CurrentUser() user: User,
     @Param('inspectionId') inspectionId: string,
     @Param('itemId') itemId: string,
     @Body() body: updateInspectionDetailItem,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({
+            fileType: /(jpg|jpeg|png|webp)$/,
+          }),
+        ],
+        fileIsRequired: false,
+      }),
+    )
+    file: Express.Multer.File,
   ) {
     return this.inspectionService.updateInspectionDetailItem(
       inspectionId,
       itemId,
       body,
+      file,
     );
   }
 

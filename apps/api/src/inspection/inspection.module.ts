@@ -7,6 +7,7 @@ import { InspectionTemplateItem } from './entities/inspection_template_items.ent
 import { InspectionTemplateOptions } from './entities/inspection_template_options.entity';
 import { Inspection } from './entities/inspection.entity';
 import { InspectionDetail } from './entities/inspection_detail.entity';
+import { UploadModule } from 'src/upload/upload.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { InspectionDetail } from './entities/inspection_detail.entity';
       Inspection,
       InspectionDetail,
     ]),
+    UploadModule,
   ],
   controllers: [InspectionController],
   providers: [InspectionService],

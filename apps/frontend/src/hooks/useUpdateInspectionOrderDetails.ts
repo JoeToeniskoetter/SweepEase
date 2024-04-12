@@ -10,12 +10,25 @@ export const useUpdateInspectionOrderDetails = () => {
       data,
     }: {
       inspectionId: string;
-      data: Partial<InspectionDetail>;
+      data: Partial<InspectionDetail> & { photo?: File };
     }) => {
+      const formData = new FormData();
+      formData.append("id", data?.id ?? "");
+      formData.append("item", data?.item ?? "");
+      formData.append("condition[name]", data.condition?.name ?? "");
+      formData.append(
+        "condition[description]",
+        data.condition?.description ?? ""
+      );
+      formData.append("notes", data.notes ?? "");
+      if (data.photo) {
+        formData.append("photo", data.photo);
+      }
+
       const token = await auth.currentUser?.getIdToken();
       const resp = await axios.post(
         `/api/inspection/details/${inspectionId}/item/${data.id}`,
-        data,
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,

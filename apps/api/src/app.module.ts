@@ -11,6 +11,7 @@ import { FirebaseAuthService } from './firebase/firebase-auth.service';
 import { FirebaseModule } from './firebase/firebase.module';
 import { CompanyModule } from './company/company.module';
 import { InspectionModule } from './inspection/inspection.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { InspectionModule } from './inspection/inspection.module';
     FirebaseModule,
     CompanyModule,
     InspectionModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService, FirebaseAuthService],

@@ -1,10 +1,12 @@
 import {
   ArrowCircleLeftTwoTone,
+  ArticleTwoTone,
   FireplaceTwoTone,
   InfoTwoTone,
 } from "@mui/icons-material";
 import {
   Box,
+  Button,
   Card,
   CardContent,
   Chip,
@@ -18,7 +20,7 @@ import {
 } from "@mui/material";
 import { format } from "date-fns";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useInspectionOrder } from "../hooks/useInspectionOrder";
 import { useInspectionOrderDetails } from "../hooks/useInspectionOrderDetails";
 import { InspectItem } from "./InspectItem";
@@ -40,7 +42,7 @@ export const Inspect: React.FC<InspectProps> = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 8 }}>
+    <Container maxWidth="xl" sx={{ mt: 8 }}>
       <IconButton onClick={() => navigate(-1)}>
         <ArrowCircleLeftTwoTone sx={{ color: "gray", fontSize: 48 }} />
       </IconButton>
@@ -123,6 +125,23 @@ export const Inspect: React.FC<InspectProps> = () => {
                 />
               ))}
             </Box>
+          </Box>
+          <Box mt={2} display={"flex"} flexDirection={"column"}>
+            <Typography
+              sx={{ fontSize: 18 }}
+              color="text.secondary"
+              gutterBottom
+              display={"flex"}
+              gap={1}
+            ></Typography>
+            <Button
+              LinkComponent={Link}
+              to={`/inspections/${id}/review`}
+              startIcon={<ArticleTwoTone />}
+              disabled={!inspectionOrderDetails?.every((iod) => iod.isComplete)}
+            >
+              REVIEW AND FINISH
+            </Button>
           </Box>
         </CardContent>
       </Card>

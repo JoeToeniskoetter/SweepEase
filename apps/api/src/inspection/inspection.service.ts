@@ -18,6 +18,7 @@ import { InspectionTemplateOptions } from './entities/inspection_template_option
 import { Inspection } from './entities/inspection.entity';
 import { InspectionDetail } from './entities/inspection_detail.entity';
 import { updateInspectionDetailItem } from './dto/update-inspection-detail-item';
+import { UploadService } from 'src/upload/upload.service';
 
 @Injectable()
 export class InspectionService {
@@ -34,6 +35,7 @@ export class InspectionService {
     private readonly inspectionRepo: Repository<Inspection>,
     @InjectRepository(InspectionDetail)
     private readonly inspectionDetailRepo: Repository<InspectionDetail>,
+    private readonly uploadService: UploadService,
   ) {}
 
   async findInspectionDetails(id: string, currentUser: User) {
@@ -45,13 +47,27 @@ export class InspectionService {
       throw new NotFoundException();
     }
 
-    return details;
+    const newDetails = Promise.all(
+      details.map(async (detail) => {
+        if (detail.photoUrl) {
+          const url = await this.uploadService.getUrl(detail.photoUrl);
+          return {
+            ...detail,
+            photoUrl: url,
+          };
+        }
+        return detail;
+      }),
+    );
+
+    return newDetails;
   }
 
   async updateInspectionDetailItem(
     inspectionId: string,
     itemId: string,
     body: updateInspectionDetailItem,
+    photo: Express.Multer.File,
   ) {
     const detail = await this.inspectionDetailRepo.findOne({
       where: { id: itemId, inspection: { id: inspectionId } },
@@ -64,7 +80,13 @@ export class InspectionService {
     detail.notes = body.notes;
     detail.isComplete = true;
 
+    if (photo) {
+      const photoUrl = await this.uploadService.upload(photo, itemId);
+      detail.photoUrl = photoUrl;
+    }
+
     await this.inspectionDetailRepo.save(detail);
+    detail.photoUrl = await this.uploadService.getUrl(detail.photoUrl);
     return detail;
   }
 
@@ -117,7 +139,6 @@ export class InspectionService {
         });
         return detail;
       });
-      this.logger.log(detailItems);
       await queryRunner.manager.save(detailItems);
       await this.inspectionRepo.update(
         { id: inspection.id },
@@ -172,7 +193,6 @@ export class InspectionService {
     updateTemplateDto: UpdateTemplateDto,
     currentUser: User,
   ) {
-    this.logger.debug(updateTemplateDto);
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -254,7 +274,6 @@ export class InspectionService {
   }
 
   async findOne(id: string, currentUser: User) {
-    this.logger.log(id);
     const inspection = await this.inspectionRepo.findOne({
       where: { company: { id: currentUser.company.id }, id: id },
       relations: ['template', 'template.items', 'template.items.options'],
