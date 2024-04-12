@@ -8,55 +8,16 @@ import {
   IconButton,
   MenuItem,
   Modal,
-  Paper,
-  Skeleton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { format } from "date-fns";
 import React, { useState } from "react";
 import { useCreateTemplate } from "../hooks/useCreateTemplate";
 import { useInspectionTemplates } from "../hooks/useInspectionTemplates";
-import { InspectionTemplateOptions } from "./InspectionTemplateOptions";
+import { InspectionTemplateGrid } from "./InspectionTemplateGrid";
 
 interface InspectionTemplatesProps {}
-const columnHelper = createColumnHelper<InspectionTemplate>();
-const columns = [
-  columnHelper.accessor("name", {
-    cell: (info) => info.getValue(),
-    header: () => <Typography fontWeight={"bold"}>Name</Typography>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("inspectionLevel", {
-    header: () => <Typography fontWeight={"bold"}>Inspection Level</Typography>,
-    cell: (info) => info.renderValue(),
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("createdAt", {
-    header: () => <Typography fontWeight={"bold"}>Created</Typography>,
-    footer: (info) => info.column.id,
-    cell: (info) =>
-      info.getValue() && format(new Date(info.getValue()), "MM/dd/yyyy"),
-  }),
-  columnHelper.accessor("id", {
-    header: () => <Typography hidden>Options</Typography>,
-    footer: (info) => info.column.id,
-    cell: (info) => <InspectionTemplateOptions id={info.renderValue() ?? ""} />,
-  }),
-];
 
 export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
   const theme = useTheme();
@@ -69,25 +30,6 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
 
   const { mutateAsync: createTemplate, isPending, error } = useCreateTemplate();
 
-  const tableColumns = React.useMemo(
-    () =>
-      isLoading
-        ? columns.map((column) => ({
-            ...column,
-            cell: <Skeleton />,
-          }))
-        : columns,
-    [isLoading]
-  );
-  const tableData = React.useMemo(
-    () => (isLoading ? Array(10).fill({}) : data),
-    [isLoading, data]
-  );
-  const table = useReactTable({
-    columns: tableColumns,
-    data: tableData || [],
-    getCoreRowModel: getCoreRowModel(),
-  });
   return (
     <>
       <Box
@@ -123,40 +65,7 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
           </Button>
         </Box>
         {error && <Alert severity="error">Failed to create template</Alert>}
-        <TableContainer component={Paper} sx={{ width: "100%" }}>
-          <Table>
-            <TableHead>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableCell key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHead>
-            <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <InspectionTemplateGrid data={data ?? []} isLoading={isLoading} />
         <Modal open={openModal} onClose={() => setOpenModal(false)}>
           <Box
             sx={{
@@ -194,7 +103,11 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
                 select
                 fullWidth
                 defaultValue={inspectionLevel}
-                onChange={(e) => setInspectionLevel(e.target.value)}
+                onChange={(e) =>
+                  setInspectionLevel(
+                    e.target.value as "Level One" | "Level Two" | "Level Three"
+                  )
+                }
                 label="Inspection Level"
               >
                 <MenuItem value={"Level One"}>Level 1</MenuItem>

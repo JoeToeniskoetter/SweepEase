@@ -26,6 +26,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -81,11 +82,11 @@ export const EditInspectionTemplate: React.FC<
   }
 
   return (
-    <Container disableGutters maxWidth={"lg"}>
+    <div>
       {error && <Alert severity="error">Error loading template</Alert>}
       {isLoading && <CircularProgress />}
       <EditTemplateForm template={template} id={id || ""} />
-    </Container>
+    </div>
   );
 };
 
@@ -96,6 +97,7 @@ const EditTemplateForm = ({
   template?: InspectionTemplate;
   id: string;
 }) => {
+  const theme = useTheme();
   const [edit, setEdit] = useState<boolean>(false);
   const { mutateAsync: updateTemplate, isPending, error } = useUpdateTemplate();
   const onSubmit = async (values: TemplateForm) => {
@@ -132,12 +134,10 @@ const EditTemplateForm = ({
   return (
     <>
       <Box
-        display={"flex"}
-        alignItems={"center"}
-        justifyContent={"start"}
-        gap={2}
+        bgcolor={theme.palette.secondary.main}
+        sx={{ height: 120, p: 4, width: "100%" }}
       >
-        <Typography fontWeight={"bold"} variant="h4">
+        <Typography fontWeight={"bold"} variant="h4" sx={{ color: "white" }}>
           Edit Template
         </Typography>
         {edit ? (
@@ -159,12 +159,14 @@ const EditTemplateForm = ({
           </Button>
         )}
       </Box>
-      <Box
-        maxWidth={"md"}
-        mt={3}
-        display={"flex"}
-        flexDirection={"column"}
-        gap={2}
+      <Container
+        maxWidth={"lg"}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          mt: 2,
+        }}
       >
         {error && <Alert severity="error">Error updating template</Alert>}
         <Box>
@@ -486,7 +488,7 @@ const EditTemplateForm = ({
             </Accordion>
           ))}
         </Box>
-      </Box>
+      </Container>
     </>
   );
 };
