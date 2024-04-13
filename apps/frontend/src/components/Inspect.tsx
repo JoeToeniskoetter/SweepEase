@@ -140,8 +140,6 @@ export const Inspect: React.FC<InspectProps> = () => {
               gap={1}
             ></Typography>
             <Button
-              // LinkComponent={Link}
-              // to={`/inspections/${id}/review`}
               startIcon={<ArticleTwoTone />}
               disabled={!inspectionOrderDetails?.every((iod) => iod.isComplete)}
               onClick={() => {
