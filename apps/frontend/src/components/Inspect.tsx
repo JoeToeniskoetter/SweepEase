@@ -42,10 +42,15 @@ export const Inspect: React.FC<InspectProps> = () => {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 8 }}>
-      <IconButton onClick={() => navigate(-1)}>
-        <ArrowCircleLeftTwoTone sx={{ color: "gray", fontSize: 48 }} />
-      </IconButton>
+    <Container maxWidth="xl" sx={{ mt: 2 }}>
+      <Button
+        onClick={() => navigate(-1)}
+        variant="outlined"
+        startIcon={<ArrowCircleLeftTwoTone />}
+        sx={{ my: 2 }}
+      >
+        Back to inspections
+      </Button>
       <Paper
         elevation={0}
         sx={{
@@ -135,10 +140,18 @@ export const Inspect: React.FC<InspectProps> = () => {
               gap={1}
             ></Typography>
             <Button
-              LinkComponent={Link}
-              to={`/inspections/${id}/review`}
+              // LinkComponent={Link}
+              // to={`/inspections/${id}/review`}
               startIcon={<ArticleTwoTone />}
               disabled={!inspectionOrderDetails?.every((iod) => iod.isComplete)}
+              onClick={() => {
+                navigate(`/inspections/${id}/review`, {
+                  state: {
+                    inspection: inspection,
+                    details: inspectionOrderDetails,
+                  },
+                });
+              }}
             >
               REVIEW AND FINISH
             </Button>
