@@ -85,7 +85,7 @@ export const InspectionTemplateGrid: React.FC<InspectionTemplateGridProps> = ({
               <Grid item lg={2}>
                 <Link key={t.id} to={`${t.id}`} style={{ all: "unset" }}>
                   <Box
-                    sx={{ minWidth: 150, cursor: "pointer" }}
+                    sx={{ minWidth: 180, cursor: "pointer" }}
                     display={"flex"}
                     flexDirection={"column"}
                     gap={1}

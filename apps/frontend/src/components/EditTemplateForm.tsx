@@ -1,43 +1,44 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Save,
-  Edit,
-  InfoTwoTone,
-  FireplaceTwoTone,
-  AssignmentTwoTone,
-  AddCircleOutline,
-  DeleteOutlined,
-  ExpandMore,
-  Delete,
-} from "@mui/icons-material";
-import {
-  Box,
-  Typography,
-  Button,
-  CircularProgress,
-  Container,
-  Alert,
-  Divider,
-  TextField,
-  MenuItem,
-  Tooltip,
-  Accordion,
-  AccordionSummary,
-  Checkbox,
-  AccordionDetails,
-  IconButton,
-  useTheme,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
-import { useUpdateTemplate } from "../hooks/useUpdateTemplate";
-import { z } from "zod";
 import { closestCorners, DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  AddCircleOutline,
+  AssignmentTwoTone,
+  Delete,
+  DeleteOutlined,
+  Edit,
+  ExpandMore,
+  FireplaceTwoTone,
+  InfoTwoTone,
+  Save,
+} from "@mui/icons-material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  Container,
+  Divider,
+  IconButton,
+  MenuItem,
+  TextField,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
+import { useUpdateTemplate } from "../hooks/useUpdateTemplate";
 import { DraggableItem } from "./DraggableItem";
+import { toast } from "react-toastify";
 
 interface TemplateForm {
   name: string;
@@ -87,8 +88,17 @@ export const EditTemplateForm = ({
         ...item,
         position: idx + 1,
       }));
-      await updateTemplate({ ...values, id: id });
+      await toast.promise(updateTemplate({ ...values, id: id }), {
+        success: "Template saved",
+        pending: "Saving template",
+        error: "Error while saving template",
+      });
       setEdit(false);
+      reset(watch(), {
+        keepValues: false,
+        keepDirty: false,
+        keepDefaultValues: false,
+      });
     } catch (e) {
       console.error(e);
     }
@@ -99,7 +109,9 @@ export const EditTemplateForm = ({
     control,
     register,
     handleSubmit,
-    formState: { isDirty, errors },
+    reset,
+    watch,
+    formState: { isDirty, errors, isSubmitted },
   } = useForm<TemplateForm>({
     resolver: zodResolver(TemplateFormSchema),
     defaultValues: {
@@ -142,23 +154,6 @@ export const EditTemplateForm = ({
         <Typography fontWeight={"bold"} variant="h4" sx={{ color: "white" }}>
           Edit Template
         </Typography>
-        <Box display={"flex"} gap={2}>
-          <Button
-            variant="outlined"
-            startIcon={<Edit />}
-            onClick={() => setEdit(true)}
-          >
-            Edit
-          </Button>
-          <Button
-            disabled={!isDirty}
-            variant="outlined"
-            startIcon={isPending ? <CircularProgress size={18} /> : <Save />}
-            onClick={handleSubmit(onSubmit)}
-          >
-            Save
-          </Button>
-        </Box>
       </Box>
       <Container
         disableGutters
@@ -166,12 +161,51 @@ export const EditTemplateForm = ({
         sx={{
           display: "flex",
           flexDirection: "column",
-          gap: 2,
-          mt: 2,
+          gap: 1,
           px: 4,
+          minHeight: "100vh",
+          pb: 4,
         }}
       >
         {error && <Alert severity="error">Error updating template</Alert>}
+        <Box
+          display={"flex"}
+          gap={2}
+          justifyContent={"flex-end"}
+          position={"sticky"}
+          top={0}
+          bgcolor={"white"}
+          py={2}
+          zIndex={100}
+        >
+          <Button
+            variant="outlined"
+            startIcon={<Edit />}
+            onClick={() => setEdit(true)}
+            disabled={edit}
+          >
+            Edit
+          </Button>
+          <Tooltip title={!isDirty ? "Make changes before saving" : ""}>
+            <span>
+              <Button
+                disabled={!isDirty}
+                variant="outlined"
+                startIcon={
+                  isPending ? (
+                    <CircularProgress size={18} color="success" />
+                  ) : (
+                    <Save />
+                  )
+                }
+                onClick={handleSubmit(onSubmit)}
+                color="success"
+              >
+                Save
+              </Button>
+            </span>
+          </Tooltip>
+        </Box>
         <Box>
           <Box py={2}>
             <Box display={"flex"} gap={1}>
@@ -242,7 +276,7 @@ export const EditTemplateForm = ({
               justifyContent={"center"}
               alignItems={"center"}
             >
-              <Tooltip title={"Select edit to make changes"}>
+              <Tooltip title={!edit ? "Select edit to make changes" : ""}>
                 <span>
                   <Button
                     size="small"

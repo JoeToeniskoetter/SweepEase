@@ -1,9 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { auth } from "../context/firebase";
 
 export const useUpdateTemplate = () => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: { id: string }): Promise<InspectionTemplate> => {
       const token = await auth.currentUser?.getIdToken();
@@ -18,10 +18,10 @@ export const useUpdateTemplate = () => {
       );
       return resp.data;
     },
-    onSuccess(_data, variables) {
-      queryClient.invalidateQueries({
-        queryKey: ["inspection-templates", variables.id],
-      });
-    },
+    // onSuccess(_data, variables) {
+    // queryClient.invalidateQueries({
+    //   queryKey: ["inspection-templates", variables.id],
+    // });
+    // },
   });
 };
