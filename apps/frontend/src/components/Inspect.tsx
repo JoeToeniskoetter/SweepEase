@@ -13,14 +13,13 @@ import {
   CircularProgress,
   Container,
   Divider,
-  IconButton,
   Paper,
   Typography,
   useTheme,
 } from "@mui/material";
 import { format } from "date-fns";
 import React, { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useInspectionOrder } from "../hooks/useInspectionOrder";
 import { useInspectionOrderDetails } from "../hooks/useInspectionOrderDetails";
 import { InspectItem } from "./InspectItem";
