@@ -6,24 +6,46 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  CircularProgress,
   Container,
   FormControl,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React, { useState } from "react";
 import { Logo } from "../components/Logo";
 import { useAuth } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 
 interface SignInPageProps {}
 
 export const SignInPage: React.FC<SignInPageProps> = () => {
+  const theme = useTheme();
   const { signIn, signUp, user } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const { mutateAsync: authMutation, isPending } = useMutation({
+    mutationKey: ["signin"],
+    mutationFn: async ({
+      email,
+      password,
+    }: {
+      email: string;
+      password: string;
+    }): Promise<void> => {
+      if (isSignUp) {
+        return await signUp(email, password);
+      }
+      return await signIn(email, password);
+    },
+    onError: (error) => {
+      setError(error.message);
+    },
+  });
 
   if (user) {
     return <Navigate to={"/dashboard"} replace={true} />;
@@ -31,14 +53,16 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
 
   return (
     <Container
-      style={{
+      sx={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
+        bgcolor: theme.palette.primary.light,
       }}
     >
       <Card
+        elevation={5}
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -117,16 +141,13 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
               sx={{ boxShadow: 0, color: "white" }}
               disabled={email.trim() === "" || password.trim() === ""}
               onClick={async () => {
-                try {
-                  if (isSignUp) {
-                    await signUp(email, password);
-                  } else {
-                    await signIn(email, password);
-                  }
-                } catch (e) {
-                  setError("Invalid email or password");
-                }
+                await authMutation({ email, password });
               }}
+              startIcon={
+                isPending && (
+                  <CircularProgress sx={{ color: "white" }} size={24} />
+                )
+              }
             >
               {isSignUp ? "Sign Up" : "Sign In"}
             </Button>

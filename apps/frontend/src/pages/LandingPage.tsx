@@ -1,5 +1,10 @@
-import { ChevronRight } from "@mui/icons-material";
-import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import {
+  AccountTreeTwoTone,
+  AssignmentTwoTone,
+  ChevronRight,
+  TableChartTwoTone,
+} from "@mui/icons-material";
+import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import React from "react";
 import { Navbar } from "../components/Navbar";
 import { PricingOption } from "../components/PricingOption";
@@ -7,11 +12,34 @@ import { Link } from "react-router-dom";
 
 interface LandingPageProps {}
 
+const features = [
+  {
+    icon: <TableChartTwoTone color="primary" sx={{ fontSize: 48 }} />,
+    title: "Flexible Inspection Templates",
+    description:
+      "Customize inspection templates to fit your unique business needs.",
+  },
+  {
+    icon: <AccountTreeTwoTone color="primary" sx={{ fontSize: 48 }} />,
+    title: "Simple Inspection Process",
+    description: "Simplify and streamline the chimney inspection process.",
+  },
+  {
+    icon: <AssignmentTwoTone color="primary" sx={{ fontSize: 48 }} />,
+    title: "Detailed Inspection Reports",
+    description:
+      "Improve customer satisfaction with professional, detailed reports.",
+  },
+];
+
 export const LandingPage: React.FC<LandingPageProps> = () => {
   return (
     <div>
-      <Navbar />
-      <Container maxWidth="lg">
+      <Navbar sx={{}} />
+      <Container
+        maxWidth="lg"
+        sx={{ display: "flex", flexDirection: "column", gap: 5 }}
+      >
         <Box
           display={"flex"}
           alignItems={"center"}
@@ -19,9 +47,7 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
           width={"100%"}
           textAlign={"center"}
           flexDirection={"column"}
-          gap={2}
-          mb={4}
-          minHeight={"50vh"}
+          minHeight={"30vh"}
         >
           <Typography
             sx={{
@@ -33,15 +59,55 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
           >
             One stop shop for{" "}
             <span style={{ fontFamily: "lobster", color: "#F57F37" }}>
-              Chimney Sweep Professionals
-            </span>
+              Chimney Sweep
+            </span>{" "}
+            inspections
           </Typography>
-          <Box maxWidth={"md"}>
-            <Typography color={"gray"} textAlign={"center"} padding={2}>
-              Providing the tools for your business to succeed. Scheduling,
-              Inspection Reports, Certification Management and more.
-            </Typography>
-          </Box>
+        </Box>
+        <Grid container spacing={2}>
+          {features.map((feature) => (
+            <Grid item xs={12} sm={6} md={4}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 2,
+                  flexDirection: "column",
+                  height: 150,
+                }}
+              >
+                <Box
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  width={"100%"}
+                >
+                  {feature.icon}
+                </Box>
+                <Box
+                  display={"flex"}
+                  flexDirection={"column"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Typography fontWeight={"bold"}>{feature.title}</Typography>
+                  <Typography fontWeight={"light"} textAlign={"center"}>
+                    {feature.description}
+                  </Typography>
+                </Box>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+        <Box
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          p={4}
+        >
           <Button
             onClick={() => console.log("clicked")}
             variant="contained"
@@ -50,6 +116,7 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
               backgroundColor: "#F57F37",
               textTransform: "none",
               borderRadius: 2,
+              color: "white",
             }}
             to={"/signin"}
           >

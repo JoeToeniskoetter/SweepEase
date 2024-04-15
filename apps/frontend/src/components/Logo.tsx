@@ -12,7 +12,7 @@ export const Logo: React.FC<{
         padding: 0,
       }}
     >
-      SweepEase.
+      SweepInspectr.
     </p>
   );
 };

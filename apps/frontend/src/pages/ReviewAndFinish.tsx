@@ -1,7 +1,6 @@
 import {
   ArrowCircleLeftTwoTone,
-  Close,
-  DrawTwoTone,
+  Edit,
   FireplaceTwoTone,
   HistoryEduTwoTone,
   InfoTwoTone,
@@ -14,23 +13,22 @@ import {
   Chip,
   Container,
   Divider,
-  IconButton,
-  Modal,
   Paper,
   Typography,
   useTheme,
 } from "@mui/material";
 import { format } from "date-fns";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import SignatureCanvas from "react-signature-canvas";
+import { SignatureModal } from "../components/SignatureModal";
 
-interface ReviewAndFinishProps {}
-
-export const ReviewAndFinish: React.FC<ReviewAndFinishProps> = ({}) => {
+export const ReviewAndFinish: React.FC = () => {
   const [customerSignature, setCustomerSignature] = useState<string>();
+  const [techSignature, setTechSignature] = useState<string>();
+
   const [customerSigModalOpen, setCustomerSigModalOpen] =
     useState<boolean>(false);
+  const [techSigModalOpen, setTechSigModalOpen] = useState<boolean>(false);
   const { state } = useLocation();
   const details = state as {
     inspection: InspectionOrder;
@@ -39,7 +37,6 @@ export const ReviewAndFinish: React.FC<ReviewAndFinishProps> = ({}) => {
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const sigRef = useRef<SignatureCanvas>(null);
   return (
     <Container maxWidth="lg" sx={{ mt: 2, pb: 4 }}>
       <Button
@@ -48,7 +45,7 @@ export const ReviewAndFinish: React.FC<ReviewAndFinishProps> = ({}) => {
         startIcon={<ArrowCircleLeftTwoTone />}
         sx={{ my: 2 }}
       >
-        Back to inspections
+        Back to inspection
       </Button>
       <Paper
         elevation={0}
@@ -140,7 +137,7 @@ export const ReviewAndFinish: React.FC<ReviewAndFinishProps> = ({}) => {
                 </Box>
               ))}
             </Box>
-            <Box width={"100%"} mt={2}>
+            <Box width={"100%"} mt={2} mb={4}>
               <Typography
                 sx={{ fontSize: 18 }}
                 color="text.secondary"
@@ -152,80 +149,85 @@ export const ReviewAndFinish: React.FC<ReviewAndFinishProps> = ({}) => {
                 SIGN
               </Typography>
               <Divider />
-              <Typography fontWeight={"bold"}>Customer Signature</Typography>
-              {customerSignature ? (
-                <img src={customerSignature} />
-              ) : (
-                <Button onClick={() => setCustomerSigModalOpen(true)}>
-                  Sign
-                </Button>
-              )}
-
-              <Modal
-                open={customerSigModalOpen}
-                onClose={() => setCustomerSigModalOpen(false)}
-              >
-                <Box
-                  borderRadius={2}
-                  width={500}
-                  bgcolor={"white"}
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: 600,
-                    bgcolor: "background.paper",
-                    boxShadow: 24,
-                    p: 4,
-                  }}
-                >
-                  <Box
-                    display={"flex"}
-                    alignItems={"center"}
-                    justifyContent={"flex-end"}
-                  >
-                    <IconButton onClick={() => setCustomerSigModalOpen(false)}>
-                      <Close />
-                    </IconButton>
-                  </Box>
-                  <Box>
-                    <Typography variant="h5">Customer Signature</Typography>
-                  </Box>
-                  <Box
-                    border={1}
-                    borderColor={theme.palette.divider}
-                    borderRadius={2}
-                    width={"100%"}
-                  >
-                    <SignatureCanvas
-                      ref={sigRef}
-                      canvasProps={{
-                        width: 600,
-                        height: 200,
-                        className: "sigCanvas",
-                      }}
+              <Box mt={2} display={"flex"} justifyContent={"space-evenly"}>
+                <Box>
+                  <Typography fontWeight={"bold"}>
+                    Customer Signature
+                  </Typography>
+                  {customerSignature ? (
+                    <img
+                      src={customerSignature}
+                      style={{ maxHeight: 100, width: "50%" }}
                     />
-                  </Box>
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    sx={{ mt: 2 }}
-                    onClick={() => {
-                      setCustomerSignature(
-                        sigRef.current
-                          ?.getTrimmedCanvas()
-                          .toDataURL("image/png")
-                      );
+                  ) : (
+                    <Button
+                      onClick={() => setCustomerSigModalOpen(true)}
+                      variant="contained"
+                      fullWidth
+                      startIcon={<Edit />}
+                      sx={{ color: "white" }}
+                    >
+                      Sign
+                    </Button>
+                  )}
+
+                  <SignatureModal
+                    onClose={() => setCustomerSigModalOpen(false)}
+                    open={customerSigModalOpen}
+                    onFinishedSigning={(dataUrl) => {
+                      setCustomerSignature(dataUrl);
                       setCustomerSigModalOpen(false);
                     }}
-                  >
-                    Accept
-                  </Button>
+                    title="Customer Signature"
+                    disclaimer={
+                      "By signing below, I acknowledge that I have reviewed the inspection report with the technician and have had the opportunity to ask questions regarding any findings. I understand and agree to the contents of the report as explained to me. I further acknowledge that the inspection has been conducted to the best of the technician's ability and that I have received satisfactory explanations regarding the inspection process and any identified issues."
+                    }
+                  />
                 </Box>
-              </Modal>
+                <Box>
+                  <Typography fontWeight={"bold"}>
+                    Technician Signature
+                  </Typography>
+                  {techSignature ? (
+                    <img
+                      src={techSignature}
+                      style={{ maxHeight: 100, width: "50%" }}
+                    />
+                  ) : (
+                    <Button
+                      onClick={() => setTechSigModalOpen(true)}
+                      variant="contained"
+                      fullWidth
+                      startIcon={<Edit />}
+                      sx={{ color: "white" }}
+                    >
+                      Sign
+                    </Button>
+                  )}
+
+                  <SignatureModal
+                    onClose={() => setTechSigModalOpen(false)}
+                    open={techSigModalOpen}
+                    onFinishedSigning={(dataUrl) => {
+                      setTechSignature(dataUrl);
+                      setTechSigModalOpen(false);
+                    }}
+                    title={"Technician Signature"}
+                  />
+                </Box>
+              </Box>
             </Box>
           </Box>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ color: "white" }}
+            disabled={
+              customerSignature == undefined || techSignature == undefined
+            }
+          >
+            Finish
+          </Button>
         </CardContent>
       </Card>
     </Container>

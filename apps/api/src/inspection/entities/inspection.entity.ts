@@ -6,10 +6,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { InspectionTemplate } from './inspection_template.entity';
+import { InspectionSignature } from './inspection_signature.entity';
 
 @Entity()
 export class Inspection {
@@ -47,6 +49,9 @@ export class Inspection {
   )
   @JoinColumn({ name: 'template_id' })
   template: InspectionTemplate;
+
+  @OneToMany(() => InspectionSignature, (sig) => sig.inspection)
+  signatures: InspectionSignature[];
 
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn({ name: 'created_by' })
