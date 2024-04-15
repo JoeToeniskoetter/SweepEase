@@ -19,6 +19,7 @@ import { Inspection } from './entities/inspection.entity';
 import { InspectionDetail } from './entities/inspection_detail.entity';
 import { updateInspectionDetailItem } from './dto/update-inspection-detail-item';
 import { UploadService } from 'src/upload/upload.service';
+import { InspectionSignature } from './entities/inspection_signature.entity';
 
 @Injectable()
 export class InspectionService {
@@ -33,10 +34,45 @@ export class InspectionService {
     private readonly inspectionTemplateOptionsRepo: Repository<InspectionTemplateOptions>,
     @InjectRepository(Inspection)
     private readonly inspectionRepo: Repository<Inspection>,
+    @InjectRepository(InspectionSignature)
+    private readonly inspectionSignatureRepo: Repository<InspectionSignature>,
     @InjectRepository(InspectionDetail)
     private readonly inspectionDetailRepo: Repository<InspectionDetail>,
     private readonly uploadService: UploadService,
   ) {}
+
+  async completeInspection(
+    currentUser: User,
+    id: string,
+    signatures: Express.Multer.File[],
+  ) {
+    const company = currentUser.company;
+    const inspection = await this.inspectionRepo.findOne({
+      where: { company: { id: company.id }, id: id },
+    });
+
+    if (!inspection) {
+      throw new NotFoundException();
+    }
+
+    const uploadedSignatures = await Promise.all(
+      signatures.map(async (sig) => {
+        const imageUrl = await this.uploadService.upload(sig, id);
+        return this.inspectionSignatureRepo
+          .create({
+            inspection: inspection,
+            imageUrl: imageUrl,
+            type: sig.originalname,
+          })
+          .save();
+      }),
+    );
+
+    inspection.signatures = uploadedSignatures;
+    inspection.status = 'COMPLETE';
+    await this.inspectionRepo.save(inspection);
+    return inspection;
+  }
 
   async findInspectionDetails(id: string, currentUser: User) {
     const details = await this.inspectionDetailRepo.find({
@@ -276,10 +312,24 @@ export class InspectionService {
   async findOne(id: string, currentUser: User) {
     const inspection = await this.inspectionRepo.findOne({
       where: { company: { id: currentUser.company.id }, id: id },
-      relations: ['template', 'template.items', 'template.items.options'],
+      relations: [
+        'template',
+        'template.items',
+        'template.items.options',
+        'signatures',
+      ],
     });
     if (!inspection) {
       throw new NotFoundException();
+    }
+
+    if (inspection.signatures.length > 0) {
+      inspection.signatures = await Promise.all(
+        inspection.signatures.map(async (sig) => {
+          sig.imageUrl = await this.uploadService.getUrl(sig.imageUrl);
+          return sig;
+        }),
+      );
     }
 
     return inspection;

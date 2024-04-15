@@ -60,6 +60,7 @@ interface InspectionOrder {
   createdAt: Date;
   updatedAt: Date;
   template?: InspectionOrderTemplate;
+  signatures?: InspectionSignature[];
 }
 
 interface InspectionOrderTemplate {
@@ -103,4 +104,10 @@ interface InspectionDetail {
 interface InspectionDetailOption {
   name: string;
   description: string;
+}
+
+interface InspectionSignature {
+  id: string;
+  type: string;
+  imageUrl: string;
 }

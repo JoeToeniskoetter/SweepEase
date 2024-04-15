@@ -11,6 +11,8 @@ import {
   UploadedFile,
   ParseFilePipe,
   FileTypeValidator,
+  UploadedFiles,
+  BadRequestException,
 } from '@nestjs/common';
 import { InspectionService } from './inspection.service';
 import { CreateInspectionDto } from './dto/create-inspection.dto';
@@ -21,7 +23,7 @@ import { FirebaseAuthGuard } from 'src/firebase/firebase.guard';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { UpdateTemplateDto } from './dto/update-template.dto';
 import { updateInspectionDetailItem } from './dto/update-inspection-detail-item';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(FirebaseAuthGuard)
 @Controller('inspection')
@@ -58,6 +60,32 @@ export class InspectionController {
       body,
       file,
     );
+  }
+
+  @Post('/:id/complete')
+  @UseInterceptors(FilesInterceptor('signatures'))
+  completeInspection(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+    @UploadedFiles() signatures: Array<Express.Multer.File>,
+  ) {
+    console.log();
+    if (signatures.length < 1) {
+      throw new BadRequestException(
+        'signatures for customer and technician must be included',
+      );
+    }
+
+    if (
+      !signatures.find((f) => f.originalname === 'technician-signature.png') ||
+      !signatures.find((f) => f.originalname === 'customer-signature.png')
+    ) {
+      throw new BadRequestException(
+        'signatures for customer and technician must be included',
+      );
+    }
+
+    this.inspectionService.completeInspection(user, id, signatures);
   }
 
   @Post()

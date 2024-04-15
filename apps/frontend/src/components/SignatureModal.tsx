@@ -14,14 +14,16 @@ interface SignatureModalProps {
   open: boolean;
   disclaimer?: string;
   title: string;
+  fileName: string;
   onClose: () => void;
-  onFinishedSigning: (dataUrl: string) => void;
+  onFinishedSigning: (dataUrl: string, file: File) => void;
 }
 
 export const SignatureModal: React.FC<SignatureModalProps> = ({
   open,
   disclaimer,
   title,
+  fileName,
   onClose,
   onFinishedSigning,
 }) => {
@@ -30,9 +32,12 @@ export const SignatureModal: React.FC<SignatureModalProps> = ({
   const theme = useTheme();
   const sigRef = useRef<SignatureCanvas>(null);
 
-  async function getBlob(): Promise<Blob | null> {
+  async function getBlob(): Promise<Blob> {
     return new Promise((resolve) => {
       sigRef.current?.getTrimmedCanvas().toBlob((blob) => {
+        if (!blob) {
+          throw new Error("failed to capture signature");
+        }
         resolve(blob);
       }, "image/png");
     });
@@ -96,7 +101,8 @@ export const SignatureModal: React.FC<SignatureModalProps> = ({
             const dataUrl = sigRef.current
               ?.getTrimmedCanvas()
               .toDataURL("image/png");
-            onFinishedSigning(dataUrl ?? "");
+            const file = new File([blob], `${fileName}.png`);
+            onFinishedSigning(dataUrl ?? "", file);
           }}
           disabled={!hasStartedSignature}
         >
