@@ -85,6 +85,32 @@ export const InspectItem: React.FC<InspectItemProps> = ({
     }
   };
 
+  const photo = watch("photo");
+  console.log(photo);
+
+  const renderPhoto = () => {
+    if (photo) {
+      console.log("have photo from form", photo);
+      return (
+        <Box py={2}>
+          <img src={URL.createObjectURL(photo)} width={250} />
+        </Box>
+      );
+    }
+
+    if (item.photoUrl) {
+      console.log("have photo from item", item.photoUrl);
+
+      return (
+        <Box py={2}>
+          <img src={item.photoUrl} width={250} />
+        </Box>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <Accordion
       elevation={0}
@@ -191,17 +217,7 @@ export const InspectItem: React.FC<InspectItemProps> = ({
                 />
               )}
             />
-            {watch("photo") ? (
-              <Box py={2}>
-                <img src={URL.createObjectURL(watch("photo"))} width={250} />
-              </Box>
-            ) : (
-              item.photoUrl && (
-                <Box py={2}>
-                  <img src={item.photoUrl} width={250} />
-                </Box>
-              )
-            )}
+            {renderPhoto()}
           </Box>
         </Box>
       </AccordionDetails>

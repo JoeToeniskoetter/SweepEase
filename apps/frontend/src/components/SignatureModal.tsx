@@ -99,7 +99,9 @@ export const SignatureModal: React.FC<SignatureModalProps> = ({
             const blob = await getBlob();
             console.log(blob);
             const dataUrl = sigRef.current?.toDataURL("image/png");
-            const file = new File([blob], `${fileName}.png`);
+            const file = new File([blob], `${fileName}.png`, {
+              type: "image/png",
+            });
             onFinishedSigning(dataUrl ?? "", file);
           }}
           disabled={!hasStartedSignature}

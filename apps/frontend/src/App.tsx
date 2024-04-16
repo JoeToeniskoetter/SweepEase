@@ -12,7 +12,7 @@ import { ProtectedRoutes } from "./components/ProtectedRoutes";
 import { InspectionTemplates } from "./components/InspectionTemplates";
 import { EditInspectionTemplate } from "./components/EditInspectionTemplate";
 import { InspectionOrders } from "./components/InspectionOrders";
-import { Inspect } from "./components/Inspect";
+import { Inspect } from "./components/Inspect/Inspect";
 import "react-toastify/dist/ReactToastify.css";
 import { ReviewAndFinish } from "./pages/ReviewAndFinish";
 

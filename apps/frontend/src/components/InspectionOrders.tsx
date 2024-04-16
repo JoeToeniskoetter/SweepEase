@@ -32,7 +32,7 @@ interface InspectionOrdersProps {}
 
 const columnHelper = createColumnHelper<InspectionOrder>();
 
-export const InspectionOrders: React.FC<InspectionOrdersProps> = ({}) => {
+export const InspectionOrders: React.FC<InspectionOrdersProps> = () => {
   const theme = useTheme();
   const { data, isLoading } = useInspectionOrders();
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -127,6 +127,7 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = ({}) => {
           display: "flex",
           flexDirection: "column",
           gap: 2,
+          pb: 4,
         }}
         maxWidth="lg"
       >

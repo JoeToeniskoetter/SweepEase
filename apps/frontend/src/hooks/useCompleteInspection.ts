@@ -10,7 +10,12 @@ export const useCompleteInspection = () => {
       data,
     }: {
       inspectionId: string;
-      data: { signatures: { customer: File | null; technician: File | null } };
+      data: {
+        signatures: {
+          customer: File | null | undefined;
+          technician: File | null | undefined;
+        };
+      };
     }) => {
       const formData = new FormData();
       if (data.signatures.customer) {
