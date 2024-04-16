@@ -55,6 +55,10 @@ export class InspectionService {
       throw new NotFoundException();
     }
 
+    if (inspection.status === 'COMPLETE') {
+      throw new BadRequestException('inspection already completed');
+    }
+
     const uploadedSignatures = await Promise.all(
       signatures.map(async (sig) => {
         const imageUrl = await this.uploadService.upload(sig, id);

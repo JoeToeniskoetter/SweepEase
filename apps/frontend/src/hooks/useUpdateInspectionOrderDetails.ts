@@ -43,11 +43,10 @@ export const useUpdateInspectionOrderDetails = () => {
         "inspection-order-details",
         variables.inspectionId,
       ]);
-      console.log(cache);
       if (cache) {
         cache = (cache as InspectionDetail[]).map((d) => {
           if (d.id === variables.data.id) {
-            return data;
+            return { ...d, ...data };
           }
           return d;
         });

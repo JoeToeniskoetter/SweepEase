@@ -1,4 +1,4 @@
-import { Chip, useTheme } from "@mui/material";
+import { Chip } from "@mui/material";
 import React from "react";
 
 interface InspectionOrderStatusProps {
@@ -8,12 +8,20 @@ interface InspectionOrderStatusProps {
 export const InspectionOrderStatus: React.FC<InspectionOrderStatusProps> = ({
   status,
 }) => {
-  const {
-    palette: {
-      success: { light },
-    },
-  } = useTheme();
+  const getStatusColor = () => {
+    switch (status) {
+      case "NEW":
+        return "slateblue";
+      case "IN PROGRESS":
+        return "green";
+      case "COMPLETE":
+        return "gray";
+    }
+  };
   return (
-    <Chip label={status} sx={{ backgroundColor: light, color: "white" }} />
+    <Chip
+      label={status}
+      sx={{ backgroundColor: getStatusColor(), color: "white" }}
+    />
   );
 };

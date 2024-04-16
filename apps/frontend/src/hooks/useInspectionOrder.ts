@@ -2,7 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { auth } from "../context/firebase";
 
-export const useInspectionOrder = ({ id }: { id: string }) => {
+export const useInspectionOrder = ({
+  id,
+  enabled = true,
+}: {
+  id: string;
+  enabled?: boolean;
+}) => {
   return useQuery({
     queryKey: ["inspection-order", id],
     queryFn: async () => {
@@ -15,5 +21,6 @@ export const useInspectionOrder = ({ id }: { id: string }) => {
 
       return resp.data as InspectionOrder;
     },
+    enabled,
   });
 };

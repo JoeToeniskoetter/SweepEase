@@ -9,7 +9,6 @@ import {
   Button,
   Card,
   CardContent,
-  Chip,
   CircularProgress,
   Container,
   Divider,
@@ -23,6 +22,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useInspectionOrder } from "../hooks/useInspectionOrder";
 import { useInspectionOrderDetails } from "../hooks/useInspectionOrderDetails";
 import { InspectItem } from "./InspectItem";
+import { InspectionOrderStatus } from "./InspectionOrderStatus";
 
 interface InspectProps {}
 
@@ -63,7 +63,10 @@ export const Inspect: React.FC<InspectProps> = () => {
             Inspection:{" "}
             <span style={{ fontWeight: "lighter" }}>{inspection?.id}</span>
           </Typography>
-          <Chip label={inspection?.status} sx={{ color: "white" }} />
+          {/* <Chip label={inspection?.status} sx={{ color: "white" }} /> */}
+          {inspection?.status && (
+            <InspectionOrderStatus status={inspection?.status} />
+          )}
         </Box>
       </Paper>
       <Card>
@@ -130,17 +133,12 @@ export const Inspect: React.FC<InspectProps> = () => {
               ))}
             </Box>
           </Box>
-          <Box mt={2} display={"flex"} flexDirection={"column"}>
-            <Typography
-              sx={{ fontSize: 18 }}
-              color="text.secondary"
-              gutterBottom
-              display={"flex"}
-              gap={1}
-            ></Typography>
+          <Box mt={2}>
             <Button
+              variant="contained"
               startIcon={<ArticleTwoTone />}
               disabled={!inspectionOrderDetails?.every((iod) => iod.isComplete)}
+              sx={{ color: "white" }}
               onClick={() => {
                 navigate(`/inspections/${id}/review`, {
                   state: {
