@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { LandingPage } from "./pages/LandingPage";
 import { SignInPage } from "./pages/SignInPage";
@@ -33,7 +33,7 @@ function App() {
             </Route>
             <Route element={<OnboardedRoutes />}>
               <Route path="/dashboard" Component={ResponsiveDrawer}>
-                <Route path="" element={<Home />} />
+                <Route path="" element={<Navigate to={"inspections"} />} />
                 <Route path="inspections" element={<InspectionOrders />} />
                 <Route path="templates" element={<InspectionTemplates />} />
                 <Route

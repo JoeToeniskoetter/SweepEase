@@ -7,7 +7,7 @@ export const useDeleteTemplate = () => {
   return useMutation({
     mutationFn: async (data: { id: string }): Promise<unknown> => {
       const token = await auth.currentUser?.getIdToken();
-      const resp = await axios.delete(`/api/inspection/templates/${data.id}`, {
+      const resp = await axios.delete(`/api/inspection-templates/${data.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

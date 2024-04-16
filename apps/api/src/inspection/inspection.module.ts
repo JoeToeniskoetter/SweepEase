@@ -9,6 +9,8 @@ import { Inspection } from './entities/inspection.entity';
 import { InspectionDetail } from './entities/inspection_detail.entity';
 import { UploadModule } from 'src/upload/upload.module';
 import { InspectionSignature } from './entities/inspection_signature.entity';
+import { DetailController } from './detail.controller';
+import { TemplateController } from './template.controller';
 
 @Module({
   imports: [
@@ -22,7 +24,7 @@ import { InspectionSignature } from './entities/inspection_signature.entity';
     ]),
     UploadModule,
   ],
-  controllers: [InspectionController],
+  controllers: [InspectionController, DetailController, TemplateController],
   providers: [InspectionService],
 })
 export class InspectionModule {}

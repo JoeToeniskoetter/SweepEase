@@ -61,6 +61,7 @@ export const InspectionTemplateGrid: React.FC<InspectionTemplateGridProps> = ({
             display={"flex"}
             flexDirection={"column"}
             gap={1}
+            key={t}
           >
             <Skeleton variant="rounded" height={100} width={180} />
             <Skeleton variant="rectangular" width={100} />
@@ -74,7 +75,7 @@ export const InspectionTemplateGrid: React.FC<InspectionTemplateGridProps> = ({
   return (
     <>
       {Object.keys(templates).map((key) => (
-        <Box width={"100%"}>
+        <Box width={"100%"} key={key}>
           <Box display={"flex"} pb={2}>
             <Typography fontWeight={"bold"} variant="h6">
               {key}
@@ -82,7 +83,7 @@ export const InspectionTemplateGrid: React.FC<InspectionTemplateGridProps> = ({
           </Box>
           <Grid container spacing={2}>
             {templates[key].map((t) => (
-              <Grid item lg={2}>
+              <Grid item lg={2} key={t.id}>
                 <Link key={t.id} to={`${t.id}`} style={{ all: "unset" }}>
                   <Box
                     sx={{ minWidth: 180, cursor: "pointer" }}

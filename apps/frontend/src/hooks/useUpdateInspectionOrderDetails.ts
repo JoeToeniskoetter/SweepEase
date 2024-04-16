@@ -27,7 +27,7 @@ export const useUpdateInspectionOrderDetails = () => {
 
       const token = await auth.currentUser?.getIdToken();
       const resp = await axios.post(
-        `/api/inspection/details/${inspectionId}/item/${data.id}`,
+        `/api/inspection-details/${inspectionId}/item/${data.id}`,
         formData,
         {
           headers: {

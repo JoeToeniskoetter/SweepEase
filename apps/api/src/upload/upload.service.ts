@@ -38,6 +38,7 @@ export class UploadService {
       'GET',
       this.bucketName,
       fileName,
+      36000,
     );
   }
 }

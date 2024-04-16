@@ -8,7 +8,7 @@ export const useUpdateTemplate = () => {
     mutationFn: async (data: { id: string }): Promise<InspectionTemplate> => {
       const token = await auth.currentUser?.getIdToken();
       const resp = await axios.patch(
-        `/api/inspection/templates/${data.id}`,
+        `/api/inspection-templates/${data.id}`,
         data,
         {
           headers: {

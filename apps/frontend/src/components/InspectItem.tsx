@@ -5,6 +5,7 @@ import {
 } from "@mui/icons-material";
 import {
   Accordion,
+  AccordionActions,
   AccordionDetails,
   AccordionSummary,
   Box,
@@ -46,6 +47,7 @@ export const InspectItem: React.FC<InspectItemProps> = ({
   const { mutateAsync: updateInspectionOrderDetails } =
     useUpdateInspectionOrderDetails();
   const {
+    reset,
     register,
     control,
     formState: { isDirty, dirtyFields },
@@ -73,6 +75,11 @@ export const InspectItem: React.FC<InspectItemProps> = ({
           error: "Problems saving report",
         }
       );
+      reset(watch(), {
+        keepValues: false,
+        keepDirty: false,
+        keepDefaultValues: false,
+      });
     } catch (e) {
       console.error(e);
     }
@@ -80,7 +87,7 @@ export const InspectItem: React.FC<InspectItemProps> = ({
 
   return (
     <Accordion
-      elevation={1}
+      elevation={0}
       key={item.id}
       expanded={openInspectionItem === item.id}
       onChange={() => {
@@ -157,7 +164,9 @@ export const InspectItem: React.FC<InspectItemProps> = ({
             <TextField fullWidth multiline {...register("notes")} minRows={2} />
           </Box>
           <Box>
-            <Typography fontWeight={"bold"}>Upload Photo</Typography>
+            <Typography fontWeight={"bold"}>
+              {item.photoUrl ? `Upload New Photo` : `Upload Photo`}
+            </Typography>
             <Controller
               name="photo"
               control={control}
@@ -196,16 +205,19 @@ export const InspectItem: React.FC<InspectItemProps> = ({
           </Box>
         </Box>
       </AccordionDetails>
-      <Box p={2}>
-        <Button
-          variant="outlined"
-          startIcon={<SaveTwoTone />}
-          onClick={handleSubmit(onSubmit)}
-          disabled={!isDirty}
-        >
-          Save
-        </Button>
-      </Box>
+      <AccordionActions>
+        <Box p={2}>
+          <Button
+            fullWidth
+            variant="outlined"
+            startIcon={<SaveTwoTone />}
+            onClick={handleSubmit(onSubmit)}
+            disabled={!isDirty}
+          >
+            Save
+          </Button>
+        </Box>
+      </AccordionActions>
     </Accordion>
   );
 };

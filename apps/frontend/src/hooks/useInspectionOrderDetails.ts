@@ -13,7 +13,7 @@ export const useInspectionOrderDetails = ({
     queryKey: ["inspection-order-details", id],
     queryFn: async () => {
       const token = await auth.currentUser?.getIdToken();
-      const resp = await axios.get(`/api/inspection/details/${id}`, {
+      const resp = await axios.get(`/api/inspection-details/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

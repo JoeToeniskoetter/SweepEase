@@ -1,287 +1,225 @@
+import { Edit, FireplaceTwoTone, HistoryEduTwoTone } from "@mui/icons-material";
 import {
-  ArrowCircleLeftTwoTone,
-  InfoTwoTone,
-  FireplaceTwoTone,
-  HistoryEduTwoTone,
-  Edit,
-} from "@mui/icons-material";
-import {
-  Container,
-  Button,
-  Paper,
   Box,
-  Typography,
-  Chip,
-  Card,
-  CardContent,
-  Divider,
+  Button,
   CircularProgress,
-  useTheme,
+  Divider,
+  Paper,
+  Typography,
 } from "@mui/material";
-import { format } from "date-fns";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useCompleteInspection } from "../hooks/useCompleteInspection";
 import { SignatureModal } from "./SignatureModal";
+import { useCompleteInspection } from "../hooks/useCompleteInspection";
+import { InspectionCompleteModal } from "./InspectionCompleteModal";
 
 interface ReviewDetailProps {
-  details: { inspection?: InspectionOrder; details?: InspectionDetail[] };
+  inspection?: InspectionOrder;
+  insepectionDetail?: InspectionDetail[];
 }
 
-export const ReviewDetail: React.FC<ReviewDetailProps> = ({ details }) => {
+export const ReviewDetail: React.FC<ReviewDetailProps> = ({
+  inspection,
+  insepectionDetail,
+}) => {
+  const [openInspectionCompleteModal, setOpenInspectionCompleteModal] =
+    useState<boolean>(false);
   const [customerSignature, setCustomerSignature] = useState<string>();
   const [techSignature, setTechSignature] = useState<string>();
   const [customerSignatureFile, setCustomerSignatureFile] = useState<File>();
   const [techSignatureFile, setTechSignatureFile] = useState<File>();
-
-  const { mutateAsync, isPending } = useCompleteInspection();
   const [customerSigModalOpen, setCustomerSigModalOpen] =
     useState<boolean>(false);
   const [techSigModalOpen, setTechSigModalOpen] = useState<boolean>(false);
-
-  const navigate = useNavigate();
-  const theme = useTheme();
   const getExistingSignature = (type: string) => {
-    return details?.inspection?.signatures?.find((s) => s.type.includes(type))
-      ?.imageUrl;
+    return inspection?.signatures?.find((s) => s.type.includes(type))?.imageUrl;
   };
+  const { mutateAsync: completeInspection, isPending } =
+    useCompleteInspection();
 
   const existingCustomerSig = getExistingSignature("customer-signature");
   const existingTechSig = getExistingSignature("technician-signature");
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 2, pb: 4 }}>
-      <Button
-        onClick={() => navigate(-1)}
-        variant="outlined"
-        startIcon={<ArrowCircleLeftTwoTone />}
-        sx={{ my: 2 }}
+    <Box mt={2} display={"flex"} flexDirection={"column"}>
+      <Typography
+        sx={{ fontSize: 18 }}
+        color="text.secondary"
+        gutterBottom
+        display={"flex"}
+        gap={1}
       >
-        Back to inspection
-      </Button>
-      <Paper
-        elevation={0}
-        sx={{
-          padding: 2,
-          bgcolor: theme.palette.secondary.main,
-          borderRadius: 0,
-        }}
-      >
-        <Box display={"flex"} justifyContent={"space-between"}>
-          <Box>
-            <Typography variant="h5" fontWeight={"bold"} color={"white"}>
-              Review and Finish
-            </Typography>
-            <Typography style={{ fontWeight: "lighter" }} color={"white"}>
-              Inspection: {details.inspection?.id}
-            </Typography>
-          </Box>
-          <Chip label={details.inspection?.status} sx={{ color: "white" }} />
-        </Box>
-      </Paper>
-      <Card>
-        <CardContent>
-          <Typography
-            sx={{ fontSize: 18 }}
-            color="text.secondary"
-            gutterBottom
-            display={"flex"}
-            gap={1}
-          >
-            <InfoTwoTone />
-            CUSTOMER INFO
-          </Typography>
-          <Divider />
-          <Box display={"flex"} flexDirection={"column"} gap={1} p={1}>
-            <Box>
-              <Typography fontWeight="bold">Customer name:</Typography>
-              <Typography>{details.inspection?.customerName}</Typography>
-            </Box>
-            <Box>
-              <Typography fontWeight="bold">Address:</Typography>
-              <Typography>{details.inspection?.address}</Typography>
-              <Typography>
-                {details.inspection?.city}, {details.inspection?.state}{" "}
-                {details.inspection?.zip}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography fontWeight="bold">Phone:</Typography>
-              <Typography>{details.inspection?.phone || "-"}</Typography>
-            </Box>
-            <Box>
-              <Typography fontWeight="bold">Inspection Date:</Typography>
-              <Typography>
-                {format(
-                  new Date(details.inspection?.createdAt ?? new Date()),
-                  "MM/d/yyyy"
-                )}
-              </Typography>
-            </Box>
-          </Box>
-          <Box mt={2} display={"flex"} flexDirection={"column"}>
-            <Typography
-              sx={{ fontSize: 18 }}
-              color="text.secondary"
-              gutterBottom
-              display={"flex"}
-              gap={1}
-            >
-              <FireplaceTwoTone />
-              INSPECTION ITEMS
+        <FireplaceTwoTone />
+        INSPECTION ITEMS
+      </Typography>
+      <Divider />
+      <Box pt={2}>
+        {insepectionDetail?.map((detail) => (
+          <Box py={2} key={detail.id}>
+            <Typography fontWeight={"bold"} fontSize={18}>
+              {detail.item}
             </Typography>
             <Divider />
-            <Box pt={2}>
-              {details.details?.map((detail) => (
-                <Box py={2} key={detail.id}>
-                  <Typography fontWeight={"bold"} fontSize={18}>
-                    {detail.item}
-                  </Typography>
-                  <Divider />
-                  <Typography>Condition: {detail.condition?.name}</Typography>
-                  <Typography>
-                    Reason: {detail.condition?.description}
-                  </Typography>
-                  {detail.notes && (
-                    <Typography>Notes: {detail.notes}</Typography>
-                  )}
-                  {detail.photoUrl && <img src={detail.photoUrl} />}
-                </Box>
-              ))}
-            </Box>
-            <Box width={"100%"} mt={2} mb={4} maxHeight={200}>
-              <Typography
-                sx={{ fontSize: 18 }}
-                color="text.secondary"
-                gutterBottom
-                display={"flex"}
-                gap={1}
-              >
-                <HistoryEduTwoTone />
-                SIGN
-              </Typography>
-              <Divider />
-              <Box mt={2} display={"flex"} justifyContent={"space-evenly"}>
-                <Box>
-                  <Typography fontWeight={"bold"}>
-                    Customer Signature
-                  </Typography>
-                  {customerSignature || existingCustomerSig ? (
-                    <img
-                      src={customerSignature || existingCustomerSig}
-                      style={{
-                        maxHeight: 250,
-                        width: "50%",
-                        objectFit: "contain",
-                      }}
-                    />
-                  ) : (
-                    <Button
-                      onClick={() => setCustomerSigModalOpen(true)}
-                      variant="contained"
-                      fullWidth
-                      startIcon={<Edit />}
-                      sx={{ color: "white" }}
-                    >
-                      Sign
-                    </Button>
-                  )}
-
-                  <SignatureModal
-                    onClose={() => setCustomerSigModalOpen(false)}
-                    open={customerSigModalOpen}
-                    onFinishedSigning={(dataUrl, file) => {
-                      setCustomerSignature(dataUrl);
-                      setCustomerSignatureFile(file);
-                      setCustomerSigModalOpen(false);
-                    }}
-                    title="Customer Signature"
-                    fileName="customer-signature"
-                    disclaimer={
-                      "By signing below, I acknowledge that I have reviewed the inspection report with the technician and have had the opportunity to ask questions regarding any findings. I understand and agree to the contents of the report as explained to me. I further acknowledge that the inspection has been conducted to the best of the technician's ability and that I have received satisfactory explanations regarding the inspection process and any identified issues."
-                    }
-                  />
-                </Box>
-                <Box>
-                  <Typography fontWeight={"bold"}>
-                    Technician Signature
-                  </Typography>
-                  {techSignature || existingTechSig ? (
-                    <img
-                      src={techSignature || existingTechSig}
-                      style={{
-                        maxHeight: 250,
-                        width: "50%",
-                        objectFit: "contain",
-                      }}
-                    />
-                  ) : (
-                    <Button
-                      onClick={() => setTechSigModalOpen(true)}
-                      variant="contained"
-                      fullWidth
-                      startIcon={<Edit />}
-                      sx={{ color: "white" }}
-                    >
-                      Sign
-                    </Button>
-                  )}
-
-                  <SignatureModal
-                    onClose={() => setTechSigModalOpen(false)}
-                    open={techSigModalOpen}
-                    onFinishedSigning={(dataUrl, file) => {
-                      setTechSignature(dataUrl);
-                      setTechSignatureFile(file);
-                      setTechSigModalOpen(false);
-                    }}
-                    title={"Technician Signature"}
-                    fileName="technician-signature"
-                  />
-                </Box>
-              </Box>
-            </Box>
+            <Typography>Condition: {detail.condition?.name}</Typography>
+            <Typography>Reason: {detail.condition?.description}</Typography>
+            {detail.notes && <Typography>Notes: {detail.notes}</Typography>}
+            {detail.photoUrl && <img src={detail.photoUrl} />}
           </Box>
-          {details.inspection?.status !== "COMPLETE" && (
-            <Button
-              variant="contained"
-              fullWidth
-              sx={{ color: "white" }}
-              startIcon={
-                isPending && (
-                  <CircularProgress sx={{ color: "white" }} size={18} />
-                )
-              }
-              disabled={
-                (customerSignature == undefined ||
-                  techSignature == undefined) &&
-                (existingCustomerSig === undefined ||
-                  existingTechSig === undefined)
-              }
-              onClick={async () => {
-                if (
-                  !customerSignatureFile ||
-                  !techSignatureFile ||
-                  !details.inspection
-                ) {
-                  return;
-                }
-                await mutateAsync({
-                  inspectionId: details.inspection?.id,
-                  data: {
-                    signatures: {
-                      customer: customerSignatureFile,
-                      technician: techSignatureFile,
-                    },
-                  },
-                });
+        ))}
+      </Box>
+      <Box width={"100%"} mt={2} mb={4} maxHeight={200}>
+        <Typography
+          sx={{ fontSize: 18 }}
+          color="text.secondary"
+          gutterBottom
+          display={"flex"}
+          gap={1}
+        >
+          <HistoryEduTwoTone />
+          SIGN
+        </Typography>
+        <Divider />
+        <Box
+          mt={2}
+          display={"flex"}
+          justifyContent={"space-evenly"}
+          width={"100%"}
+          gap={2}
+        >
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            width={"50%"}
+            alignItems={"center"}
+          >
+            <Typography fontWeight={"bold"}>Customer Signature</Typography>
+            <Paper
+              variant="outlined"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                width: "100%",
               }}
             >
-              Finish
-            </Button>
-          )}
-        </CardContent>
-      </Card>
-    </Container>
+              {customerSignature || existingCustomerSig ? (
+                <img
+                  src={customerSignature || existingCustomerSig}
+                  style={{
+                    maxHeight: 250,
+                    width: "100%",
+                    objectFit: "contain",
+                  }}
+                />
+              ) : (
+                <Button
+                  onClick={() => setCustomerSigModalOpen(true)}
+                  variant="contained"
+                  fullWidth
+                  startIcon={<Edit />}
+                  sx={{ color: "white" }}
+                >
+                  Sign
+                </Button>
+              )}
+
+              <SignatureModal
+                onClose={() => setCustomerSigModalOpen(false)}
+                open={customerSigModalOpen}
+                onFinishedSigning={(dataUrl, file) => {
+                  setCustomerSignature(dataUrl);
+                  setCustomerSignatureFile(file);
+                  setCustomerSigModalOpen(false);
+                }}
+                title="Customer Signature"
+                fileName="customer-signature"
+                disclaimer={
+                  "By signing below, I acknowledge that I have reviewed the inspection report with the technician and have had the opportunity to ask questions regarding any findings. I understand and agree to the contents of the report as explained to me. I further acknowledge that the inspection has been conducted to the best of the technician's ability and that I have received satisfactory explanations regarding the inspection process and any identified issues."
+                }
+              />
+            </Paper>
+          </Box>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            width={"50%"}
+            alignItems={"center"}
+          >
+            <Typography fontWeight={"bold"}>Technician Signature</Typography>
+            <Paper
+              variant="outlined"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                width: "100%",
+              }}
+            >
+              {techSignature || existingTechSig ? (
+                <img
+                  src={techSignature || existingTechSig}
+                  style={{
+                    maxHeight: 250,
+                    width: "100%",
+                    objectFit: "contain",
+                  }}
+                />
+              ) : (
+                <Button
+                  onClick={() => setTechSigModalOpen(true)}
+                  variant="contained"
+                  fullWidth
+                  startIcon={<Edit />}
+                  sx={{ color: "white" }}
+                >
+                  Sign
+                </Button>
+              )}
+
+              <SignatureModal
+                onClose={() => setTechSigModalOpen(false)}
+                open={techSigModalOpen}
+                onFinishedSigning={(dataUrl, file) => {
+                  setTechSignature(dataUrl);
+                  setTechSignatureFile(file);
+                  setTechSigModalOpen(false);
+                }}
+                title={"Technician Signature"}
+                fileName="technician-signature"
+              />
+            </Paper>
+          </Box>
+        </Box>
+      </Box>
+      <Box pt={4}>
+        <Button
+          variant="contained"
+          fullWidth
+          sx={{ color: "white" }}
+          startIcon={
+            isPending && <CircularProgress size={18} sx={{ color: "white" }} />
+          }
+          onClick={async () => {
+            await completeInspection({
+              inspectionId: inspection?.id ?? "",
+              data: {
+                signatures: {
+                  customer: null,
+                  technician: null,
+                },
+              },
+            });
+            setOpenInspectionCompleteModal(true);
+          }}
+        >
+          Finish Report
+        </Button>
+      </Box>
+      <InspectionCompleteModal
+        open={openInspectionCompleteModal}
+        onClose={() => {
+          setOpenInspectionCompleteModal(false);
+        }}
+      />
+    </Box>
   );
 };

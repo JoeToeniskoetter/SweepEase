@@ -59,20 +59,20 @@ export class InspectionService {
       throw new BadRequestException('inspection already completed');
     }
 
-    const uploadedSignatures = await Promise.all(
-      signatures.map(async (sig) => {
-        const imageUrl = await this.uploadService.upload(sig, id);
-        return this.inspectionSignatureRepo
-          .create({
-            inspection: inspection,
-            imageUrl: imageUrl,
-            type: sig.originalname,
-          })
-          .save();
-      }),
-    );
+    // const uploadedSignatures = await Promise.all(
+    //   signatures.map(async (sig) => {
+    //     const imageUrl = await this.uploadService.upload(sig, id);
+    //     return this.inspectionSignatureRepo
+    //       .create({
+    //         inspection: inspection,
+    //         imageUrl: imageUrl,
+    //         type: sig.originalname,
+    //       })
+    //       .save();
+    //   }),
+    // );
 
-    inspection.signatures = uploadedSignatures;
+    // inspection.signatures = uploadedSignatures;
     inspection.status = 'COMPLETE';
     await this.inspectionRepo.save(inspection);
     return inspection;

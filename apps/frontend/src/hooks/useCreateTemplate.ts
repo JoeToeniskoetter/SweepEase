@@ -10,7 +10,7 @@ export const useCreateTemplate = () => {
       inspectionLevel: string;
     }): Promise<InspectionTemplate> => {
       const token = await auth.currentUser?.getIdToken();
-      const resp = await axios.post("/api/inspection/templates", data, {
+      const resp = await axios.post("/api/inspection-templates", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -1,4 +1,8 @@
-import { ArrowCircleLeftTwoTone, ArticleTwoTone } from "@mui/icons-material";
+import {
+  ArrowCircleLeftTwoTone,
+  ArticleTwoTone,
+  Edit,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -7,20 +11,23 @@ import {
   CircularProgress,
   Container,
   Paper,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useInspectionOrder } from "../hooks/useInspectionOrder";
 import { useInspectionOrderDetails } from "../hooks/useInspectionOrderDetails";
 import { InspectionCustomerInfo } from "./InspectionCustomerInfo";
 import { InspectionInspectionItems } from "./InspectionInspectionItems";
 import { InspectionOrderStatus } from "./InspectionOrderStatus";
+import { ReviewDetail } from "./ReviewDetail";
 
 interface InspectProps {}
 
 export const Inspect: React.FC<InspectProps> = () => {
+  const [review, setReview] = useState<boolean>(false);
   const theme = useTheme();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -33,22 +40,46 @@ export const Inspect: React.FC<InspectProps> = () => {
     return <CircularProgress />;
   }
 
+  const allFieldsComplete = inspectionOrderDetails?.every(
+    (iod) => iod.isComplete
+  );
+
   return (
-    <Container maxWidth="xl" sx={{ mt: 2 }}>
-      <Button
-        onClick={() => navigate(-1)}
-        variant="outlined"
-        startIcon={<ArrowCircleLeftTwoTone />}
-        sx={{ my: 2 }}
+    <Container maxWidth="lg" sx={{ mt: 2, pb: 4 }}>
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        justifyContent={"start"}
+        alignItems={"start"}
+        pb={1}
       >
-        Back to inspections
-      </Button>
+        <Button
+          onClick={() => navigate(-1)}
+          variant="outlined"
+          startIcon={<ArrowCircleLeftTwoTone />}
+          sx={{ my: 2 }}
+        >
+          Back to inspections
+        </Button>
+        {review && (
+          <Button
+            startIcon={<Edit />}
+            variant="outlined"
+            onClick={() => setReview(false)}
+          >
+            Edit Inspection
+          </Button>
+        )}
+      </Box>
       <Paper
-        elevation={0}
+        elevation={12}
         sx={{
           padding: 2,
           bgcolor: theme.palette.secondary.main,
-          borderRadius: 0,
+          borderTopLeftRadius: 8,
+          borderTopRightRadius: 8,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
         }}
       >
         <Box display={"flex"} justifyContent={"space-between"}>
@@ -61,31 +92,45 @@ export const Inspect: React.FC<InspectProps> = () => {
           )}
         </Box>
       </Paper>
-      <Card>
+      <Card
+        elevation={12}
+        sx={{ borderBottomLeftRadius: 8, borderBottomRightRadius: 8 }}
+      >
         <CardContent>
           <InspectionCustomerInfo inspection={inspection} />
-          <InspectionInspectionItems
-            inspectionId={id ?? ""}
-            inspectionOrderDetails={inspectionOrderDetails ?? []}
-          />
-          <Box mt={2}>
-            <Button
-              variant="contained"
-              startIcon={<ArticleTwoTone />}
-              disabled={!inspectionOrderDetails?.every((iod) => iod.isComplete)}
-              sx={{ color: "white" }}
-              onClick={() => {
-                navigate(`/inspections/${id}/review`, {
-                  state: {
-                    inspection: inspection,
-                    details: inspectionOrderDetails,
-                  },
-                });
-              }}
-            >
-              REVIEW AND FINISH
-            </Button>
-          </Box>
+          {!review ? (
+            <>
+              <InspectionInspectionItems
+                inspectionId={id ?? ""}
+                inspectionOrderDetails={inspectionOrderDetails ?? []}
+              />
+              <Box mt={2}>
+                <Tooltip
+                  title={
+                    !allFieldsComplete &&
+                    "Complete all inspection items before review"
+                  }
+                >
+                  <span>
+                    <Button
+                      variant="contained"
+                      startIcon={<ArticleTwoTone />}
+                      disabled={!allFieldsComplete}
+                      sx={{ color: "white" }}
+                      onClick={() => setReview(true)}
+                    >
+                      REVIEW AND FINISH
+                    </Button>
+                  </span>
+                </Tooltip>
+              </Box>
+            </>
+          ) : (
+            <ReviewDetail
+              insepectionDetail={inspectionOrderDetails}
+              inspection={inspection}
+            />
+          )}
         </CardContent>
       </Card>
     </Container>

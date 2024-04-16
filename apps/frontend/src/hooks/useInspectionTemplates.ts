@@ -7,7 +7,7 @@ export const useInspectionTemplates = () => {
     queryKey: ["inspection-templates"],
     queryFn: async () => {
       const token = await auth.currentUser?.getIdToken();
-      const resp = await axios.get("/api/inspection/templates", {
+      const resp = await axios.get("/api/inspection-templates", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

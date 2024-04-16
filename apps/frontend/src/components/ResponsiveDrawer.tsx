@@ -30,11 +30,11 @@ interface Props {
 }
 
 const tabs = [
-  {
-    name: "Home",
-    icon: <HomeTwoTone />,
-    path: "",
-  },
+  // {
+  //   name: "Home",
+  //   icon: <HomeTwoTone />,
+  //   path: "",
+  // },
   {
     name: "Inspections",
     icon: <ContentPasteTwoTone />,

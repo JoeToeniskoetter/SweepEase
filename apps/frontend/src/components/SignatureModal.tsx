@@ -98,9 +98,7 @@ export const SignatureModal: React.FC<SignatureModalProps> = ({
           onClick={async () => {
             const blob = await getBlob();
             console.log(blob);
-            const dataUrl = sigRef.current
-              ?.getTrimmedCanvas()
-              .toDataURL("image/png");
+            const dataUrl = sigRef.current?.toDataURL("image/png");
             const file = new File([blob], `${fileName}.png`);
             onFinishedSigning(dataUrl ?? "", file);
           }}

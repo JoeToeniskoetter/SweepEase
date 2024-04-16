@@ -126,27 +126,22 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = ({}) => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          gap: 4,
+          gap: 2,
         }}
         maxWidth="lg"
       >
-        <Box display={"flex"}>
+        <Box display={"flex"} justifyContent={"flex-end"} mt={2}>
           <Button
             onClick={() => setOpenModal(true)}
             startIcon={<AddCircleOutline color="primary" fontSize="small" />}
+            variant="outlined"
           >
             Create Order
           </Button>
         </Box>
         <TableContainer component={Paper}>
           <Table size="medium">
-            <TableHead
-              sx={
-                {
-                  // backgroundColor: theme.palette.secondary.main,
-                }
-              }
-            >
+            <TableHead>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
