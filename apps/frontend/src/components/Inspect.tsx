@@ -1,9 +1,4 @@
-import {
-  ArrowCircleLeftTwoTone,
-  ArticleTwoTone,
-  FireplaceTwoTone,
-  InfoTwoTone,
-} from "@mui/icons-material";
+import { ArrowCircleLeftTwoTone, ArticleTwoTone } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -11,17 +6,16 @@ import {
   CardContent,
   CircularProgress,
   Container,
-  Divider,
   Paper,
   Typography,
   useTheme,
 } from "@mui/material";
-import { format } from "date-fns";
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useInspectionOrder } from "../hooks/useInspectionOrder";
 import { useInspectionOrderDetails } from "../hooks/useInspectionOrderDetails";
-import { InspectItem } from "./InspectItem";
+import { InspectionCustomerInfo } from "./InspectionCustomerInfo";
+import { InspectionInspectionItems } from "./InspectionInspectionItems";
 import { InspectionOrderStatus } from "./InspectionOrderStatus";
 
 interface InspectProps {}
@@ -30,7 +24,6 @@ export const Inspect: React.FC<InspectProps> = () => {
   const theme = useTheme();
   const { id } = useParams();
   const navigate = useNavigate();
-  const [openInspectionItem, setOpenInspectionItem] = useState<string>();
   const { data: inspection } = useInspectionOrder({ id: id ?? "" });
   const { data: inspectionOrderDetails, isLoading } = useInspectionOrderDetails(
     { id: id ?? "" }
@@ -63,7 +56,6 @@ export const Inspect: React.FC<InspectProps> = () => {
             Inspection:{" "}
             <span style={{ fontWeight: "lighter" }}>{inspection?.id}</span>
           </Typography>
-          {/* <Chip label={inspection?.status} sx={{ color: "white" }} /> */}
           {inspection?.status && (
             <InspectionOrderStatus status={inspection?.status} />
           )}
@@ -71,68 +63,11 @@ export const Inspect: React.FC<InspectProps> = () => {
       </Paper>
       <Card>
         <CardContent>
-          <Typography
-            sx={{ fontSize: 18 }}
-            color="text.secondary"
-            gutterBottom
-            display={"flex"}
-            gap={1}
-          >
-            <InfoTwoTone />
-            CUSTOMER INFO
-          </Typography>
-          <Divider />
-          <Box display={"flex"} flexDirection={"column"} gap={1} p={1}>
-            <Box>
-              <Typography fontWeight="bold">Customer name:</Typography>
-              <Typography>{inspection?.customerName}</Typography>
-            </Box>
-            <Box>
-              <Typography fontWeight="bold">Address:</Typography>
-              <Typography>{inspection?.address}</Typography>
-              <Typography>
-                {inspection?.city}, {inspection?.state} {inspection?.zip}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography fontWeight="bold">Phone:</Typography>
-              <Typography>{inspection?.phone || "-"}</Typography>
-            </Box>
-            <Box>
-              <Typography fontWeight="bold">Inspection Date:</Typography>
-              <Typography>
-                {format(
-                  new Date(inspection?.createdAt ?? new Date()),
-                  "MM/d/yyyy"
-                )}
-              </Typography>
-            </Box>
-          </Box>
-          <Box mt={2} display={"flex"} flexDirection={"column"}>
-            <Typography
-              sx={{ fontSize: 18 }}
-              color="text.secondary"
-              gutterBottom
-              display={"flex"}
-              gap={1}
-            >
-              <FireplaceTwoTone />
-              INSPECTION ITEMS
-            </Typography>
-            <Divider />
-            <Box pt={2}>
-              {inspectionOrderDetails?.map((iod, idx) => (
-                <InspectItem
-                  inspectionId={id ?? ""}
-                  item={iod}
-                  idx={idx}
-                  key={iod.id}
-                  openInspectionItem={openInspectionItem}
-                  setOpenInspectionItem={setOpenInspectionItem}
-                />
-              ))}
-            </Box>
-          </Box>
+          <InspectionCustomerInfo inspection={inspection} />
+          <InspectionInspectionItems
+            inspectionId={id ?? ""}
+            inspectionOrderDetails={inspectionOrderDetails ?? []}
+          />
           <Box mt={2}>
             <Button
               variant="contained"

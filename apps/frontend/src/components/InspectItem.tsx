@@ -31,7 +31,7 @@ interface InspectItemProps {
 
 interface InspectItemForm {
   item: string;
-  condition: { name: string; description: string };
+  condition: { name: string; description: string } | null;
   notes: string;
   photo: File;
 }
@@ -48,20 +48,21 @@ export const InspectItem: React.FC<InspectItemProps> = ({
   const {
     register,
     control,
-    formState: { isDirty },
+    formState: { isDirty, dirtyFields },
     handleSubmit,
     watch,
   } = useForm<InspectItemForm>({
     defaultValues: {
-      condition: item.condition ?? undefined,
+      condition: item.condition,
       item: item.item,
       notes: item.notes,
+      photo: undefined,
     },
   });
 
   const onSubmit = async (values: InspectItemForm) => {
     try {
-      const result = await toast.promise(
+      await toast.promise(
         updateInspectionOrderDetails({
           inspectionId,
           data: { id: item.id, ...values },
@@ -72,7 +73,6 @@ export const InspectItem: React.FC<InspectItemProps> = ({
           error: "Problems saving report",
         }
       );
-      // setItem({ ...item, isComplete: result.isComplete });
     } catch (e) {
       console.error(e);
     }
@@ -86,6 +86,10 @@ export const InspectItem: React.FC<InspectItemProps> = ({
       onChange={() => {
         if (openInspectionItem === item.id) {
           setOpenInspectionItem(undefined);
+          if (isDirty) {
+            console.log(dirtyFields);
+            handleSubmit(onSubmit)();
+          }
           return;
         }
         setOpenInspectionItem(item.id);
