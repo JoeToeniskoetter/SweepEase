@@ -17,7 +17,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useUpdateInspectionOrderDetails } from "../hooks/useUpdateInspectionOrderDetails";
 import { toast } from "react-toastify";
 import { useForm, Controller } from "react-hook-form";
@@ -86,7 +86,6 @@ export const InspectItem: React.FC<InspectItemProps> = ({
   };
 
   const photo = watch("photo");
-  console.log(photo);
 
   const renderPhoto = () => {
     if (photo) {
@@ -111,6 +110,13 @@ export const InspectItem: React.FC<InspectItemProps> = ({
     return null;
   };
 
+  useEffect(() => {
+    if (isDirty) {
+      console.log(dirtyFields);
+      handleSubmit(onSubmit)();
+    }
+  }, [openInspectionItem]);
+
   return (
     <Accordion
       elevation={0}
@@ -119,10 +125,6 @@ export const InspectItem: React.FC<InspectItemProps> = ({
       onChange={() => {
         if (openInspectionItem === item.id) {
           setOpenInspectionItem(undefined);
-          if (isDirty) {
-            console.log(dirtyFields);
-            handleSubmit(onSubmit)();
-          }
           return;
         }
         setOpenInspectionItem(item.id);

@@ -30,6 +30,7 @@ import { useCompleteInspection } from "../../hooks/useCompleteInspection";
 import { InspectionSignatureSection } from "../InspectionSignatureSection";
 import { SignatureModal } from "../SignatureModal";
 import "./Inspect.css";
+import { InspectionCompleteModal } from "../InspectionCompleteModal";
 
 interface InspectProps {}
 
@@ -173,19 +174,19 @@ export const Inspect: React.FC<InspectProps> = () => {
             {(review || inspection?.status === "COMPLETE") && (
               <>
                 <ReviewDetail insepectionDetail={inspectionOrderDetails} />
-                <InspectionSignatureSection
+                {/* <InspectionSignatureSection
                   customerSignature={
                     existsingCustomerSignature || customerSignature
                   }
                   techSignature={existsingTechSignature || techSignature}
                   inspection={inspection}
-                />
+                /> */}
               </>
             )}
             {review &&
               ["IN PROGRESS", "NEW"].includes(inspection?.status ?? "") && (
                 <>
-                  <Box display={"flex"} pb={2} gap={2}>
+                  {/* <Box display={"flex"} pb={2} gap={2}>
                     <Box
                       sx={{ width: "50%" }}
                       display={"flex"}
@@ -218,7 +219,7 @@ export const Inspect: React.FC<InspectProps> = () => {
                         </Button>
                       )}
                     </Box>
-                  </Box>
+                  </Box> */}
                   <Box display={"flex"}>
                     <Button
                       startIcon={
@@ -242,6 +243,7 @@ export const Inspect: React.FC<InspectProps> = () => {
                             },
                           },
                         });
+                        setOpenInspectionCompleteModal(true);
                       }}
                     >
                       Complete Inspection
@@ -276,6 +278,11 @@ export const Inspect: React.FC<InspectProps> = () => {
         }}
         title="Technician Signature"
         fileName="technician-signature"
+      />
+      <InspectionCompleteModal
+        open={openInspectionCompleteModal}
+        onClose={() => setOpenInspectionCompleteModal(false)}
+        onPrint={handlePrint}
       />
     </>
   );

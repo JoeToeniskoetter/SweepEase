@@ -111,3 +111,16 @@ interface InspectionSignature {
   type: string;
   imageUrl: string;
 }
+
+interface Page<T> {
+  data: T[];
+  meta: PageMeta;
+}
+
+interface PageMeta {
+  itemsPerPage: number;
+  totalItems: number;
+  currentPage: number;
+  totalPages: number;
+  sortBy: Array<string[]>;
+}

@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { auth } from "../context/firebase";
+import { toast } from "react-toastify";
 
 export const useCreateInspectionOrder = () => {
   const queryClient = useQueryClient();
@@ -15,12 +16,8 @@ export const useCreateInspectionOrder = () => {
       return resp.data;
     },
     onSuccess(data) {
-      console.log({ data });
-      // queryClient.invalidateQueries({ queryKey: ["inspection-templates"] });
-      const cache = queryClient.getQueryData<InspectionTemplate[]>([
-        "inspection-orders",
-      ]);
-      queryClient.setQueryData(["inspection-orders"], [...(cache ?? []), data]);
+      queryClient.invalidateQueries({ queryKey: ["inspection-orders"] });
+      toast("Inspection order created");
     },
   });
 };

@@ -14,11 +14,12 @@ import { useNavigate } from "react-router-dom";
 interface InspectionCompleteModalProps {
   open: boolean;
   onClose: () => void;
+  onPrint: () => void;
 }
 
 export const InspectionCompleteModal: React.FC<
   InspectionCompleteModalProps
-> = ({ open, onClose }) => {
+> = ({ open, onClose, onPrint }) => {
   const navigate = useNavigate();
   const style = {
     position: "absolute",
@@ -64,6 +65,7 @@ export const InspectionCompleteModal: React.FC<
               fullWidth
               color="primary"
               variant="outlined"
+              onClick={onPrint}
             >
               Print Report
             </Button>

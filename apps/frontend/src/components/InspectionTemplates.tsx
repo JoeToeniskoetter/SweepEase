@@ -16,6 +16,7 @@ import React, { useState } from "react";
 import { useCreateTemplate } from "../hooks/useCreateTemplate";
 import { useInspectionTemplates } from "../hooks/useInspectionTemplates";
 import { InspectionTemplateGrid } from "./InspectionTemplateGrid";
+import { EmptyTemplates } from "./EmptyTemplates";
 
 interface InspectionTemplatesProps {}
 
@@ -65,6 +66,7 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
           </Button>
         </Box>
         {error && <Alert severity="error">Failed to create template</Alert>}
+        {!isLoading && data?.length == 0 ? <EmptyTemplates /> : null}
         <InspectionTemplateGrid data={data ?? []} isLoading={isLoading} />
         <Modal open={openModal} onClose={() => setOpenModal(false)}>
           <Box

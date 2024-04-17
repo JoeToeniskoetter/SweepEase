@@ -21,6 +21,7 @@ import { User } from 'src/users/entities/user.entity';
 import { CreateInspectionDto } from './dto/create-inspection.dto';
 import { UpdateInspectionDto } from './dto/update-inspection.dto';
 import { InspectionService } from './inspection.service';
+import { Paginate, PaginateQuery } from 'nestjs-paginate';
 
 @UseGuards(FirebaseAuthGuard)
 @Controller('inspection')
@@ -52,20 +53,6 @@ export class InspectionController {
     signatures: Array<Express.Multer.File>,
   ) {
     this.logger.log('completing inspection');
-    // if (signatures.length < 1) {
-    //   throw new BadRequestException(
-    //     'signatures for customer and technician must be included',
-    //   );
-    // }
-
-    // if (
-    //   !signatures.find((f) => f.originalname === 'technician-signature.png') ||
-    //   !signatures.find((f) => f.originalname === 'customer-signature.png')
-    // ) {
-    //   throw new BadRequestException(
-    //     'signatures for customer and technician must be included',
-    //   );
-    // }
 
     return this.inspectionService.completeInspection(user, id, signatures);
   }
@@ -80,9 +67,9 @@ export class InspectionController {
   }
 
   @Get()
-  findAll(@CurrentUser() user: User) {
+  findAll(@CurrentUser() user: User, @Paginate() query: PaginateQuery) {
     this.logger.log('get inspections');
-    return this.inspectionService.findAll(user);
+    return this.inspectionService.findAll(user, query);
   }
 
   @Get(':id')

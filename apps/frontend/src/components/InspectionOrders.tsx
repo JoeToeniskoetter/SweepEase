@@ -12,6 +12,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
   Typography,
   useTheme,
@@ -27,6 +28,7 @@ import { useInspectionOrders } from "../hooks/useInspectionOrders";
 import { InspectionOrderInfoForm } from "./InspectionOrderInfoForm";
 import { InspectionOrderOptions } from "./InspectionOrderOptions";
 import { InspectionOrderStatus } from "./InspectionOrderStatus";
+import { EmptyInspectionOrders } from "./EmptyInspectionOrders";
 
 interface InspectionOrdersProps {}
 
@@ -34,7 +36,8 @@ const columnHelper = createColumnHelper<InspectionOrder>();
 
 export const InspectionOrders: React.FC<InspectionOrdersProps> = () => {
   const theme = useTheme();
-  const { data, isLoading } = useInspectionOrders();
+  const [page, setPage] = useState<number>(1);
+  const { data, isLoading } = useInspectionOrders(page);
   const [openModal, setOpenModal] = useState<boolean>(false);
 
   const columns = React.useMemo(
@@ -96,7 +99,7 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = () => {
     [isLoading]
   );
   const tableData = React.useMemo(
-    () => (isLoading ? Array(10).fill({}) : data),
+    () => (isLoading ? Array(10).fill({}) : data?.data),
     [isLoading, data]
   );
   const table = useReactTable({
@@ -140,40 +143,52 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = () => {
             Create Order
           </Button>
         </Box>
-        <TableContainer component={Paper}>
-          <Table size="medium">
-            <TableHead>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableCell key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHead>
-            <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {!isLoading && data?.data.length === 0 ? (
+          <EmptyInspectionOrders />
+        ) : (
+          <TableContainer component={Paper}>
+            <Table size="medium">
+              <TableHead>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableCell key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHead>
+              <TableBody>
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TablePagination
+                count={data?.meta.totalItems ?? 0}
+                page={page - 1}
+                rowsPerPage={data?.meta.itemsPerPage ?? 0}
+                onPageChange={(_, page) => {
+                  setPage(page + 1);
+                }}
+              />
+            </Table>
+          </TableContainer>
+        )}
         <Modal open={openModal} onClose={() => setOpenModal(false)}>
           <Box
             sx={{

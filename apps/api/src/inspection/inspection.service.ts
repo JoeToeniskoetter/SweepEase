@@ -20,6 +20,12 @@ import { InspectionDetail } from './entities/inspection_detail.entity';
 import { updateInspectionDetailItem } from './dto/update-inspection-detail-item';
 import { UploadService } from 'src/upload/upload.service';
 import { InspectionSignature } from './entities/inspection_signature.entity';
+import {
+  FilterOperator,
+  FilterSuffix,
+  paginate,
+  PaginateQuery,
+} from 'nestjs-paginate';
 
 @Injectable()
 export class InspectionService {
@@ -308,8 +314,14 @@ export class InspectionService {
     });
   }
 
-  findAll(currentUser: User) {
-    return this.inspectionRepo.find({
+  findAll(currentUser: User, query: PaginateQuery) {
+    return paginate(query, this.inspectionRepo, {
+      sortableColumns: ['id', 'status', 'createdAt'],
+      defaultSortBy: [['createdAt', 'DESC']],
+      searchableColumns: ['status', 'customerName'],
+      filterableColumns: {
+        status: [FilterOperator.EQ, FilterSuffix.NOT],
+      },
       where: { company: { id: currentUser.company.id } },
       relations: ['template'],
     });
