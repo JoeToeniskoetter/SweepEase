@@ -16,5 +16,9 @@ export const ProtectedRoutes: React.FC<ProtectedRouteProps> = () => {
     return <Outlet />;
   }
 
-  return <Navigate to={"/signin"} />;
+  return (
+    <Navigate
+      to={`/signin?redirect=${window.location.pathname}${window.location.search}`}
+    />
+  );
 };

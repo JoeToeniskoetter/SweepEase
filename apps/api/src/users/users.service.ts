@@ -1,10 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { DataSource, Not, Repository } from 'typeorm';
 import { CreateUserInviteDto } from './dto/create-user-invite.dto';
 import { UserInvite } from './entities/user-invite.entity';
-import { JwtService } from '@nestjs/jwt';
+import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
+import { AcceptInviteDto } from './dto/accept-invite.dto';
+import dataSource from 'src/db/data-source';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +15,7 @@ export class UsersService {
     @InjectRepository(UserInvite)
     private readonly userInviteRepo: Repository<UserInvite>,
     private readonly jwtService: JwtService,
+    private readonly dataSource: DataSource,
   ) {}
   async getMe(currentUser: User) {
     return this.userRepo.findOne({
@@ -24,7 +27,6 @@ export class UsersService {
     return this.userRepo.find({
       where: {
         company: { id: currentUser.company.id },
-        email: Not(currentUser.email),
       },
     });
   }
@@ -65,5 +67,44 @@ export class UsersService {
     //send email with invite link
     //need to setup email templates
     return this.userInviteRepo.save(entity);
+  }
+
+  async acceptInvite(currentUser: User, acceptInviteDto: AcceptInviteDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const payload = await this.jwtService.verify(acceptInviteDto.code);
+      const invite = await this.userInviteRepo.findOne({
+        where: {
+          company: { id: payload.company },
+          verificationCode: acceptInviteDto.code,
+          userEmail: currentUser.email,
+        },
+      });
+
+      if (!invite) {
+        throw new BadRequestException('failed to verify invite');
+      }
+
+      if (payload.company) {
+        const user = this.userRepo.create({
+          ...currentUser,
+          company: { id: payload.company },
+        });
+        await queryRunner.manager.save(user);
+        await queryRunner.manager.remove(invite);
+        await queryRunner.commitTransaction();
+      }
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+      if (e instanceof JsonWebTokenError) {
+        throw new BadRequestException('failed to verify invite');
+      } else {
+        throw e;
+      }
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

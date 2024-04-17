@@ -16,6 +16,7 @@ import { Inspect } from "./components/Inspect/Inspect";
 import "react-toastify/dist/ReactToastify.css";
 import { ReviewAndFinish } from "./pages/ReviewAndFinish";
 import { Users } from "./pages/Users";
+import { AcceptInvite } from "./pages/AcceptInvite";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 10000 } },
@@ -31,6 +32,7 @@ function App() {
             <Route path="/signin" element={<SignInPage />} />
             <Route element={<ProtectedRoutes />}>
               <Route path="/company-setup" Component={CreateCompanyPage} />
+              <Route path="/invite" Component={AcceptInvite} />
             </Route>
             <Route element={<OnboardedRoutes />}>
               <Route path="/dashboard" Component={ResponsiveDrawer}>

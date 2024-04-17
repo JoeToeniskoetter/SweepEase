@@ -4,6 +4,7 @@ import { FirebaseAuthGuard } from 'src/firebase/firebase.guard';
 import { CurrentUser } from 'src/user/user.decorator';
 import { User } from './entities/user.entity';
 import { CreateUserInviteDto } from './dto/create-user-invite.dto';
+import { AcceptInviteDto } from './dto/accept-invite.dto';
 
 @UseGuards(FirebaseAuthGuard)
 @Controller('user-invite')
@@ -21,5 +22,13 @@ export class UserInviteController {
   @Get()
   findInvites(@CurrentUser() user: User) {
     return this.usersService.findAllInvitesForCompany(user);
+  }
+
+  @Post('accept')
+  acceptInvite(
+    @CurrentUser() currentUser: User,
+    @Body() acceptInviteDto: AcceptInviteDto,
+  ) {
+    return this.usersService.acceptInvite(currentUser, acceptInviteDto);
   }
 }

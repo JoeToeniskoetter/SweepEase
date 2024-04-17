@@ -16,12 +16,13 @@ import {
 import React, { useState } from "react";
 import { Logo } from "../components/Logo";
 import { useAuth } from "../context/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 
 interface SignInPageProps {}
 
 export const SignInPage: React.FC<SignInPageProps> = () => {
+  let [searchParams] = useSearchParams();
   const theme = useTheme();
   const { signIn, signUp, user } = useAuth();
   const [email, setEmail] = useState<string>("");
@@ -47,7 +48,12 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
     },
   });
 
+  const redirect = searchParams.get("redirect");
+
   if (user) {
+    if (redirect) {
+      return <Navigate to={redirect} replace={true} />;
+    }
     return <Navigate to={"/dashboard"} replace={true} />;
   }
 
@@ -58,7 +64,6 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        bgcolor: theme.palette.primary.light,
       }}
     >
       <Card

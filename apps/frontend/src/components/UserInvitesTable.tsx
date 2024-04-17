@@ -17,6 +17,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useInvites } from "../hooks/useInvites";
+import { UserInviteOptions } from "./UserInviteOptions";
+import { NoInvites } from "./NoInvites";
 
 interface UsersTableProps {}
 
@@ -34,6 +36,13 @@ export const UserInvitesTable: React.FC<UsersTableProps> = ({}) => {
       columnHelper.accessor("createdAt", {
         cell: (info) => info.getValue(),
         header: () => <Typography fontWeight={"bold"}>Invited</Typography>,
+        footer: (info) => info.column.id,
+      }),
+      columnHelper.accessor("id", {
+        cell: ({ row }) => (
+          <UserInviteOptions id={row.original.id} invite={row.original} />
+        ),
+        header: () => <Typography></Typography>,
         footer: (info) => info.column.id,
       }),
     ],
@@ -60,36 +69,45 @@ export const UserInvitesTable: React.FC<UsersTableProps> = ({}) => {
     getCoreRowModel: getCoreRowModel(),
   });
   return (
-    <TableContainer component={Paper} variant="outlined">
-      <Table size="medium">
-        <TableHead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableCell key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
+    <>
+      {!isLoading && invites?.length === 0 ? (
+        <NoInvites />
+      ) : (
+        <TableContainer component={Paper} variant="outlined">
+          <Table size="medium">
+            <TableHead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableCell key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHead>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
                       )}
-                </TableCell>
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))}
-            </TableRow>
-          ))}
-        </TableHead>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+    </>
   );
 };

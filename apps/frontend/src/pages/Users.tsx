@@ -44,7 +44,7 @@ export const Users: React.FC<UsersProps> = ({}) => {
           </Button>
         </Box>
         <Box sx={{ width: "100%" }}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }} pb={4}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }} mb={4}>
             <Tabs
               value={tab}
               onChange={(_event: React.SyntheticEvent, newValue: number) => {

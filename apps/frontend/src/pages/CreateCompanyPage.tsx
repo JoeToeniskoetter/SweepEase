@@ -49,6 +49,7 @@ export const CreateCompanyPage: React.FC<CreateCompanyPageProps> = () => {
               md: "100%",
             },
           }}
+          justifyContent={"space-between"}
         >
           <OnboardingStepper />
         </Box>

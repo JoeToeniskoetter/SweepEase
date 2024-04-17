@@ -1,3 +1,4 @@
+import { UserInvite } from 'src/users/entities/user-invite.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   BaseEntity,
@@ -40,6 +41,9 @@ export class Company extends BaseEntity {
 
   @OneToMany(() => User, (user) => user.id)
   users: User[];
+
+  @OneToMany(() => UserInvite, (invite) => invite.company)
+  invites: UserInvite[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
