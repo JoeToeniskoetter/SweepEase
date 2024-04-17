@@ -17,7 +17,7 @@ export const useCreateInspectionOrder = () => {
     },
     onSuccess(data) {
       queryClient.invalidateQueries({ queryKey: ["inspection-orders"] });
-      toast("Inspection order created");
+      toast("Inspection order created", { type: "success" });
     },
   });
 };
