@@ -12,6 +12,7 @@ import { FirebaseModule } from './firebase/firebase.module';
 import { CompanyModule } from './company/company.module';
 import { InspectionModule } from './inspection/inspection.module';
 import { UploadModule } from './upload/upload.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [

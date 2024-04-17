@@ -1,6 +1,6 @@
 import {
+  AccountCircleTwoTone,
   ContentPasteTwoTone,
-  HomeTwoTone,
   ListAltTwoTone,
   Logout,
   Menu,
@@ -30,11 +30,6 @@ interface Props {
 }
 
 const tabs = [
-  // {
-  //   name: "Home",
-  //   icon: <HomeTwoTone />,
-  //   path: "",
-  // },
   {
     name: "Inspections",
     icon: <ContentPasteTwoTone />,
@@ -45,6 +40,7 @@ const tabs = [
     icon: <ListAltTwoTone />,
     path: "templates",
   },
+  { name: "Users", icon: <AccountCircleTwoTone />, path: "users" },
 ];
 
 export default function ResponsiveDrawer(props: Props) {

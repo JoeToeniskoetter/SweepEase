@@ -11,4 +11,9 @@ export class UsersController {
   findAll(@CurrentUser() currentUser: User) {
     return this.usersService.getMe(currentUser);
   }
+
+  @Get()
+  findAllForCompany(@CurrentUser() currentUser: User) {
+    return this.usersService.findAllForCompany(currentUser);
+  }
 }

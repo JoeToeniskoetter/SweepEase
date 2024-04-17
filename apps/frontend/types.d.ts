@@ -7,6 +7,14 @@ interface Profile {
   company: Company | null;
 }
 
+interface SweepInspectrUser {
+  id: string;
+  email: string;
+  role: "USER" | "ADMIN";
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface Company {
   id: string;
   name: string;
@@ -123,4 +131,11 @@ interface PageMeta {
   currentPage: number;
   totalPages: number;
   sortBy: Array<string[]>;
+}
+
+interface UserInvite {
+  id: string;
+  userEmail: string;
+  company: Company;
+  createdAt: string;
 }

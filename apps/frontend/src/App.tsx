@@ -15,6 +15,7 @@ import { InspectionOrders } from "./components/InspectionOrders";
 import { Inspect } from "./components/Inspect/Inspect";
 import "react-toastify/dist/ReactToastify.css";
 import { ReviewAndFinish } from "./pages/ReviewAndFinish";
+import { Users } from "./pages/Users";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 10000 } },
@@ -36,6 +37,7 @@ function App() {
                 <Route path="" element={<Navigate to={"inspections"} />} />
                 <Route path="inspections" element={<InspectionOrders />} />
                 <Route path="templates" element={<InspectionTemplates />} />
+                <Route path="users" element={<Users />} />
                 <Route
                   path="templates/:id"
                   element={<EditInspectionTemplate />}
