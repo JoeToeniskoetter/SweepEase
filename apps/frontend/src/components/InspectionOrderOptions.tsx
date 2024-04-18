@@ -1,6 +1,5 @@
 import { MoreHoriz, Start } from "@mui/icons-material";
 import {
-  Box,
   Button,
   CircularProgress,
   IconButton,

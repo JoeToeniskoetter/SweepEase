@@ -5,30 +5,28 @@ import {
   Container,
   Typography,
 } from "@mui/material";
-import React, { useEffect } from "react";
-import { Navigate, redirect, useSearchParams } from "react-router-dom";
+import React, { useCallback, useEffect } from "react";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { useAcceptInvite } from "../hooks/useAcceptInvite";
 import { useProfile } from "../hooks/useProfile";
 
 interface AcceptInviteProps {}
 
-export const AcceptInvite: React.FC<AcceptInviteProps> = ({}) => {
+export const AcceptInvite: React.FC<AcceptInviteProps> = () => {
   const { data: profile } = useProfile({ enabled: true });
-  const { mutateAsync, isPending, error } = useAcceptInvite();
+  const { mutate, isPending, error } = useAcceptInvite();
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code");
 
-  useEffect(() => {
-    if (code && !isPending) {
-      (async () => {
-        try {
-          await mutateAsync({ code });
-        } catch (e) {
-          console.error(e);
-        }
-      })();
+  const accept = useCallback(() => {
+    if (code) {
+      mutate({ code });
     }
-  }, [code]);
+  }, [code, mutate]);
+
+  useEffect(() => {
+    accept();
+  }, [accept]);
 
   if (profile && profile.company !== null) {
     return <Navigate to={"/dashboard"} />;

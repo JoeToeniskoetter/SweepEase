@@ -42,7 +42,7 @@ export const InviteUserModal: React.FC<InviteUserModalProps> = ({
             placeholder="email@email.com"
             fullWidth
             InputProps={{
-              startAdornment: <Mail sx={{ color: "divider" }} />,
+              startAdornment: <Mail sx={{ color: "divider", mr: 1 }} />,
             }}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -59,6 +59,7 @@ export const InviteUserModal: React.FC<InviteUserModalProps> = ({
             onClick={async () => {
               await mutateAsync({ email: email });
             }}
+            sx={{ color: "white" }}
           >
             Send Invite
           </Button>

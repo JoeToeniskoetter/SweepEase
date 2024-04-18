@@ -1,8 +1,6 @@
-import { MoreHoriz, RefreshTwoTone, Start } from "@mui/icons-material";
+import { MoreHoriz, RefreshTwoTone } from "@mui/icons-material";
 import {
-  Box,
   Button,
-  CircularProgress,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -11,19 +9,13 @@ import {
   MenuList,
 } from "@mui/material";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useStartInspection } from "../hooks/useStartInspection";
 
 interface InspectionOrderOptionsProps {
   id: string;
   invite: UserInvite;
 }
 
-export const UserInviteOptions: React.FC<InspectionOrderOptionsProps> = ({
-  id,
-  invite,
-}) => {
-  const navigate = useNavigate();
+export const UserInviteOptions: React.FC<InspectionOrderOptionsProps> = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -40,6 +32,7 @@ export const UserInviteOptions: React.FC<InspectionOrderOptionsProps> = ({
         color="secondary"
         onClick={async () => {
           try {
+            console.log("tru");
           } catch (e) {
             console.error(e);
           }

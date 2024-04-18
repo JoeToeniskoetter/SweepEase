@@ -111,7 +111,7 @@ export const EditTemplateForm = ({
     handleSubmit,
     reset,
     watch,
-    formState: { isDirty, errors, isSubmitted },
+    formState: { isDirty, errors },
   } = useForm<TemplateForm>({
     resolver: zodResolver(TemplateFormSchema),
     defaultValues: {
@@ -136,10 +136,29 @@ export const EditTemplateForm = ({
     const { over, active } = event;
     if (active.id === over?.id) return;
     const activeIdx = findPos(active.id.toString());
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+
     const overIdx = findPos(over?.id.toString());
 
     move(activeIdx, overIdx);
   }
+
+  const hasOptionNameError = (index: number, i: number): boolean => {
+    const hasError =
+      errors &&
+      errors?.items &&
+      errors.items[index] &&
+      errors.items[index]!.options &&
+      errors.items[index]!.options![i] &&
+      errors.items[index]!.options![i]!.name &&
+      errors.items[index]!.options![i]!.name?.message != undefined;
+
+    if (hasError !== undefined) {
+      return hasError;
+    }
+    return false;
+  };
 
   return (
     <>
@@ -498,16 +517,14 @@ export const EditTemplateForm = ({
                                   {...register(
                                     `items.${index}.options.${i}.name`
                                   )}
-                                  error={
-                                    errors?.items &&
-                                    errors.items[index]?.options &&
-                                    errors?.items[index]?.options[i]?.name
-                                      ?.message !== undefined
-                                  }
+                                  error={hasOptionNameError(index, i)}
                                   helperText={
-                                    (errors?.items &&
-                                      errors.items[index]?.options &&
-                                      errors?.items[index]?.options[i]?.name
+                                    (errors &&
+                                      errors!.items &&
+                                      errors.items[index] &&
+                                      errors.items[index]!.options &&
+                                      errors!.items[index]!.options![i] &&
+                                      errors!.items[index]!.options![i]!.name
                                         ?.message) ??
                                     ""
                                   }
@@ -524,16 +541,24 @@ export const EditTemplateForm = ({
                                     `items.${index}.options.${i}.description`
                                   )}
                                   error={
+                                    errors &&
                                     errors?.items &&
-                                    errors.items[index]?.options &&
-                                    errors?.items[index]?.options[i]
-                                      ?.description?.message !== undefined
+                                    errors.items[index] &&
+                                    errors.items[index]!.options &&
+                                    errors.items[index]!.options![i] &&
+                                    errors.items[index]!.options![i]!
+                                      .description &&
+                                    errors.items[index]!.options![i]!
+                                      .description?.message != undefined
                                   }
                                   helperText={
-                                    (errors?.items &&
-                                      errors.items[index]?.options &&
-                                      errors?.items[index]?.options[i]
-                                        ?.description?.message) ??
+                                    (errors &&
+                                      errors!.items &&
+                                      errors.items[index] &&
+                                      errors.items[index]!.options &&
+                                      errors!.items[index]!.options![i] &&
+                                      errors!.items[index]!.options![i]!
+                                        .description?.message) ??
                                     ""
                                   }
                                 />
@@ -543,7 +568,7 @@ export const EditTemplateForm = ({
                                       update(index, {
                                         ...field,
                                         options: field.options.filter(
-                                          (o, idx) => idx !== i
+                                          (_o, idx) => idx !== i
                                         ),
                                       });
                                     }}

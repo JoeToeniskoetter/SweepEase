@@ -27,7 +27,6 @@ import { InspectionInspectionItems } from "../InspectionInspectionItems";
 import { InspectionOrderStatus } from "../InspectionOrderStatus";
 import { ReviewDetail } from "../ReviewDetail";
 import { useCompleteInspection } from "../../hooks/useCompleteInspection";
-import { InspectionSignatureSection } from "../InspectionSignatureSection";
 import { SignatureModal } from "../SignatureModal";
 import "./Inspect.css";
 import { InspectionCompleteModal } from "../InspectionCompleteModal";
@@ -45,18 +44,11 @@ export const Inspect: React.FC<InspectProps> = () => {
   );
   const [openInspectionCompleteModal, setOpenInspectionCompleteModal] =
     useState<boolean>(false);
-  const [customerSignature, setCustomerSignature] = useState<string>();
-  const [techSignature, setTechSignature] = useState<string>();
   const [customerSignatureFile, setCustomerSignatureFile] = useState<File>();
   const [techSignatureFile, setTechSignatureFile] = useState<File>();
   const [customerSigModalOpen, setCustomerSigModalOpen] =
     useState<boolean>(false);
   const [techSigModalOpen, setTechSigModalOpen] = useState<boolean>(false);
-  const getExistingSignature = (type: string) => {
-    return inspection?.signatures?.find((s) => s.type.includes(type))?.imageUrl;
-  };
-  const existsingCustomerSignature = getExistingSignature("customer-signature");
-  const existsingTechSignature = getExistingSignature("technician-signature");
 
   const { mutateAsync: completeInspection, isPending } =
     useCompleteInspection();
@@ -257,9 +249,9 @@ export const Inspect: React.FC<InspectProps> = () => {
       <SignatureModal
         onClose={() => setCustomerSigModalOpen(false)}
         open={customerSigModalOpen}
-        onFinishedSigning={(dataUrl, file) => {
+        onFinishedSigning={(_dataUrl, file) => {
           setCustomerSignatureFile(file);
-          setCustomerSignature(dataUrl);
+          // setCustomerSignature(dataUrl);
           setCustomerSigModalOpen(false);
         }}
         title="Customer Signature"
@@ -271,9 +263,9 @@ export const Inspect: React.FC<InspectProps> = () => {
       <SignatureModal
         onClose={() => setTechSigModalOpen(false)}
         open={techSigModalOpen}
-        onFinishedSigning={(dataUrl, file) => {
+        onFinishedSigning={(_dataUrl, file) => {
           setTechSignatureFile(file);
-          setTechSignature(dataUrl);
+          // setTechSignature(dataUrl);
           setTechSigModalOpen(false);
         }}
         title="Technician Signature"

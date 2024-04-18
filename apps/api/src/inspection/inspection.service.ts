@@ -315,6 +315,9 @@ export class InspectionService {
   }
 
   findAll(currentUser: User, query: PaginateQuery) {
+    if (!currentUser.company) {
+      throw new BadRequestException('company setup required');
+    }
     return paginate(query, this.inspectionRepo, {
       sortableColumns: ['id', 'status', 'createdAt'],
       defaultSortBy: [['createdAt', 'DESC']],

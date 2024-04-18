@@ -67,6 +67,8 @@ export const InspectionTemplatesTable: React.FC<
     [isLoading, data]
   );
   const table = useReactTable({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     columns: tableColumns,
     data: tableData || [],
     getCoreRowModel: getCoreRowModel(),

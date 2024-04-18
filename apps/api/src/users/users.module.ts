@@ -16,10 +16,8 @@ import { MailModule } from 'src/mail/mail.module';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        console.log(configService.get('JWT_SECRET'));
         return {
           secret: configService.get('JWT_SECRET'),
-          secretOrPrivateKey: configService.get('JWT_SECRET'),
         };
       },
       inject: [ConfigService],

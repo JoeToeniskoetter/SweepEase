@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { CreateUserInviteDto } from './dto/create-user-invite.dto';
 import { UserInvite } from './entities/user-invite.entity';
-import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
+import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { AcceptInviteDto } from './dto/accept-invite.dto';
 import { MailService } from 'src/mail/mail.service';
 import { renderCompanyInviteEmail } from 'src/mail/templates/company-invite';
@@ -59,7 +59,10 @@ export class UsersService {
       throw new BadRequestException('user already invited');
     }
     //create invite in db
-    const verificationCode = this.jwtService.sign({ company: user.company.id });
+    const verificationCode = this.jwtService.sign(
+      { company: user.company.id },
+      { expiresIn: '-1 day' },
+    );
     const entity = this.userInviteRepo.create({
       userEmail: createInviteDto.email,
       createdBy: user,
@@ -108,13 +111,16 @@ export class UsersService {
           company: { id: payload.company },
         });
         await queryRunner.manager.save(user);
-        await queryRunner.manager.remove(invite);
+        await queryRunner.manager.softDelete(UserInvite, { id: invite.id });
         await queryRunner.commitTransaction();
       }
     } catch (e) {
       await queryRunner.rollbackTransaction();
       if (e instanceof JsonWebTokenError) {
-        throw new BadRequestException('failed to verify invite');
+        if (e instanceof TokenExpiredError) {
+          throw new BadRequestException('This invite has expired');
+        }
+        throw new BadRequestException('Failed to verify invite');
       } else {
         throw e;
       }

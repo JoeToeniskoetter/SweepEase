@@ -17,7 +17,7 @@ import { MailModule } from './mail/mail.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'frontend', 'dist'),
+      rootPath: join(__dirname, '../../..', 'frontend', 'dist'),
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({

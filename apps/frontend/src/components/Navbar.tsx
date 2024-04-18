@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, SxProps, Theme } from "@mui/material";
+import { AppBar, Box, SxProps, Theme } from "@mui/material";
 import React from "react";
 import { Logo } from "./Logo";
 import { NavbarUserMenu } from "./NavbarUserMenu";

@@ -11,7 +11,6 @@ import {
   FormControl,
   TextField,
   Typography,
-  useTheme,
 } from "@mui/material";
 import React, { useState } from "react";
 import { Logo } from "../components/Logo";
@@ -22,8 +21,7 @@ import { useMutation } from "@tanstack/react-query";
 interface SignInPageProps {}
 
 export const SignInPage: React.FC<SignInPageProps> = () => {
-  let [searchParams] = useSearchParams();
-  const theme = useTheme();
+  const [searchParams] = useSearchParams();
   const { signIn, signUp, user } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");

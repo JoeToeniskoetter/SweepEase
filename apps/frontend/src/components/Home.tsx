@@ -1,7 +1,5 @@
-import { Close } from "@mui/icons-material";
-import { Box, Container, Modal, Typography, useTheme } from "@mui/material";
+import { Box, Container, Typography, useTheme } from "@mui/material";
 import React from "react";
-import { CreateCompanyForm } from "./CreateCompanyForm";
 
 interface HomeProps {}
 

@@ -5,7 +5,6 @@ import { SignInPage } from "./pages/SignInPage";
 import { AuthProvider } from "./context/AuthContext";
 import { OnboardedRoutes } from "./components/OnboardedRoutes";
 import ResponsiveDrawer from "./components/ResponsiveDrawer";
-import { Home } from "./components/Home";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CreateCompanyPage } from "./pages/CreateCompanyPage";
 import { ProtectedRoutes } from "./components/ProtectedRoutes";

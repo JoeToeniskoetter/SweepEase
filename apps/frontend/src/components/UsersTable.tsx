@@ -24,7 +24,7 @@ interface UsersTableProps {}
 
 const columnHelper = createColumnHelper<SweepInspectrUser>();
 
-export const UsersTable: React.FC<UsersTableProps> = ({}) => {
+export const UsersTable: React.FC<UsersTableProps> = () => {
   const { data: users, isLoading } = useUsers();
   const columns = React.useMemo(
     () => [
@@ -44,7 +44,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({}) => {
         footer: (info) => info.column.id,
       }),
       columnHelper.accessor("id", {
-        cell: (info) => <MoreHoriz />,
+        cell: () => <MoreHoriz />,
         header: () => <Typography fontWeight={"bold"}></Typography>,
         footer: (info) => info.column.id,
       }),
