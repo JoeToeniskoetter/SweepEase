@@ -12,7 +12,7 @@ import { FirebaseModule } from './firebase/firebase.module';
 import { CompanyModule } from './company/company.module';
 import { InspectionModule } from './inspection/inspection.module';
 import { UploadModule } from './upload/upload.module';
-import { JwtModule } from '@nestjs/jwt';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -41,6 +41,7 @@ import { JwtModule } from '@nestjs/jwt';
     CompanyModule,
     InspectionModule,
     UploadModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService, FirebaseAuthService],

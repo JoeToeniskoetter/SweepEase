@@ -9,7 +9,6 @@ import { Button, useTheme } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
@@ -82,12 +81,12 @@ export default function ResponsiveDrawer(props: Props) {
       display="flex"
       flexDirection={"column"}
       justifyContent={"space-between"}
+      bgcolor={"white"}
     >
       <Box>
         <Toolbar sx={{ display: { xs: "none", sm: "flex" } }}>
           <Logo variant="dark" />
         </Toolbar>
-        <Divider />
         <List sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
           {tabs.map((tab) => {
             return (
@@ -146,7 +145,13 @@ export default function ResponsiveDrawer(props: Props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box
+      sx={{
+        display: "flex",
+        minHeight: "100vh",
+        // bgcolor: theme.palette.background.default,
+      }}
+    >
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -219,6 +224,7 @@ export default function ResponsiveDrawer(props: Props) {
         sx={{
           flexGrow: 1,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
+          bgcolor: theme.palette.background.default,
         }}
       >
         <Toolbar

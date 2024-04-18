@@ -1,12 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Not, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateUserInviteDto } from './dto/create-user-invite.dto';
 import { UserInvite } from './entities/user-invite.entity';
 import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
 import { AcceptInviteDto } from './dto/accept-invite.dto';
-import dataSource from 'src/db/data-source';
+import { MailService } from 'src/mail/mail.service';
+import { renderCompanyInviteEmail } from 'src/mail/templates/company-invite';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +18,8 @@ export class UsersService {
     private readonly userInviteRepo: Repository<UserInvite>,
     private readonly jwtService: JwtService,
     private readonly dataSource: DataSource,
+    private readonly mailService: MailService,
+    private readonly configService: ConfigService,
   ) {}
   async getMe(currentUser: User) {
     return this.userRepo.findOne({
@@ -44,7 +48,7 @@ export class UsersService {
     const exisitingUser = await this.userRepo.findOne({
       where: { email: createInviteDto.email.toLowerCase() },
     });
-    if (exisitingUser) {
+    if (exisitingUser && exisitingUser.company) {
       throw new BadRequestException('user already associated to company');
     }
     //check if user already invited
@@ -62,6 +66,17 @@ export class UsersService {
       company: user.company,
       expiresAt: new Date(),
       verificationCode: verificationCode,
+    });
+    await this.mailService.sendMail({
+      email: createInviteDto.email,
+      subject: `Join SweepInspectr with ${user.company.name}`,
+      template: renderCompanyInviteEmail({
+        link:
+          this.configService.get('NODE_ENV') === 'development'
+            ? `http://localhost:5173/invite?code=${verificationCode}`
+            : `https://sweep-inspectr.com/invite?code=${verificationCode}`,
+        companyName: user.company.name,
+      }),
     });
 
     //send email with invite link

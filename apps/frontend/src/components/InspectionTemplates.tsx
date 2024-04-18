@@ -57,8 +57,9 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
         }}
         maxWidth="lg"
       >
-        <Box display={"flex"}>
+        <Box display={"flex"} mt={2}>
           <Button
+            variant="outlined"
             onClick={() => setOpenModal(true)}
             startIcon={<AddCircleOutline color="primary" fontSize="small" />}
           >

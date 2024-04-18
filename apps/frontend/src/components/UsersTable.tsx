@@ -18,6 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import { NoUsers } from "./NoUsers";
+import { MoreHoriz } from "@mui/icons-material";
 
 interface UsersTableProps {}
 
@@ -40,6 +41,11 @@ export const UsersTable: React.FC<UsersTableProps> = ({}) => {
       columnHelper.accessor("role", {
         cell: (info) => info.getValue(),
         header: () => <Typography fontWeight={"bold"}>Role</Typography>,
+        footer: (info) => info.column.id,
+      }),
+      columnHelper.accessor("id", {
+        cell: (info) => <MoreHoriz />,
+        header: () => <Typography fontWeight={"bold"}></Typography>,
         footer: (info) => info.column.id,
       }),
     ],
@@ -72,8 +78,8 @@ export const UsersTable: React.FC<UsersTableProps> = ({}) => {
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table size="medium">
+      <TableContainer component={Paper} sx={{ bgcolor: "white" }}>
+        <Table>
           <TableHead>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

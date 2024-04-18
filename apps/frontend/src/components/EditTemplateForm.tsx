@@ -174,15 +174,16 @@ export const EditTemplateForm = ({
           justifyContent={"flex-end"}
           position={"sticky"}
           top={0}
-          bgcolor={"white"}
+          bgcolor={theme.palette.background.default}
           py={2}
           zIndex={100}
         >
           <Button
-            variant="outlined"
+            variant="contained"
             startIcon={<Edit />}
             onClick={() => setEdit(true)}
             disabled={edit}
+            sx={{ color: "white" }}
           >
             Edit
           </Button>
@@ -190,7 +191,7 @@ export const EditTemplateForm = ({
             <span>
               <Button
                 disabled={!isDirty}
-                variant="outlined"
+                variant="contained"
                 startIcon={
                   isPending ? (
                     <CircularProgress size={18} color="success" />
@@ -348,9 +349,6 @@ export const EditTemplateForm = ({
                     key={field.id}
                     sx={{
                       width: "100%",
-                      ".MuiAccordionSummary-root": {
-                        backgroundColor: "white !important",
-                      },
                       ...(errors.items &&
                         errors.items[index] && {
                           boxShadow: "1px 1px 1px 1px #ff6b66",

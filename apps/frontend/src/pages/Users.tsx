@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import { InviteUserModal } from "../components/InviteUserModal";
 import { UserInvitesTable } from "../components/UserInvitesTable";
 import { UsersTable } from "../components/UsersTable";
+import { AddCircleOutline } from "@mui/icons-material";
 
 interface UsersProps {}
 
@@ -38,8 +39,18 @@ export const Users: React.FC<UsersProps> = ({}) => {
         </Typography>
       </Box>
       <Container maxWidth="lg">
-        <Box>
-          <Button onClick={() => setInviteUserModalOpen(true)}>
+        <Box
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"flex-end"}
+          // maxWidth={"md"}
+          mt={2}
+        >
+          <Button
+            onClick={() => setInviteUserModalOpen(true)}
+            startIcon={<AddCircleOutline />}
+            variant="outlined"
+          >
             Invite user
           </Button>
         </Box>

@@ -12,7 +12,7 @@ export const NoInvites: React.FC<NoInvitesProps> = () => {
     <Box
       sx={{ width: "100%" }}
       display={"flex"}
-      bgcolor={"#ebebeb"}
+      bgcolor={"white"}
       alignItems={"center"}
       justifyContent={"center"}
       height={200}
