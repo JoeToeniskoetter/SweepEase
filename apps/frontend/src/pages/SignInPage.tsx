@@ -15,7 +15,7 @@ import {
 import React, { useState } from "react";
 import { Logo } from "../components/Logo";
 import { useAuth } from "../context/AuthContext";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 
 interface SignInPageProps {}
@@ -133,9 +133,14 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
                 ? "Have an account? Sign in."
                 : "Not signed up? Sign up now."}
             </Typography>
-            <Typography fontWeight={"bold"} fontSize={14}>
-              Forgot Password?
-            </Typography>
+            <Link
+              to={"/forgot-password"}
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <Typography fontWeight={"bold"} fontSize={14}>
+                Forgot Password?
+              </Typography>
+            </Link>
           </Box>
           <CardActions style={{ padding: 0, marginTop: 15 }}>
             <Button

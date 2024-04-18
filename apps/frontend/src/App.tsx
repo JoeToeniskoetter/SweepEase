@@ -16,6 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ReviewAndFinish } from "./pages/ReviewAndFinish";
 import { Users } from "./pages/Users";
 import { AcceptInvite } from "./pages/AcceptInvite";
+import { ForgotPassword } from "./pages/ForgotPassword";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 10000 } },
@@ -29,6 +30,7 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/signin" element={<SignInPage />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route element={<ProtectedRoutes />}>
               <Route path="/company-setup" Component={CreateCompanyPage} />
               <Route path="/invite" Component={AcceptInvite} />
