@@ -1,16 +1,16 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { FirebaseAuthGuard } from 'src/firebase/firebase.guard';
 import { CurrentUser } from 'src/user/user.decorator';
-import { User } from './entities/user.entity';
+import { User, UserRoles } from './entities/user.entity';
 import { CreateUserInviteDto } from './dto/create-user-invite.dto';
 import { AcceptInviteDto } from './dto/accept-invite.dto';
+import { Roles } from 'src/role/roles.decorator';
 
-@UseGuards(FirebaseAuthGuard)
 @Controller('user-invite')
 export class UserInviteController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Roles([UserRoles.CREATOR])
   @Post()
   createInvite(
     @CurrentUser() user: User,

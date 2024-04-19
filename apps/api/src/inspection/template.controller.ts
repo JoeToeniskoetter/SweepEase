@@ -7,21 +7,20 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
 } from '@nestjs/common';
-import { FirebaseAuthGuard } from 'src/firebase/firebase.guard';
-import { InspectionService } from './inspection.service';
 import { CurrentUser } from 'src/user/user.decorator';
-import { User } from 'src/users/entities/user.entity';
+import { User, UserRoles } from 'src/users/entities/user.entity';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { UpdateTemplateDto } from './dto/update-template.dto';
+import { InspectionService } from './inspection.service';
+import { Roles } from 'src/role/roles.decorator';
 
-@UseGuards(FirebaseAuthGuard)
 @Controller('inspection-templates')
 export class TemplateController {
   logger = new Logger(TemplateController.name);
   constructor(private readonly inspectionService: InspectionService) {}
 
+  @Roles([UserRoles.USER, UserRoles.ADMIN, UserRoles.CREATOR])
   @Get()
   findAllTemplates(@CurrentUser() currentUser: User) {
     this.logger.log('gettting templates');
@@ -34,6 +33,7 @@ export class TemplateController {
     return this.inspectionService.findAllInspectionTemplateOptions(currentUser);
   }
 
+  @Roles([UserRoles.ADMIN, UserRoles.CREATOR])
   @Post()
   createInspectionTemplate(
     @Body() createTemplateDto: CreateTemplateDto,
@@ -52,6 +52,7 @@ export class TemplateController {
     return this.inspectionService.findTemplateById(id);
   }
 
+  @Roles([UserRoles.ADMIN, UserRoles.CREATOR])
   @Patch(':id')
   updateTemplate(
     @CurrentUser() user: User,
@@ -62,6 +63,7 @@ export class TemplateController {
     return this.inspectionService.updateTemplate(id, updateTemplateDto, user);
   }
 
+  @Roles([UserRoles.ADMIN, UserRoles.CREATOR])
   @Delete(':id')
   deleteTemplate(@CurrentUser() user: User, @Param('id') id: string) {
     this.logger.log('deleting template');

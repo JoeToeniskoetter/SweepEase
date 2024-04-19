@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable, UseGuards } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { UpdateCompanyDto } from './dto/update-company.dto';
-import { User } from 'src/users/entities/user.entity';
+import { User, UserRoles } from 'src/users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from './entities/company.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -47,7 +46,7 @@ export class CompanyService {
     try {
       const newCompany = await queryRunner.manager.save(company);
       currentUser.company = newCompany;
-      currentUser.role = 'ADMIN';
+      currentUser.role = UserRoles.CREATOR;
       await queryRunner.manager.save(currentUser);
       await queryRunner.commitTransaction();
     } catch (e) {
@@ -56,9 +55,5 @@ export class CompanyService {
     } finally {
       await queryRunner.release();
     }
-  }
-
-  update(id: string, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
   }
 }

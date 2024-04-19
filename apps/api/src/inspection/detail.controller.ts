@@ -7,7 +7,6 @@ import {
   ParseFilePipe,
   Post,
   UploadedFile,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -15,9 +14,7 @@ import { CurrentUser } from 'src/user/user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { updateInspectionDetailItem } from './dto/update-inspection-detail-item';
 import { InspectionService } from './inspection.service';
-import { FirebaseAuthGuard } from 'src/firebase/firebase.guard';
 
-@UseGuards(FirebaseAuthGuard)
 @Controller('inspection-details')
 export class DetailController {
   constructor(private readonly inspectionService: InspectionService) {}

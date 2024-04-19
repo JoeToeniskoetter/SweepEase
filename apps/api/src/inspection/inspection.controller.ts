@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -11,19 +10,16 @@ import {
   Patch,
   Post,
   UploadedFiles,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { FirebaseAuthGuard } from 'src/firebase/firebase.guard';
+import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { CurrentUser } from 'src/user/user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { CreateInspectionDto } from './dto/create-inspection.dto';
 import { UpdateInspectionDto } from './dto/update-inspection.dto';
 import { InspectionService } from './inspection.service';
-import { Paginate, PaginateQuery } from 'nestjs-paginate';
 
-@UseGuards(FirebaseAuthGuard)
 @Controller('inspection')
 export class InspectionController {
   logger = new Logger(InspectionController.name);
@@ -62,19 +58,16 @@ export class InspectionController {
     @Body() createInspectionDto: CreateInspectionDto,
     @CurrentUser() user: User,
   ) {
-    this.logger.log('creating inspection');
     return this.inspectionService.create(createInspectionDto, user);
   }
 
   @Get()
   findAll(@CurrentUser() user: User, @Paginate() query: PaginateQuery) {
-    this.logger.log('get inspections');
     return this.inspectionService.findAll(user, query);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string, @CurrentUser() user: User) {
-    this.logger.log('get inspection by id');
     return this.inspectionService.findOne(id, user);
   }
 
@@ -83,13 +76,11 @@ export class InspectionController {
     @Param('id') id: string,
     @Body() updateInspectionDto: UpdateInspectionDto,
   ) {
-    this.logger.log('update inspection');
     return this.inspectionService.update(+id, updateInspectionDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    this.logger.log('delete inspection');
     return this.inspectionService.remove(+id);
   }
 }

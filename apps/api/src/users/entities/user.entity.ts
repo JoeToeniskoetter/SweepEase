@@ -10,6 +10,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export enum UserRoles {
+  CREATOR = 'CREATOR',
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+}
+
 @Entity()
 export class User extends BaseEntity {
   @PrimaryColumn()
@@ -22,8 +28,8 @@ export class User extends BaseEntity {
   @JoinColumn({ name: 'company_id' })
   company: Company;
 
-  @Column({ name: 'role', enum: ['USER', 'ADMIN'], default: 'USER' })
-  role: string;
+  @Column({ name: 'role', enum: UserRoles, default: UserRoles.USER })
+  role: UserRoles;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

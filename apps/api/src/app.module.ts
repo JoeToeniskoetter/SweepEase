@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -13,6 +11,9 @@ import { CompanyModule } from './company/company.module';
 import { InspectionModule } from './inspection/inspection.module';
 import { UploadModule } from './upload/upload.module';
 import { MailModule } from './mail/mail.module';
+import { APP_GUARD } from '@nestjs/core';
+import { FirebaseAuthGuard } from './firebase/firebase.guard';
+import { RolesGuard } from './role/role.guard';
 
 @Module({
   imports: [
@@ -43,7 +44,16 @@ import { MailModule } from './mail/mail.module';
     UploadModule,
     MailModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, FirebaseAuthService],
+  providers: [
+    FirebaseAuthService,
+    {
+      provide: APP_GUARD,
+      useClass: FirebaseAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {}
