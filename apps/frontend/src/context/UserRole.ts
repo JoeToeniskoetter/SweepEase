@@ -1,5 +1,6 @@
-export enum UserRole {
-  ADMIN = "ADMIN",
-  CREATOR = "CREATOR",
-  USER = "USER",
-}
+export const UserRole = {
+  ADMIN: "ADMIN",
+  CREATOR: "CREATOR",
+  USER: "USER",
+};
+export type UserRoles = keyof typeof UserRole;

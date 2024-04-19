@@ -3,7 +3,6 @@ import { Box, Button, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { InviteUserModal } from "./InviteUserModal";
 import { ProtectedComponent } from "./ProtectedComponent";
-import { UserRole } from "../context/UserRole";
 
 interface NoUsersProps {}
 
@@ -11,7 +10,7 @@ export const NoUsers: React.FC<NoUsersProps> = () => {
   const [inviteUserModalOpen, setInviteUserModalOpen] =
     useState<boolean>(false);
   return (
-    <ProtectedComponent allowedRoles={[UserRole.ADMIN, UserRole.CREATOR]}>
+    <ProtectedComponent allowedRoles={["ADMIN", "CREATOR"]}>
       <Box
         sx={{ width: "100%" }}
         display={"flex"}

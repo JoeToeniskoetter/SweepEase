@@ -13,7 +13,6 @@ import { UserInvitesTable } from "../components/UserInvitesTable";
 import { UsersTable } from "../components/UsersTable";
 import { AddCircleOutline } from "@mui/icons-material";
 import { ProtectedComponent } from "../components/ProtectedComponent";
-import { UserRole } from "../context/UserRole";
 
 interface UsersProps {}
 
@@ -47,7 +46,7 @@ export const Users: React.FC<UsersProps> = () => {
           justifyContent={"flex-end"}
           mt={2}
         >
-          <ProtectedComponent allowedRoles={[UserRole.ADMIN, UserRole.CREATOR]}>
+          <ProtectedComponent allowedRoles={["ADMIN", "CREATOR"]}>
             <Button
               onClick={() => setInviteUserModalOpen(true)}
               startIcon={<AddCircleOutline />}
@@ -67,9 +66,7 @@ export const Users: React.FC<UsersProps> = () => {
               aria-label="basic tabs example"
             >
               <Tab label="Users" />
-              <ProtectedComponent
-                allowedRoles={[UserRole.ADMIN, UserRole.CREATOR]}
-              >
+              <ProtectedComponent allowedRoles={["ADMIN", "CREATOR"]}>
                 <Tab label="Invites" />
               </ProtectedComponent>
             </Tabs>

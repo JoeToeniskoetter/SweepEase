@@ -4,7 +4,7 @@ import { UserRole } from "../context/UserRole";
 
 interface ProtectedComponentProps {
   children: React.ReactNode;
-  allowedRoles: UserRole[];
+  allowedRoles: Array<keyof typeof UserRole>;
   fallbackComponent?: React.ReactNode;
 }
 
@@ -14,7 +14,8 @@ export const ProtectedComponent: React.FC<ProtectedComponentProps> = ({
   fallbackComponent,
 }) => {
   const { data: profile } = useProfile({ enabled: true });
-  const hasRole = allowedRoles.includes(profile?.role);
+
+  const hasRole = profile != undefined && allowedRoles.includes(profile.role);
   if (hasRole) {
     return <>{children}</>;
   }

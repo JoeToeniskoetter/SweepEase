@@ -18,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import { NoUsers } from "./NoUsers";
-import { MoreHoriz } from "@mui/icons-material";
+import { UsertableOptions } from "./UserTableOptions";
 
 interface UsersTableProps {}
 
@@ -44,7 +44,7 @@ export const UsersTable: React.FC<UsersTableProps> = () => {
         footer: (info) => info.column.id,
       }),
       columnHelper.accessor("id", {
-        cell: () => <MoreHoriz />,
+        cell: ({ row }) => <UsertableOptions id={row.original.id} />,
         header: () => <Typography fontWeight={"bold"}></Typography>,
         footer: (info) => info.column.id,
       }),

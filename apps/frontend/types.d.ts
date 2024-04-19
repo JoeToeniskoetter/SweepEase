@@ -1,9 +1,7 @@
-import { UserRole } from "./src/components/ProtectedComponent";
-
 interface Profile {
   id: string;
   email: string;
-  role: keyof UserRole;
+  role: "USER" | "ADMIN" | "CREATOR";
   createdAt: string;
   updatedAt: string;
   company: Company | null;
@@ -12,7 +10,7 @@ interface Profile {
 interface SweepInspectrUser {
   id: string;
   email: string;
-  role: "USER" | "ADMIN";
+  role: keyof UserRole;
   createdAt: string;
   updatedAt: string;
 }
