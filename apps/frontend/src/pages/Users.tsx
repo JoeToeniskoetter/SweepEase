@@ -66,9 +66,7 @@ export const Users: React.FC<UsersProps> = () => {
               aria-label="basic tabs example"
             >
               <Tab label="Users" />
-              <ProtectedComponent allowedRoles={["ADMIN", "CREATOR"]}>
-                <Tab label="Invites" />
-              </ProtectedComponent>
+              <Tab label="Invites" />
             </Tabs>
           </Box>
           {tab === 0 && <UsersTable />}

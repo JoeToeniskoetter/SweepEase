@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import { NoUsers } from "./NoUsers";
 import { UsertableOptions } from "./UserTableOptions";
+import { ProtectedComponent } from "./ProtectedComponent";
 
 interface UsersTableProps {}
 
@@ -44,7 +45,14 @@ export const UsersTable: React.FC<UsersTableProps> = () => {
         footer: (info) => info.column.id,
       }),
       columnHelper.accessor("id", {
-        cell: ({ row }) => <UsertableOptions id={row.original.id} />,
+        cell: (info) => (
+          <ProtectedComponent
+            allowedRoles={["ADMIN", "CREATOR"]}
+            key={info.row.original.id}
+          >
+            <UsertableOptions id={info.row.original.id} />
+          </ProtectedComponent>
+        ),
         header: () => <Typography fontWeight={"bold"}></Typography>,
         footer: (info) => info.column.id,
       }),

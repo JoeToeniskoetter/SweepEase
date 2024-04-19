@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
@@ -9,6 +13,7 @@ import { AcceptInviteDto } from './dto/accept-invite.dto';
 import { MailService } from 'src/mail/mail.service';
 import { renderCompanyInviteEmail } from 'src/mail/templates/company-invite';
 import { ConfigService } from '@nestjs/config';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -127,5 +132,28 @@ export class UsersService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async updateUser(
+    currentUser: User,
+    updateUserDto: UpdateUserDto,
+    id: string,
+  ) {
+    const userToUpdate = await this.userRepo.findOne({
+      where: { id: id, company: { id: currentUser.company.id } },
+    });
+
+    if (!userToUpdate) {
+      throw new NotFoundException('user not found');
+    }
+
+    if (updateUserDto.role !== 'USER' && updateUserDto.role !== 'ADMIN') {
+      throw new BadRequestException(
+        'role updates are only allow for user and admin roless',
+      );
+    }
+
+    userToUpdate.role = updateUserDto.role;
+    return this.userRepo.save(userToUpdate);
   }
 }

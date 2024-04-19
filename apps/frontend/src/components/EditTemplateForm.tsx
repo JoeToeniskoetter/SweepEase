@@ -39,6 +39,7 @@ import { z } from "zod";
 import { useUpdateTemplate } from "../hooks/useUpdateTemplate";
 import { DraggableItem } from "./DraggableItem";
 import { toast } from "react-toastify";
+import { ProtectedComponent } from "./ProtectedComponent";
 
 interface TemplateForm {
   name: string;
@@ -197,15 +198,32 @@ export const EditTemplateForm = ({
           py={2}
           zIndex={100}
         >
-          <Button
-            variant="contained"
-            startIcon={<Edit />}
-            onClick={() => setEdit(true)}
-            disabled={edit}
-            sx={{ color: "white" }}
+          <ProtectedComponent
+            allowedRoles={["ADMIN", "CREATOR"]}
+            fallbackComponent={
+              <Tooltip title="Missing required permissions. Contact your company admin to edit a template">
+                <span>
+                  <Button
+                    disabled
+                    startIcon={<AddCircleOutline fontSize="small" />}
+                    variant="outlined"
+                  >
+                    Edit
+                  </Button>
+                </span>
+              </Tooltip>
+            }
           >
-            Edit
-          </Button>
+            <Button
+              variant="contained"
+              startIcon={<Edit />}
+              onClick={() => setEdit(true)}
+              disabled={edit}
+              sx={{ color: "white" }}
+            >
+              Edit
+            </Button>
+          </ProtectedComponent>
           <Tooltip title={!isDirty ? "Make changes before saving" : ""}>
             <span>
               <Button

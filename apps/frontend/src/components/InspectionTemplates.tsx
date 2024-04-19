@@ -61,7 +61,7 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
       >
         <Box display={"flex"} mt={2}>
           <ProtectedComponent
-            allowedRoles={[]}
+            allowedRoles={["ADMIN", "CREATOR"]}
             fallbackComponent={
               <Tooltip title="Missing required permissions. Contact your company admin to create a template">
                 <span>
