@@ -12,10 +12,12 @@ import { InviteUserModal } from "../components/InviteUserModal";
 import { UserInvitesTable } from "../components/UserInvitesTable";
 import { UsersTable } from "../components/UsersTable";
 import { AddCircleOutline } from "@mui/icons-material";
+import { ProtectedComponent } from "../components/ProtectedComponent";
+import { UserRole } from "../context/UserRole";
 
 interface UsersProps {}
 
-export const Users: React.FC<UsersProps> = ({}) => {
+export const Users: React.FC<UsersProps> = () => {
   const [tab, setTab] = useState<number>(0);
   const [inviteUserModalOpen, setInviteUserModalOpen] =
     useState<boolean>(false);
@@ -43,16 +45,17 @@ export const Users: React.FC<UsersProps> = ({}) => {
           display={"flex"}
           alignItems={"center"}
           justifyContent={"flex-end"}
-          // maxWidth={"md"}
           mt={2}
         >
-          <Button
-            onClick={() => setInviteUserModalOpen(true)}
-            startIcon={<AddCircleOutline />}
-            variant="outlined"
-          >
-            Invite user
-          </Button>
+          <ProtectedComponent allowedRoles={[UserRole.ADMIN, UserRole.CREATOR]}>
+            <Button
+              onClick={() => setInviteUserModalOpen(true)}
+              startIcon={<AddCircleOutline />}
+              variant="outlined"
+            >
+              Invite user
+            </Button>
+          </ProtectedComponent>
         </Box>
         <Box sx={{ width: "100%" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }} mb={4}>
@@ -64,7 +67,11 @@ export const Users: React.FC<UsersProps> = ({}) => {
               aria-label="basic tabs example"
             >
               <Tab label="Users" />
-              <Tab label="Invites" />
+              <ProtectedComponent
+                allowedRoles={[UserRole.ADMIN, UserRole.CREATOR]}
+              >
+                <Tab label="Invites" />
+              </ProtectedComponent>
             </Tabs>
           </Box>
           {tab === 0 && <UsersTable />}

@@ -9,6 +9,7 @@ import {
   MenuItem,
   Modal,
   TextField,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -17,6 +18,7 @@ import { useCreateTemplate } from "../hooks/useCreateTemplate";
 import { useInspectionTemplates } from "../hooks/useInspectionTemplates";
 import { InspectionTemplateGrid } from "./InspectionTemplateGrid";
 import { EmptyTemplates } from "./EmptyTemplates";
+import { ProtectedComponent } from "./ProtectedComponent";
 
 interface InspectionTemplatesProps {}
 
@@ -58,13 +60,30 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
         maxWidth="lg"
       >
         <Box display={"flex"} mt={2}>
-          <Button
-            variant="outlined"
-            onClick={() => setOpenModal(true)}
-            startIcon={<AddCircleOutline color="primary" fontSize="small" />}
+          <ProtectedComponent
+            allowedRoles={[]}
+            fallbackComponent={
+              <Tooltip title="Missing required permissions. Contact your company admin to create a template">
+                <span>
+                  <Button
+                    disabled
+                    startIcon={<AddCircleOutline fontSize="small" />}
+                    variant="outlined"
+                  >
+                    Create Template
+                  </Button>
+                </span>
+              </Tooltip>
+            }
           >
-            Create Template
-          </Button>
+            <Button
+              variant="outlined"
+              onClick={() => setOpenModal(true)}
+              startIcon={<AddCircleOutline color="primary" fontSize="small" />}
+            >
+              Create Template
+            </Button>
+          </ProtectedComponent>
         </Box>
         {error && <Alert severity="error">Failed to create template</Alert>}
         {!isLoading && data?.length == 0 ? <EmptyTemplates /> : null}

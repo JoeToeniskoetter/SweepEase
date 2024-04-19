@@ -14,6 +14,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -29,6 +30,7 @@ import { InspectionOrderInfoForm } from "./InspectionOrderInfoForm";
 import { InspectionOrderOptions } from "./InspectionOrderOptions";
 import { InspectionOrderStatus } from "./InspectionOrderStatus";
 import { EmptyInspectionOrders } from "./EmptyInspectionOrders";
+import { ProtectedComponent } from "./ProtectedComponent";
 
 interface InspectionOrdersProps {}
 
@@ -135,13 +137,30 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = () => {
         maxWidth="lg"
       >
         <Box display={"flex"} justifyContent={"flex-end"} mt={2}>
-          <Button
-            onClick={() => setOpenModal(true)}
-            startIcon={<AddCircleOutline color="primary" fontSize="small" />}
-            variant="outlined"
+          <ProtectedComponent
+            allowedRoles={[]}
+            fallbackComponent={
+              <Tooltip title="Missing required permissions. Contact your company admin to create an inspection order">
+                <span>
+                  <Button
+                    disabled
+                    startIcon={<AddCircleOutline fontSize="small" />}
+                    variant="outlined"
+                  >
+                    Create Order
+                  </Button>
+                </span>
+              </Tooltip>
+            }
           >
-            Create Order
-          </Button>
+            <Button
+              onClick={() => setOpenModal(true)}
+              startIcon={<AddCircleOutline color="primary" fontSize="small" />}
+              variant="outlined"
+            >
+              Create Order
+            </Button>
+          </ProtectedComponent>
         </Box>
         {!isLoading && data?.data.length === 0 ? (
           <EmptyInspectionOrders />
