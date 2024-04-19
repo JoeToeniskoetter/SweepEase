@@ -58,6 +58,7 @@ export const InviteUserModal: React.FC<InviteUserModalProps> = ({
             disabled={email.trim() === ""}
             onClick={async () => {
               await mutateAsync({ email: email });
+              onClose();
             }}
             sx={{ color: "white" }}
           >

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CurrentUser } from 'src/user/user.decorator';
 import { User, UserRoles } from './entities/user.entity';
@@ -10,7 +10,7 @@ import { Roles } from 'src/role/roles.decorator';
 export class UserInviteController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Roles([UserRoles.CREATOR])
+  @Roles([UserRoles.CREATOR, UserRoles.ADMIN])
   @Post()
   createInvite(
     @CurrentUser() user: User,
@@ -30,5 +30,11 @@ export class UserInviteController {
     @Body() acceptInviteDto: AcceptInviteDto,
   ) {
     return this.usersService.acceptInvite(currentUser, acceptInviteDto);
+  }
+
+  @Roles([UserRoles.CREATOR, UserRoles.ADMIN])
+  @Post(':id/resend')
+  resendInvite(@Param('id') id: string, @CurrentUser() currentUser: User) {
+    return this.usersService.resendInvite(id, currentUser);
   }
 }

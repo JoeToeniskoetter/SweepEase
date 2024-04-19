@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { User } from './entities/user.entity';
@@ -17,6 +18,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
+  logger = new Logger(UsersService.name);
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
     @InjectRepository(UserInvite)
@@ -66,7 +68,7 @@ export class UsersService {
     //create invite in db
     const verificationCode = this.jwtService.sign(
       { company: user.company.id },
-      { expiresIn: '-1 day' },
+      { expiresIn: '1 day' },
     );
     const entity = this.userInviteRepo.create({
       userEmail: createInviteDto.email,
@@ -75,7 +77,7 @@ export class UsersService {
       expiresAt: new Date(),
       verificationCode: verificationCode,
     });
-    await this.mailService.sendMail({
+    const res = await this.mailService.sendMail({
       email: createInviteDto.email,
       subject: `Join SweepInspectr with ${user.company.name}`,
       template: renderCompanyInviteEmail({
@@ -86,6 +88,7 @@ export class UsersService {
         companyName: user.company.name,
       }),
     });
+    this.logger.log(res);
 
     //send email with invite link
     //need to setup email templates
@@ -155,5 +158,47 @@ export class UsersService {
 
     userToUpdate.role = updateUserDto.role;
     return this.userRepo.save(userToUpdate);
+  }
+
+  private async sendInviteEmail(
+    verificationCode: string,
+    email: string,
+    companyName: string,
+  ) {
+    const res = await this.mailService.sendMail({
+      email: email,
+      subject: `Join SweepInspectr with ${companyName}`,
+      template: renderCompanyInviteEmail({
+        link:
+          this.configService.get('NODE_ENV') === 'development'
+            ? `http://localhost:5173/invite?code=${verificationCode}`
+            : `https://sweep-inspectr.com/invite?code=${verificationCode}`,
+        companyName: companyName,
+      }),
+    });
+    return res;
+  }
+
+  async resendInvite(id: string, currentUser: User) {
+    const invite = await this.userInviteRepo.findOne({
+      where: { id, company: { id: currentUser.company.id } },
+    });
+
+    if (!invite) {
+      throw new NotFoundException();
+    }
+
+    const verificationCode = this.jwtService.sign(
+      { company: currentUser.company.id },
+      { expiresIn: '1 day' },
+    );
+
+    const res = await this.sendInviteEmail(
+      verificationCode,
+      invite.userEmail,
+      currentUser.company.name,
+    );
+
+    this.logger.log(res);
   }
 }

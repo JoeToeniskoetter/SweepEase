@@ -19,12 +19,13 @@ export class MailService {
 
   async sendMail({ email, subject, template }) {
     try {
-      await this.transporter.sendMail({
+      const res = await this.transporter.sendMail({
         to: email,
         from: this.configService.get('EMAIL_USER'),
         subject,
         html: template,
       });
+      return res;
     } catch (e) {
       console.error(e);
     }

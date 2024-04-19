@@ -1,6 +1,7 @@
-import { MoreHoriz, RefreshTwoTone } from "@mui/icons-material";
+import { MoreHoriz, Refresh, RefreshTwoTone } from "@mui/icons-material";
 import {
   Button,
+  CircularProgress,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -9,13 +10,17 @@ import {
   MenuList,
 } from "@mui/material";
 import React from "react";
+import { useResendInvite } from "../hooks/useResendInvite";
 
 interface InspectionOrderOptionsProps {
   id: string;
   invite: UserInvite;
 }
 
-export const UserInviteOptions: React.FC<InspectionOrderOptionsProps> = () => {
+export const UserInviteOptions: React.FC<InspectionOrderOptionsProps> = ({
+  invite,
+}) => {
+  const { mutateAsync: resend, isPending } = useResendInvite();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -39,10 +44,19 @@ export const UserInviteOptions: React.FC<InspectionOrderOptionsProps> = () => {
         }}
       >
         <MenuItem>
-          <ListItemIcon>
-            <RefreshTwoTone />
-          </ListItemIcon>
-          <ListItemText>Resend</ListItemText>
+          <Button
+            startIcon={
+              isPending ? (
+                <CircularProgress sx={{ color: "black", fontSize: 18 }} />
+              ) : (
+                <Refresh />
+              )
+            }
+            onClick={async () => await resend({ id: invite.id })}
+            sx={{ textTransform: "none", color: "black" }}
+          >
+            <ListItemText>Resend</ListItemText>
+          </Button>
         </MenuItem>
       </Button>
     );

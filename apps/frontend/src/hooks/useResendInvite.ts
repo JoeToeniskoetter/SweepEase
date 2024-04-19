@@ -3,24 +3,28 @@ import axios from "axios";
 import { auth } from "../context/firebase";
 import { toast } from "react-toastify";
 
-export const useInviteUser = () => {
+export const useResendInvite = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { email: string }): Promise<unknown> => {
+    mutationFn: async (data: { id: string }): Promise<unknown> => {
       const token = await auth.currentUser?.getIdToken();
-      const resp = await axios.post("/api/user-invite", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const resp = await axios.post(
+        `/api/user-invite/${data.id}/resend`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       return resp.data;
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["user-invites"] });
-      toast("User invited", { type: "success" });
+      toast("Invite resent", { type: "success" });
     },
     onError() {
-      toast("Error inviting user", { type: "error" });
+      toast("Error resending invite", { type: "error" });
     },
   });
 };
