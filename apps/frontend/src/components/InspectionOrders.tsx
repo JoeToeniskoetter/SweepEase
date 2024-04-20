@@ -79,7 +79,7 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = () => {
       columnHelper.accessor("id", {
         cell: ({ row }) => (
           <InspectionOrderOptions
-            id={row.original.id}
+            inspection={row.original}
             status={row.original.status}
           />
         ),

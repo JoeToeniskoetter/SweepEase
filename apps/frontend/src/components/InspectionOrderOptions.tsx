@@ -1,4 +1,4 @@
-import { Delete, MoreHoriz, Start } from "@mui/icons-material";
+import { Close, Delete, Edit, MoreHoriz, Start } from "@mui/icons-material";
 import {
   Box,
   CircularProgress,
@@ -8,6 +8,7 @@ import {
   Menu,
   MenuItem,
   MenuList,
+  Modal,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
@@ -16,18 +17,20 @@ import { useStartInspection } from "../hooks/useStartInspection";
 import { ConfirmationDialog } from "./ConfirmationDialog";
 import { useDeleteInspectionOrder } from "../hooks/useDeleteInspectionOrder";
 import { ProtectedComponent } from "./ProtectedComponent";
+import { InspectionOrderInfoForm } from "./InspectionOrderInfoForm";
 
 interface InspectionOrderOptionsProps {
-  id: string;
+  inspection: InspectionOrder;
   status: string;
 }
 
 export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
-  id,
+  inspection,
   status,
 }) => {
   const [confirmationDialogOpen, setConfirmationDialogOpen] =
     useState<boolean>(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const {
     mutateAsync: deleteInspectionOrder,
@@ -49,8 +52,8 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
         <MenuItem
           onClick={async () => {
             try {
-              await startInspection({ id });
-              navigate(`/inspections/${id}`);
+              await startInspection({ id: inspection.id });
+              navigate(`/inspections/${inspection.id}`);
             } catch (e) {
               console.error(e);
             }
@@ -61,6 +64,18 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
           </ListItemIcon>
           <ListItemText>Begin Inspection</ListItemText>
         </MenuItem>,
+        <ProtectedComponent allowedRoles={["ADMIN", "CREATOR"]}>
+          <MenuItem
+            onClick={async () => {
+              setUpdateModalOpen(true);
+            }}
+          >
+            <ListItemIcon>
+              {isPending ? <CircularProgress size={18} /> : <Edit />}
+            </ListItemIcon>
+            <ListItemText>Edit Inspection</ListItemText>
+          </MenuItem>
+        </ProtectedComponent>,
         <ProtectedComponent allowedRoles={["ADMIN", "CREATOR"]}>
           <MenuItem
             onClick={async () => {
@@ -86,7 +101,7 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
     }
     if (status === "IN PROGRESS") {
       return (
-        <Link to={`/inspections/${id}`} style={{ all: "unset" }}>
+        <Link to={`/inspections/${inspection.id}`} style={{ all: "unset" }}>
           <MenuItem>
             <ListItemIcon>
               {isPending ? <CircularProgress size={18} /> : <Start />}
@@ -99,7 +114,7 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
 
     if (status === "COMPLETE") {
       return (
-        <Link to={`/inspections/${id}`} style={{ all: "unset" }}>
+        <Link to={`/inspections/${inspection.id}`} style={{ all: "unset" }}>
           <MenuItem>
             <ListItemIcon>
               {isPending ? <CircularProgress size={18} /> : <Start />}
@@ -143,7 +158,7 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
         }
         title="Delete inspection order?"
         onAccept={async () => {
-          await deleteInspectionOrder({ id });
+          await deleteInspectionOrder({ id: inspection.id });
           setConfirmationDialogOpen(false);
           handleClose();
         }}
@@ -156,6 +171,46 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
           handleClose();
         }}
       />
+      <Modal open={updateModalOpen} onClose={() => setUpdateModalOpen(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: 5,
+            p: 4,
+            maxHeight: "100%",
+            overflowY: "scroll",
+            display: "flex",
+            flexDirection: "column",
+            width: "50%",
+            minWidth: 400,
+            scrollbarWidth: "none",
+          }}
+        >
+          <Box display={"flex"} justifyContent={"end"}>
+            <IconButton onClick={() => setUpdateModalOpen(false)}>
+              <Close />
+            </IconButton>
+          </Box>
+          <Typography variant="h5" fontWeight={"bold"}>
+            Update Inspection Order
+          </Typography>
+          <Typography fontWeight={"light"}>
+            Provide us some details about this inspection
+          </Typography>
+          <InspectionOrderInfoForm
+            onSave={() => {
+              setUpdateModalOpen(false);
+              handleClose();
+            }}
+            inspectionOrder={inspection}
+          />
+        </Box>
+      </Modal>
     </>
   );
 };

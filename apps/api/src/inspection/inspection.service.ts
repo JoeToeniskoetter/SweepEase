@@ -356,8 +356,25 @@ export class InspectionService {
     return inspection;
   }
 
-  update(id: number, updateInspectionDto: UpdateInspectionDto) {
-    return `This action updates a #${id} inspection`;
+  async update(
+    id: string,
+    currentUser: User,
+    updateInspectionDto: UpdateInspectionDto,
+  ) {
+    const inspection = await this.inspectionRepo.findOne({
+      where: { company: { id: currentUser.company.id }, id: id },
+    });
+
+    if (!inspection) {
+      throw new NotFoundException();
+    }
+
+    const newInspection = this.inspectionRepo.create({
+      ...inspection,
+      ...updateInspectionDto,
+    });
+
+    return await this.inspectionRepo.save(newInspection);
   }
 
   async remove(id: string, currentUser: User) {

@@ -45,7 +45,7 @@ const columns = [
   columnHelper.accessor("id", {
     header: () => <Typography hidden>Options</Typography>,
     footer: (info) => info.column.id,
-    cell: (info) => <InspectionTemplateOptions id={info.renderValue() ?? ""} />,
+    cell: (info) => <InspectionTemplateOptions template={info.row.original} />,
   }),
 ];
 

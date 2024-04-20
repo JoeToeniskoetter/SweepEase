@@ -73,12 +73,14 @@ export class InspectionController {
     return this.inspectionService.findOne(id, user);
   }
 
+  @Roles([UserRoles.ADMIN, UserRoles.USER])
   @Patch(':id')
   update(
+    @CurrentUser() currentUser: User,
     @Param('id') id: string,
     @Body() updateInspectionDto: UpdateInspectionDto,
   ) {
-    return this.inspectionService.update(+id, updateInspectionDto);
+    return this.inspectionService.update(id, currentUser, updateInspectionDto);
   }
 
   @Roles([UserRoles.ADMIN, UserRoles.USER])

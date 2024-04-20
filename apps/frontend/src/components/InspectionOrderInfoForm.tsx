@@ -6,16 +6,21 @@ import {
   CircularProgress,
   Typography,
   Skeleton,
+  Select,
+  FormHelperText,
+  FormControl,
 } from "@mui/material";
 import React, { useMemo } from "react";
 import { useInspectionTemplateOptions } from "../hooks/useInspectionTemplateOptions";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateInspectionOrder } from "../hooks/useCreateInspectionOrder";
+import { useUpdateInspectionOrder } from "../hooks/useUpdateInspecitonOrder";
 
 interface InspectionOrderInfoFormProps {
   onSave: () => void;
+  inspectionOrder?: InspectionOrder;
 }
 
 interface InspectionOrderInfoFormType {
@@ -40,21 +45,37 @@ const InspectionOrderFormSchema = z.object({
 
 export const InspectionOrderInfoForm: React.FC<
   InspectionOrderInfoFormProps
-> = ({ onSave }) => {
+> = ({ onSave, inspectionOrder }) => {
+  const { mutateAsync: updateInspectionOrder, isPending: isUpdating } =
+    useUpdateInspectionOrder();
   const { data, isLoading } = useInspectionTemplateOptions();
   const { mutateAsync: createInspectionOrder, isPending } =
     useCreateInspectionOrder();
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<InspectionOrderInfoFormType>({
     resolver: zodResolver(InspectionOrderFormSchema),
+    defaultValues: {
+      customerName: inspectionOrder?.customerName,
+      address: inspectionOrder?.address,
+      city: inspectionOrder?.city,
+      phone: inspectionOrder?.phone,
+      state: inspectionOrder?.state,
+      zip: inspectionOrder?.zip,
+      templateId: inspectionOrder?.template?.id,
+    },
   });
 
   const onSubmit = async (values: InspectionOrderInfoFormType) => {
     try {
-      await createInspectionOrder({ ...values });
+      if (inspectionOrder) {
+        await updateInspectionOrder({ ...values, id: inspectionOrder.id });
+      } else {
+        await createInspectionOrder({ ...values });
+      }
       onSave();
     } catch (e) {
       console.error(e);
@@ -135,27 +156,42 @@ export const InspectionOrderInfoForm: React.FC<
       </Box>
       <Box>
         <Typography fontWeight={"bold"}>Inspection Template</Typography>
-        <TextField
-          select
-          fullWidth
-          placeholder={data?.at(0)?.name}
-          {...register("templateId")}
-          error={errors.templateId?.message !== undefined}
-          helperText={errors.templateId?.message}
-        >
-          {data?.map((o) => (
-            <MenuItem key={o.id} value={o.id}>
-              {o.name}
-            </MenuItem>
-          ))}
-        </TextField>
+        <Controller
+          control={control}
+          name="templateId"
+          render={({ field }) => {
+            return (
+              <FormControl
+                sx={{ minWidth: 120 }}
+                fullWidth
+                error={errors.templateId?.message !== undefined}
+              >
+                <Select
+                  value={field.value}
+                  onChange={field.onChange}
+                  fullWidth
+                  error={errors.templateId?.message !== undefined}
+                >
+                  {data?.map((o) => (
+                    <MenuItem key={o.id} value={o.id}>
+                      {o.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {errors.templateId?.message && (
+                  <FormHelperText>{errors.templateId?.message}</FormHelperText>
+                )}
+              </FormControl>
+            );
+          }}
+        />
       </Box>
       <Button variant="contained" fullWidth onClick={handleSubmit(onSubmit)}>
-        {isPending ? (
-          <CircularProgress color="secondary" />
+        {isPending || isUpdating ? (
+          <CircularProgress sx={{ color: "white" }} size={18} />
         ) : (
           <Typography fontWeight={"bold"} color={"white"} variant="body2">
-            Create
+            {inspectionOrder ? "Update" : "Create"}
           </Typography>
         )}
       </Button>
