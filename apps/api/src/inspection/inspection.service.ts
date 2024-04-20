@@ -360,7 +360,15 @@ export class InspectionService {
     return `This action updates a #${id} inspection`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} inspection`;
+  async remove(id: string, currentUser: User) {
+    const inspection = await this.inspectionRepo.findOne({
+      where: { id, company: { id: currentUser.company.id } },
+    });
+
+    if (!inspection) {
+      throw new NotFoundException();
+    }
+
+    await this.inspectionRepo.softRemove(inspection);
   }
 }

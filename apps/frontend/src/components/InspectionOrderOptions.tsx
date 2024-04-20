@@ -1,6 +1,6 @@
-import { MoreHoriz, Start } from "@mui/icons-material";
+import { Delete, MoreHoriz, Start } from "@mui/icons-material";
 import {
-  Button,
+  Box,
   CircularProgress,
   IconButton,
   ListItemIcon,
@@ -8,10 +8,13 @@ import {
   Menu,
   MenuItem,
   MenuList,
+  Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useStartInspection } from "../hooks/useStartInspection";
+import { ConfirmationDialog } from "./ConfirmationDialog";
+import { useDeleteInspectionOrder } from "../hooks/useDeleteInspectionOrder";
 
 interface InspectionOrderOptionsProps {
   id: string;
@@ -22,7 +25,13 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
   id,
   status,
 }) => {
+  const [confirmationDialogOpen, setConfirmationDialogOpen] =
+    useState<boolean>(false);
   const navigate = useNavigate();
+  const {
+    mutateAsync: deleteInspectionOrder,
+    isPending: isDeletingInspectionOrder,
+  } = useDeleteInspectionOrder();
   const { mutateAsync: startInspection, isPending } = useStartInspection();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -35,10 +44,8 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
 
   const renderOptions = () => {
     if (status === "NEW") {
-      return (
-        <Button
-          sx={{ maxWidth: "100%", textTransform: "none" }}
-          color="secondary"
+      return [
+        <MenuItem
           onClick={async () => {
             try {
               await startInspection({ id });
@@ -48,14 +55,31 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
             }
           }}
         >
-          <MenuItem>
-            <ListItemIcon>
-              {isPending ? <CircularProgress size={18} /> : <Start />}
-            </ListItemIcon>
-            <ListItemText>Begin Inspection</ListItemText>
-          </MenuItem>
-        </Button>
-      );
+          <ListItemIcon>
+            {isPending ? <CircularProgress size={18} /> : <Start />}
+          </ListItemIcon>
+          <ListItemText>Begin Inspection</ListItemText>
+        </MenuItem>,
+        <MenuItem
+          onClick={async () => {
+            try {
+              setConfirmationDialogOpen(true);
+            } catch (e) {
+              console.error(e);
+            }
+          }}
+          sx={{ color: "red" }}
+        >
+          <ListItemIcon>
+            {isPending ? (
+              <CircularProgress size={18} />
+            ) : (
+              <Delete color="error" />
+            )}
+          </ListItemIcon>
+          <ListItemText>Delete Inspection</ListItemText>
+        </MenuItem>,
+      ];
     }
     if (status === "IN PROGRESS") {
       return (
@@ -101,6 +125,34 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
       >
         <MenuList>{renderOptions()}</MenuList>
       </Menu>
+      <ConfirmationDialog
+        open={confirmationDialogOpen}
+        content={
+          <Box display={"flex"} flexDirection={"column"} alignItems={"start"}>
+            {isDeletingInspectionOrder && <CircularProgress />}
+
+            <Typography>
+              {isDeletingInspectionOrder
+                ? "Removing Inpsection Order"
+                : "Are you sure you want to delete this order?"}
+            </Typography>
+          </Box>
+        }
+        title="Delete inspection order?"
+        onAccept={async () => {
+          await deleteInspectionOrder({ id });
+          setConfirmationDialogOpen(false);
+          handleClose();
+        }}
+        onCancel={() => {
+          setConfirmationDialogOpen(false);
+          handleClose();
+        }}
+        onClose={() => {
+          setConfirmationDialogOpen(false);
+          handleClose();
+        }}
+      />
     </>
   );
 };

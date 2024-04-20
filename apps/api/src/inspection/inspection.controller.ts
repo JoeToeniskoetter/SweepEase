@@ -15,10 +15,11 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { CurrentUser } from 'src/user/user.decorator';
-import { User } from 'src/users/entities/user.entity';
+import { User, UserRoles } from 'src/users/entities/user.entity';
 import { CreateInspectionDto } from './dto/create-inspection.dto';
 import { UpdateInspectionDto } from './dto/update-inspection.dto';
 import { InspectionService } from './inspection.service';
+import { Roles } from 'src/role/roles.decorator';
 
 @Controller('inspection')
 export class InspectionController {
@@ -53,6 +54,7 @@ export class InspectionController {
     return this.inspectionService.completeInspection(user, id, signatures);
   }
 
+  @Roles([UserRoles.ADMIN, UserRoles.USER])
   @Post()
   create(
     @Body() createInspectionDto: CreateInspectionDto,
@@ -79,8 +81,9 @@ export class InspectionController {
     return this.inspectionService.update(+id, updateInspectionDto);
   }
 
+  @Roles([UserRoles.ADMIN, UserRoles.USER])
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.inspectionService.remove(+id);
+  remove(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.inspectionService.remove(id, user);
   }
 }
