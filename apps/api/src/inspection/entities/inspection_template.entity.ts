@@ -30,6 +30,9 @@ export class InspectionTemplate {
   @Column({ name: 'inspection_level', enum: ['Level 1', 'Level 2', 'Level 3'] })
   inspectionLevel: string;
 
+  @Column({ name: 'signatures_required', default: false })
+  signaturesRequired: boolean;
+
   @ManyToOne(() => Company)
   @JoinColumn({ name: 'company_id' })
   company: Company;

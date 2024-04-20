@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -42,6 +43,9 @@ export class UpdateTemplateDto {
 
   @IsEnum(InspectionLevel, { each: true })
   inspectionLevel: string;
+
+  @IsBoolean()
+  signaturesRequired: boolean;
 
   @ValidateNested({ each: true })
   @IsNonPrimitiveArray()

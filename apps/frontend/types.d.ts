@@ -41,6 +41,7 @@ interface InspectionTemplate {
   id: string;
   name: string;
   inspectionLevel: "Level 1" | "Level 2" | "Level 3";
+  signaturesRequired: boolean;
   items: [];
   createdAt: string;
   updatedAt: string;
@@ -79,6 +80,7 @@ interface InspectionOrderTemplate {
   updatedAt: string;
   deletedAt: string | null;
   items?: InspectionItem[];
+  signaturesRequired: boolean;
 }
 
 interface InspectionTemplateOption {

@@ -12,6 +12,7 @@ import {
   Edit,
   ExpandMore,
   FireplaceTwoTone,
+  HistoryEduTwoTone,
   InfoTwoTone,
   Save,
 } from "@mui/icons-material";
@@ -26,24 +27,30 @@ import {
   CircularProgress,
   Container,
   Divider,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
   IconButton,
   MenuItem,
+  Radio,
+  RadioGroup,
   TextField,
   Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
 import { useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
 import { useUpdateTemplate } from "../hooks/useUpdateTemplate";
 import { DraggableItem } from "./DraggableItem";
-import { toast } from "react-toastify";
 import { ProtectedComponent } from "./ProtectedComponent";
 
 interface TemplateForm {
   name: string;
   inspectionLevel: string;
+  signaturesRequired: boolean;
   items: {
     id?: string;
     name: string;
@@ -55,6 +62,7 @@ interface TemplateForm {
 const TemplateFormSchema = z.object({
   name: z.string().min(1),
   inspectionLevel: z.enum(["Level One", "Level Two", "Level Three"]),
+  signaturesRequired: z.boolean(),
   items: z.array(
     z.object({
       id: z.string().optional(),
@@ -118,6 +126,7 @@ export const EditTemplateForm = ({
     defaultValues: {
       name: template?.name,
       items: template?.items,
+      signaturesRequired: template?.signaturesRequired,
       inspectionLevel: template?.inspectionLevel,
     },
     reValidateMode: "onChange",
@@ -294,6 +303,52 @@ export const EditTemplateForm = ({
           <MenuItem value={"Level Two"}>Level 2</MenuItem>
           <MenuItem value={"Level Three"}>Level 3</MenuItem>
         </TextField>
+        <Box py={1}>
+          <Box display={"flex"} gap={1}>
+            <HistoryEduTwoTone color="secondary" />
+            <Typography fontWeight={"bold"}>Signatures Required</Typography>
+          </Box>
+          <Typography variant="body2">
+            Do you require a signature from the customer and technician
+          </Typography>
+          <Divider />
+        </Box>
+        <Controller
+          control={control}
+          name="signaturesRequired"
+          render={({ field }) => (
+            <FormControl>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue={field.value}
+                value={field.value}
+                onChange={(e) => {
+                  // setValue("signaturesRequired", JSON.parse(e.target.value));
+                  field.onChange({
+                    ...e,
+                    target: { ...e.target, value: JSON.parse(e.target.value) },
+                  });
+                }}
+              >
+                <FormControlLabel
+                  disabled={!edit}
+                  value={true}
+                  control={<Radio />}
+                  label="Yes"
+                />
+                <FormControlLabel
+                  disabled={!edit}
+                  value={false}
+                  control={<Radio />}
+                  label="No"
+                />
+              </RadioGroup>
+              <FormHelperText>
+                {errors.signaturesRequired?.message}
+              </FormHelperText>
+            </FormControl>
+          )}
+        />
         <Box
           display={"flex"}
           flexDirection={"column"}
@@ -385,6 +440,7 @@ export const EditTemplateForm = ({
                     expanded={openItems.has(index)}
                     key={field.id}
                     sx={{
+                      bgcolor: theme.palette.background.default,
                       width: "100%",
                       ...(errors.items &&
                         errors.items[index] && {

@@ -30,6 +30,7 @@ import { useCompleteInspection } from "../../hooks/useCompleteInspection";
 import { SignatureModal } from "../SignatureModal";
 import "./Inspect.css";
 import { InspectionCompleteModal } from "../InspectionCompleteModal";
+import { InspectionSignatureSection } from "../InspectionSignatureSection";
 
 interface InspectProps {}
 
@@ -65,6 +66,37 @@ export const Inspect: React.FC<InspectProps> = () => {
   const allFieldsComplete = inspectionOrderDetails?.every(
     (iod) => iod.isComplete
   );
+
+  const existingCustomerSignature = inspection?.signatures?.find((s) =>
+    s.type.includes("customer-signature")
+  );
+  const existingTechSignature = inspection?.signatures?.find((s) =>
+    s.type.includes("technician-signature")
+  );
+
+  const getCustomerSignature = () => {
+    if (existingCustomerSignature) {
+      return existingCustomerSignature.imageUrl;
+    }
+
+    if (customerSignatureFile) {
+      return URL.createObjectURL(customerSignatureFile);
+    }
+
+    return undefined;
+  };
+
+  const getTechnicianSignature = () => {
+    if (existingTechSignature) {
+      return existingTechSignature.imageUrl;
+    }
+
+    if (techSignatureFile) {
+      return URL.createObjectURL(techSignatureFile);
+    }
+
+    return undefined;
+  };
 
   return (
     <>
@@ -166,26 +198,27 @@ export const Inspect: React.FC<InspectProps> = () => {
             {(review || inspection?.status === "COMPLETE") && (
               <>
                 <ReviewDetail insepectionDetail={inspectionOrderDetails} />
-                {/* <InspectionSignatureSection
-                  customerSignature={
-                    existsingCustomerSignature || customerSignature
-                  }
-                  techSignature={existsingTechSignature || techSignature}
-                  inspection={inspection}
-                /> */}
+                {inspection?.template?.signaturesRequired && (
+                  <InspectionSignatureSection
+                    customerSignature={getCustomerSignature()}
+                    techSignature={getTechnicianSignature()}
+                    inspection={inspection}
+                  />
+                )}
               </>
             )}
             {review &&
-              ["IN PROGRESS", "NEW"].includes(inspection?.status ?? "") && (
+              ["IN PROGRESS", "NEW"].includes(inspection?.status ?? "") &&
+              inspection?.template?.signaturesRequired && (
                 <>
-                  {/* <Box display={"flex"} pb={2} gap={2}>
+                  <Box display={"flex"} pb={2} gap={2}>
                     <Box
                       sx={{ width: "50%" }}
                       display={"flex"}
                       alignItems={"center"}
                       justifyContent={"center"}
                     >
-                      {!customerSignature && (
+                      {!customerSignatureFile && (
                         <Button
                           variant="outlined"
                           fullWidth
@@ -201,7 +234,7 @@ export const Inspect: React.FC<InspectProps> = () => {
                       alignItems={"center"}
                       justifyContent={"center"}
                     >
-                      {!techSignature && (
+                      {!techSignatureFile && (
                         <Button
                           variant="outlined"
                           fullWidth
@@ -211,9 +244,13 @@ export const Inspect: React.FC<InspectProps> = () => {
                         </Button>
                       )}
                     </Box>
-                  </Box> */}
+                  </Box>
                   <Box display={"flex"}>
                     <Button
+                      disabled={
+                        inspection.template.signaturesRequired &&
+                        (!customerSignatureFile || !techSignatureFile)
+                      }
                       startIcon={
                         isPending ? (
                           <CircularProgress size={18} sx={{ color: "white" }} />

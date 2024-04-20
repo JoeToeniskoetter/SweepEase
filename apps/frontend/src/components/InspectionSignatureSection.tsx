@@ -3,7 +3,7 @@ import { Box, Divider, Paper, Typography } from "@mui/material";
 import React from "react";
 
 interface InspectionSignatureSectionProps {
-  inspection: InspectionOrder;
+  inspection?: InspectionOrder;
   customerSignature: string | undefined;
   techSignature: string | undefined;
 }
@@ -13,7 +13,7 @@ export const InspectionSignatureSection: React.FC<
 > = ({ customerSignature, techSignature, inspection }) => {
   if (
     (!customerSignature || !techSignature) &&
-    inspection.status === "COMPLETE"
+    inspection?.status === "COMPLETE"
   ) {
     return null;
   }
@@ -27,7 +27,7 @@ export const InspectionSignatureSection: React.FC<
         gap={1}
       >
         <HistoryEduTwoTone />
-        SIGN (Optional)
+        SIGN
       </Typography>
       <Divider />
       <Box

@@ -251,6 +251,7 @@ export class InspectionService {
       });
       template.name = updateTemplateDto.name;
       template.inspectionLevel = updateTemplateDto.inspectionLevel;
+      template.signaturesRequired = updateTemplateDto.signaturesRequired;
       await queryRunner.manager.save(template);
 
       const newItems = updateTemplateDto.items.map((item) => {
