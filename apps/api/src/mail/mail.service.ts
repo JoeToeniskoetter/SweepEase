@@ -18,6 +18,9 @@ export class MailService {
   }
 
   async sendMail({ email, subject, template }) {
+    if (this.configService.get('NODE_ENV') !== 'production') {
+      return;
+    }
     try {
       const res = await this.transporter.sendMail({
         to: email,

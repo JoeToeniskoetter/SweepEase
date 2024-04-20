@@ -19,6 +19,7 @@ import {
 import { useInvites } from "../hooks/useInvites";
 import { UserInviteOptions } from "./UserInviteOptions";
 import { NoInvites } from "./NoInvites";
+import { format } from "date-fns";
 
 interface UsersTableProps {}
 
@@ -34,7 +35,8 @@ export const UserInvitesTable: React.FC<UsersTableProps> = ({}) => {
         footer: (info) => info.column.id,
       }),
       columnHelper.accessor("createdAt", {
-        cell: (info) => info.getValue(),
+        cell: (info) =>
+          info.getValue() ? format(info.getValue(), "MM/dd/yyyy") : "'",
         header: () => <Typography fontWeight={"bold"}>Invited</Typography>,
         footer: (info) => info.column.id,
       }),

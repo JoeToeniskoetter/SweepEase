@@ -1,6 +1,5 @@
-import { MoreHoriz, Refresh, RefreshTwoTone } from "@mui/icons-material";
+import { MoreHoriz, Refresh } from "@mui/icons-material";
 import {
-  Button,
   CircularProgress,
   IconButton,
   ListItemIcon,
@@ -32,33 +31,21 @@ export const UserInviteOptions: React.FC<InspectionOrderOptionsProps> = ({
 
   const renderOptions = () => {
     return (
-      <Button
-        sx={{ maxWidth: "100%", textTransform: "none" }}
-        color="secondary"
+      <MenuItem
         onClick={async () => {
-          try {
-            console.log("tru");
-          } catch (e) {
-            console.error(e);
-          }
+          await resend({ id: invite.id });
+          handleClose();
         }}
       >
-        <MenuItem>
-          <Button
-            startIcon={
-              isPending ? (
-                <CircularProgress sx={{ color: "black", fontSize: 18 }} />
-              ) : (
-                <Refresh />
-              )
-            }
-            onClick={async () => await resend({ id: invite.id })}
-            sx={{ textTransform: "none", color: "black" }}
-          >
-            <ListItemText>Resend</ListItemText>
-          </Button>
-        </MenuItem>
-      </Button>
+        <ListItemIcon>
+          {isPending ? (
+            <CircularProgress sx={{ color: "black" }} size={18} />
+          ) : (
+            <Refresh />
+          )}
+        </ListItemIcon>
+        <ListItemText>Resend</ListItemText>
+      </MenuItem>
     );
   };
   return (
