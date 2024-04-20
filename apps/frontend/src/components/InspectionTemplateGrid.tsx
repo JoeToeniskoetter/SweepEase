@@ -1,5 +1,6 @@
 import { FeedTwoTone } from "@mui/icons-material";
 import {
+  Badge,
   Box,
   Card,
   CardContent,
@@ -11,6 +12,8 @@ import {
 import { format } from "date-fns";
 import React from "react";
 import { Link } from "react-router-dom";
+import { InspectionTemplateOptions } from "./InspectionTemplateOptions";
+import { ProtectedComponent } from "./ProtectedComponent";
 
 interface InspectionTemplateGridProps {
   data: InspectionTemplate[];
@@ -83,42 +86,57 @@ export const InspectionTemplateGrid: React.FC<InspectionTemplateGridProps> = ({
           </Box>
           <Grid container spacing={2}>
             {templates[key].map((t) => (
-              <Grid item lg={2} key={t.id}>
-                <Link key={t.id} to={`${t.id}`} style={{ all: "unset" }}>
-                  <Box
-                    sx={{ minWidth: 180, cursor: "pointer" }}
-                    display={"flex"}
-                    flexDirection={"column"}
-                    gap={1}
-                  >
-                    <Card
-                      elevation={3}
-                      sx={{
-                        ":hover": {
-                          animation: `${spin} .250s ease forwards`,
-                        },
-                        borderRadius: 2,
-                      }}
+              <Badge
+                badgeContent={
+                  <ProtectedComponent allowedRoles={["ADMIN", "CREATOR"]}>
+                    <InspectionTemplateOptions template={t} key={t.id} />
+                  </ProtectedComponent>
+                }
+                color="primary"
+              >
+                <Grid item lg={2} key={t.id}>
+                  <Link key={t.id} to={`${t.id}`} style={{ all: "unset" }}>
+                    <Box
+                      sx={{ minWidth: 200, cursor: "pointer" }}
+                      display={"flex"}
+                      flexDirection={"column"}
+                      gap={1}
                     >
-                      <CardContent
+                      <Card
+                        elevation={3}
                         sx={{
+                          ":hover": {
+                            animation: `${spin} .250s ease forwards`,
+                          },
+                          borderRadius: 2,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
+                          height: 120,
                         }}
                       >
-                        <FeedTwoTone sx={{ color: "#e3e3e3", fontSize: 60 }} />
-                      </CardContent>
-                    </Card>
-                    <Box>
-                      <Typography>Name: {t.name}</Typography>
-                      <Typography fontWeight={"light"} fontSize={12}>
-                        Created: {format(new Date(t.createdAt), "MM/dd/yyyy")}
-                      </Typography>
+                        <CardContent
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <FeedTwoTone
+                            sx={{ color: "#e3e3e3", fontSize: 68 }}
+                          />
+                        </CardContent>
+                      </Card>
+                      <Box>
+                        <Typography>Name: {t.name}</Typography>
+                        <Typography fontWeight={"light"} fontSize={12}>
+                          Created: {format(new Date(t.createdAt), "MM/dd/yyyy")}
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                </Link>
-              </Grid>
+                  </Link>
+                </Grid>
+              </Badge>
             ))}
           </Grid>
         </Box>

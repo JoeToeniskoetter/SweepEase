@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { auth } from "../context/firebase";
+import { toast } from "react-toastify";
 
 export const useDeleteTemplate = () => {
   const queryClient = useQueryClient();
@@ -18,6 +19,10 @@ export const useDeleteTemplate = () => {
       queryClient.invalidateQueries({
         queryKey: ["inspection-templates"],
       });
+      toast("Template removed", { type: "success" });
+    },
+    onError() {
+      toast("Error removing template", { type: "error" });
     },
   });
 };

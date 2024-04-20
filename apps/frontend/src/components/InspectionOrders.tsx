@@ -221,7 +221,11 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = () => {
               p: 4,
               maxHeight: "100%",
               overflowY: "scroll",
+              display: "flex",
+              flexDirection: "column",
+              width: "50%",
               minWidth: 400,
+              scrollbarWidth: "none",
             }}
           >
             <Box display={"flex"} justifyContent={"end"}>

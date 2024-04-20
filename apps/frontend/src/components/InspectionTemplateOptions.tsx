@@ -8,18 +8,22 @@ import {
   Menu,
   MenuItem,
   MenuList,
+  Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDeleteTemplate } from "../hooks/useDeleteTemplate";
+import { ConfirmationDialog } from "./ConfirmationDialog";
 
 interface InspectionTemplateOptionsProps {
-  id: string;
+  template: InspectionTemplate;
 }
 
 export const InspectionTemplateOptions: React.FC<
   InspectionTemplateOptionsProps
-> = ({ id }) => {
+> = ({ template }) => {
+  const [confirmationDialogOpen, setConfirmationDialogOpen] =
+    useState<boolean>(false);
   const { mutateAsync: deleteTemplate, isPending } = useDeleteTemplate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -31,7 +35,15 @@ export const InspectionTemplateOptions: React.FC<
   };
   return (
     <>
-      <IconButton onClick={handleClick}>
+      <IconButton
+        onClick={handleClick}
+        sx={{
+          bgcolor: "white",
+          boxShadow: 1,
+          ":hover": { bgcolor: "lightgrey" },
+        }}
+        size="small"
+      >
         <MoreHoriz />
       </IconButton>
       <Menu
@@ -45,7 +57,7 @@ export const InspectionTemplateOptions: React.FC<
       >
         <Box sx={{ maxWidth: "100%" }}>
           <MenuList>
-            <Link to={id} style={{ all: "unset" }}>
+            <Link to={template.id} style={{ all: "unset" }}>
               <MenuItem>
                 <ListItemIcon>
                   <Edit fontSize="small" />
@@ -54,18 +66,48 @@ export const InspectionTemplateOptions: React.FC<
               </MenuItem>
             </Link>
             <MenuItem
-              onClick={async () => {
-                await deleteTemplate({ id });
+              onClick={() => {
+                setConfirmationDialogOpen(true);
               }}
             >
               <ListItemIcon>
-                {isPending ? <CircularProgress /> : <Delete fontSize="small" />}
+                {isPending ? (
+                  <CircularProgress size={18} />
+                ) : (
+                  <Delete fontSize="small" color="error" />
+                )}
               </ListItemIcon>
-              <ListItemText>Delete</ListItemText>
+              <ListItemText sx={{ color: "red" }}>Delete</ListItemText>
             </MenuItem>
           </MenuList>
         </Box>
       </Menu>
+      <ConfirmationDialog
+        content={
+          <Box display={"flex"} flexDirection={"column"} alignItems={"start"}>
+            {isPending && <CircularProgress />}
+
+            <Typography>
+              {isPending
+                ? "Removing Inpsection Template"
+                : "Are you sure you want to delete this temlate?"}
+            </Typography>
+          </Box>
+        }
+        onAccept={async () => {
+          await deleteTemplate({ id: template.id });
+        }}
+        onCancel={() => {
+          setConfirmationDialogOpen(false);
+          handleClose();
+        }}
+        onClose={() => {
+          setConfirmationDialogOpen(false);
+          handleClose();
+        }}
+        open={confirmationDialogOpen}
+        title="Delete template?"
+      />
     </>
   );
 };

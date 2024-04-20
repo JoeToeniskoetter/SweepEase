@@ -15,6 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useStartInspection } from "../hooks/useStartInspection";
 import { ConfirmationDialog } from "./ConfirmationDialog";
 import { useDeleteInspectionOrder } from "../hooks/useDeleteInspectionOrder";
+import { ProtectedComponent } from "./ProtectedComponent";
 
 interface InspectionOrderOptionsProps {
   id: string;
@@ -60,25 +61,27 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
           </ListItemIcon>
           <ListItemText>Begin Inspection</ListItemText>
         </MenuItem>,
-        <MenuItem
-          onClick={async () => {
-            try {
-              setConfirmationDialogOpen(true);
-            } catch (e) {
-              console.error(e);
-            }
-          }}
-          sx={{ color: "red" }}
-        >
-          <ListItemIcon>
-            {isPending ? (
-              <CircularProgress size={18} />
-            ) : (
-              <Delete color="error" />
-            )}
-          </ListItemIcon>
-          <ListItemText>Delete Inspection</ListItemText>
-        </MenuItem>,
+        <ProtectedComponent allowedRoles={["ADMIN", "CREATOR"]}>
+          <MenuItem
+            onClick={async () => {
+              try {
+                setConfirmationDialogOpen(true);
+              } catch (e) {
+                console.error(e);
+              }
+            }}
+            sx={{ color: "red" }}
+          >
+            <ListItemIcon>
+              {isPending ? (
+                <CircularProgress size={18} />
+              ) : (
+                <Delete color="error" />
+              )}
+            </ListItemIcon>
+            <ListItemText>Delete Inspection</ListItemText>
+          </MenuItem>
+        </ProtectedComponent>,
       ];
     }
     if (status === "IN PROGRESS") {

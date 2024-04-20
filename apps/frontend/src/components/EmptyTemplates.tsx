@@ -14,7 +14,7 @@ export const EmptyTemplates: React.FC<EmptyTemplatesProps> = ({
     <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
       <Paper
         sx={{
-          borderRadius: 25,
+          borderRadius: 20,
           p: 6,
           alignItems: "center",
           display: "flex",
@@ -23,7 +23,7 @@ export const EmptyTemplates: React.FC<EmptyTemplatesProps> = ({
         }}
         elevation={0}
       >
-        <FeedTwoTone color="secondary" sx={{ fontSize: 120, opacity: 0.75 }} />
+        <FeedTwoTone color="secondary" sx={{ fontSize: 120, opacity: 0.5 }} />
         <Typography variant="h5" color={"background"} fontWeight={"light"}>
           No Templates Found
         </Typography>

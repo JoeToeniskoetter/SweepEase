@@ -54,7 +54,7 @@ export const InspectionOrderInfoForm: React.FC<
 
   const onSubmit = async (values: InspectionOrderInfoFormType) => {
     try {
-      await createInspectionOrder({ ...values, phone: "" });
+      await createInspectionOrder({ ...values });
       onSave();
     } catch (e) {
       console.error(e);
@@ -124,7 +124,7 @@ export const InspectionOrderInfoForm: React.FC<
         />
       </Box>
       <Box>
-        <Typography fontWeight={"bold"}>Phone</Typography>
+        <Typography fontWeight={"bold"}>Phone (Optional)</Typography>
         <TextField
           placeholder="555-555-5555"
           fullWidth
