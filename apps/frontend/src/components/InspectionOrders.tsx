@@ -138,7 +138,7 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = () => {
       >
         <Box display={"flex"} justifyContent={"flex-end"} mt={2}>
           <ProtectedComponent
-            allowedRoles={[]}
+            allowedRoles={["ADMIN", "CREATOR"]}
             fallbackComponent={
               <Tooltip title="Missing required permissions. Contact your company admin to create an inspection order">
                 <span>
@@ -163,7 +163,7 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = () => {
           </ProtectedComponent>
         </Box>
         {!isLoading && data?.data.length === 0 ? (
-          <EmptyInspectionOrders />
+          <EmptyInspectionOrders onCreateOrder={() => setOpenModal(true)} />
         ) : (
           <TableContainer component={Paper}>
             <Table size="medium">
@@ -214,7 +214,6 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = () => {
               position: "absolute",
               top: "50%",
               left: "50%",
-              width: "50%",
               transform: "translate(-50%, -50%)",
               bgcolor: "background.paper",
               boxShadow: 24,
@@ -222,6 +221,7 @@ export const InspectionOrders: React.FC<InspectionOrdersProps> = () => {
               p: 4,
               maxHeight: "100%",
               overflowY: "scroll",
+              minWidth: 400,
             }}
           >
             <Box display={"flex"} justifyContent={"end"}>

@@ -86,7 +86,9 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
           </ProtectedComponent>
         </Box>
         {error && <Alert severity="error">Failed to create template</Alert>}
-        {!isLoading && data?.length == 0 ? <EmptyTemplates /> : null}
+        {!isLoading && data?.length == 0 ? (
+          <EmptyTemplates onCreateTemplate={() => setOpenModal(true)} />
+        ) : null}
         <InspectionTemplateGrid data={data ?? []} isLoading={isLoading} />
         <Modal open={openModal} onClose={() => setOpenModal(false)}>
           <Box

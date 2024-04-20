@@ -5,7 +5,7 @@ import {
   Logout,
   Menu,
 } from "@mui/icons-material";
-import { Button, useTheme } from "@mui/material";
+import { Button, Typography, useTheme } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -43,7 +43,7 @@ const tabs = [
 ];
 
 export default function ResponsiveDrawer(props: Props) {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const theme = useTheme();
   const location = useLocation();
   const { window } = props;
@@ -131,13 +131,22 @@ export default function ResponsiveDrawer(props: Props) {
           })}
         </List>
       </Box>
-      <Button
-        startIcon={<Logout />}
-        fullWidth
-        onClick={async () => await signOut()}
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"center"}
+        p={2}
       >
-        Sign Out
-      </Button>
+        <Typography fontWeight={"light"}>{user?.email}</Typography>
+        <Button
+          startIcon={<Logout />}
+          fullWidth
+          onClick={async () => await signOut()}
+          color="secondary"
+        >
+          Sign Out
+        </Button>
+      </Box>
     </Box>
   );
 
