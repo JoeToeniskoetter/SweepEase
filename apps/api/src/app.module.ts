@@ -32,7 +32,7 @@ import { RolesGuard } from './role/role.guard';
         database: configService.get('DATABASE'),
         entities: dataSourceOptions.entities,
         migrations: dataSourceOptions.migrations,
-        synchronize: true,
+        synchronize: false,
         logging: false,
       }),
       inject: [ConfigService],

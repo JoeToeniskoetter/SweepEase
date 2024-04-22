@@ -245,41 +245,43 @@ export const Inspect: React.FC<InspectProps> = () => {
                       )}
                     </Box>
                   </Box>
-                  <Box display={"flex"}>
-                    <Button
-                      disabled={
-                        inspection.template.signaturesRequired &&
-                        (!customerSignatureFile || !techSignatureFile)
-                      }
-                      startIcon={
-                        isPending ? (
-                          <CircularProgress size={18} sx={{ color: "white" }} />
-                        ) : (
-                          <CheckCircleOutline />
-                        )
-                      }
-                      fullWidth
-                      variant="contained"
-                      sx={{ color: "white" }}
-                      color="success"
-                      onClick={async () => {
-                        await completeInspection({
-                          inspectionId: id ?? "",
-                          data: {
-                            signatures: {
-                              customer: customerSignatureFile,
-                              technician: techSignatureFile,
-                            },
-                          },
-                        });
-                        setOpenInspectionCompleteModal(true);
-                      }}
-                    >
-                      Complete Inspection
-                    </Button>
-                  </Box>
                 </>
               )}
+            {review && ["IN PROGRESS"].includes(inspection?.status ?? "") && (
+              <Box display={"flex"}>
+                <Button
+                  disabled={
+                    inspection?.template?.signaturesRequired &&
+                    (!customerSignatureFile || !techSignatureFile)
+                  }
+                  startIcon={
+                    isPending ? (
+                      <CircularProgress size={18} sx={{ color: "white" }} />
+                    ) : (
+                      <CheckCircleOutline />
+                    )
+                  }
+                  fullWidth
+                  variant="contained"
+                  sx={{ color: "white" }}
+                  color="success"
+                  onClick={async () => {
+                    await completeInspection({
+                      inspectionId: id ?? "",
+                      data: {
+                        signatures: {
+                          customer: customerSignatureFile,
+                          technician: techSignatureFile,
+                        },
+                      },
+                    });
+                    setOpenInspectionCompleteModal(true);
+                  }}
+                >
+                  Complete Inspection
+                </Button>
+              </Box>
+            )}
           </CardContent>
         </Card>
       </Container>

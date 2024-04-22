@@ -54,7 +54,7 @@ export class InspectionController {
     return this.inspectionService.completeInspection(user, id, signatures);
   }
 
-  @Roles([UserRoles.ADMIN, UserRoles.USER])
+  @Roles([UserRoles.ADMIN, UserRoles.CREATOR])
   @Post()
   create(
     @Body() createInspectionDto: CreateInspectionDto,
