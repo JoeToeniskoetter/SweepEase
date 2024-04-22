@@ -23,7 +23,6 @@ export class TemplateController {
   @Roles([UserRoles.USER, UserRoles.ADMIN, UserRoles.CREATOR])
   @Get()
   findAllTemplates(@CurrentUser() currentUser: User) {
-    this.logger.log('gettting templates');
     return this.inspectionService.findAllTemplates(currentUser);
   }
 

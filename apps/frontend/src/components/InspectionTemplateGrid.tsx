@@ -130,6 +130,9 @@ export const InspectionTemplateGrid: React.FC<InspectionTemplateGridProps> = ({
                       <Box>
                         <Typography>Name: {t.name}</Typography>
                         <Typography fontWeight={"light"} fontSize={12}>
+                          Inspection Items: {t.itemCount}
+                        </Typography>
+                        <Typography fontWeight={"light"} fontSize={12}>
                           Created: {format(new Date(t.createdAt), "MM/dd/yyyy")}
                         </Typography>
                       </Box>

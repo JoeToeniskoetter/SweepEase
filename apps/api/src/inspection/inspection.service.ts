@@ -210,9 +210,11 @@ export class InspectionService {
   }
 
   findAllTemplates(currentUser: User) {
-    return this.inspectionTemplateRepo.find({
-      where: { company: { id: currentUser.company.id } },
-    });
+    return this.inspectionTemplateRepo
+      .createQueryBuilder('template')
+      .where({ company: { id: currentUser.company.id } })
+      .loadRelationCountAndMap('template.itemCount', 'template.items')
+      .getMany();
   }
 
   createTemplate(createTemplateDto: CreateTemplateDto, currentUser: User) {

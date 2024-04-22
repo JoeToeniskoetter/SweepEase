@@ -13,7 +13,7 @@ import { EditInspectionTemplate } from "./components/EditInspectionTemplate";
 import { InspectionOrders } from "./components/InspectionOrders";
 import { Inspect } from "./components/Inspect/Inspect";
 import "react-toastify/dist/ReactToastify.css";
-import { ReviewAndFinish } from "./pages/ReviewAndFinish";
+import { ReviewAndFinish } from "./pages/ReviewAndFinish/ReviewAndFinish";
 import { Users } from "./pages/Users";
 import { AcceptInvite } from "./pages/AcceptInvite";
 import { ForgotPassword } from "./pages/ForgotPassword";

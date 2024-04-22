@@ -90,9 +90,15 @@ export const UsersTable: React.FC<UsersTableProps> = () => {
         <Table>
           <TableHead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} sx={{ bgcolor: "#f0f0f0" }}>
                 {headerGroup.headers.map((header) => (
-                  <TableCell key={header.id}>
+                  <TableCell
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    sx={{
+                      width: header.getSize(),
+                    }}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -108,7 +114,12 @@ export const UsersTable: React.FC<UsersTableProps> = () => {
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell
+                    key={cell.id}
+                    sx={{
+                      width: cell.column.getSize(),
+                    }}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
