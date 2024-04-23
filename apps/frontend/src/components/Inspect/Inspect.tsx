@@ -18,7 +18,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { useInspectionOrder } from "../../hooks/useInspectionOrder";
 import { useInspectionOrderDetails } from "../../hooks/useInspectionOrderDetails";
@@ -61,6 +61,10 @@ export const Inspect: React.FC<InspectProps> = () => {
 
   if (isLoading) {
     return <CircularProgress />;
+  }
+
+  if (inspection?.status === "COMPLETE") {
+    return <Navigate to={`/inspections/${inspection.id}/review`} />;
   }
 
   const allFieldsComplete = inspectionOrderDetails?.every(

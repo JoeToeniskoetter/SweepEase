@@ -10,7 +10,7 @@ import { UpdateInspectionDto } from './dto/update-inspection.dto';
 import { User } from 'src/users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InspectionTemplate } from './entities/inspection_template.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, IsNull, Repository } from 'typeorm';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { UpdateTemplateDto } from './dto/update-template.dto';
 import { InspectionTemplateItem } from './entities/inspection_template_items.entity';
@@ -321,7 +321,17 @@ export class InspectionService {
     if (!currentUser.company) {
       throw new BadRequestException('company setup required');
     }
-    return paginate(query, this.inspectionRepo, {
+
+    const repo = this.inspectionRepo
+      .createQueryBuilder('inspection')
+      .where({
+        company: { id: currentUser.company.id },
+        deletedAt: IsNull(),
+      })
+      .withDeleted() // Has to be before leftJoin, have to add where deletedAt = null
+      .leftJoin('inspection.template', 'template');
+
+    return paginate(query, repo, {
       sortableColumns: ['id', 'status', 'createdAt'],
       defaultSortBy: [['createdAt', 'DESC']],
       searchableColumns: ['status', 'customerName'],
@@ -333,21 +343,54 @@ export class InspectionService {
     });
   }
 
-  async findOne(id: string, currentUser: User) {
-    const inspection = await this.inspectionRepo.findOne({
-      where: { company: { id: currentUser.company.id }, id: id },
-      relations: [
+  async findOne(
+    id: string,
+    currentUser: User,
+    relations: string[] | undefined,
+  ) {
+    let inspectionQuery = this.inspectionRepo
+      .createQueryBuilder('inspection')
+      .where({
+        company: { id: currentUser.company.id },
+        id: id,
+        deletedAt: IsNull(),
+      })
+      .withDeleted(); // Has to be before leftJoin, have to add where deletedAt = null
+
+    if (relations?.includes('template')) {
+      inspectionQuery = inspectionQuery.leftJoinAndSelect(
+        'inspection.template',
         'template',
+      );
+    }
+    if (relations?.includes('items')) {
+      inspectionQuery = inspectionQuery.leftJoinAndSelect(
         'template.items',
-        'template.items.options',
+        'items',
+      );
+    }
+
+    if (relations?.includes('options')) {
+      inspectionQuery = inspectionQuery.leftJoinAndSelect(
+        'items.options',
+        'options',
+      );
+    }
+
+    if (relations?.includes('signatures')) {
+      inspectionQuery = inspectionQuery.leftJoinAndSelect(
+        'inspection.signatures',
         'signatures',
-      ],
-    });
+      );
+    }
+
+    const inspection = await inspectionQuery.getOne();
+
     if (!inspection) {
       throw new NotFoundException();
     }
 
-    if (inspection.signatures.length > 0) {
+    if (inspection.signatures?.length > 0) {
       inspection.signatures = await Promise.all(
         inspection.signatures.map(async (sig) => {
           sig.imageUrl = await this.uploadService.getUrl(sig.imageUrl);

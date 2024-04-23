@@ -93,10 +93,3 @@
 .inspection-figure{
     margin: 0
 }
-
-.controls{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top:15px
-}

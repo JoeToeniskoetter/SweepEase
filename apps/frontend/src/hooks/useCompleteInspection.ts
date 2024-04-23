@@ -39,17 +39,9 @@ export const useCompleteInspection = () => {
       return resp.data as InspectionOrder;
     },
     onSuccess(data, variables) {
-      let cache = queryClient.getQueryData([
-        "inspection-order",
-        variables.inspectionId,
-      ]);
-      if (cache) {
-        cache = { ...cache, ...data };
-      }
-      queryClient.setQueryData(
-        ["inspection-order", variables.inspectionId],
-        cache
-      );
+      queryClient.invalidateQueries({
+        queryKey: ["inspection-order", variables.inspectionId],
+      });
     },
   });
 };

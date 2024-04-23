@@ -9,6 +9,7 @@ import {
   ParseFilePipe,
   Patch,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -69,8 +70,12 @@ export class InspectionController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @CurrentUser() user: User) {
-    return this.inspectionService.findOne(id, user);
+  findOne(
+    @Param('id') id: string,
+    @CurrentUser() user: User,
+    @Query('relations') relations: string[],
+  ) {
+    return this.inspectionService.findOne(id, user, relations);
   }
 
   @Roles([UserRoles.ADMIN, UserRoles.USER])

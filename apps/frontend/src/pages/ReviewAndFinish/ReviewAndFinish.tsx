@@ -1,13 +1,13 @@
 import "./styles.css";
-import { Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import React, { useRef } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useInspectionOrderDetails } from "../../hooks/useInspectionOrderDetails";
 import { useInspectionOrder } from "../../hooks/useInspectionOrder";
 import { Logo } from "../../components/Logo";
 import { format } from "date-fns";
 import { useReactToPrint } from "react-to-print";
-import { Print } from "@mui/icons-material";
+import { ArrowCircleLeftOutlined, Print } from "@mui/icons-material";
 
 export const ReviewAndFinish: React.FC = () => {
   const componentRef = useRef(null);
@@ -22,6 +22,7 @@ export const ReviewAndFinish: React.FC = () => {
     });
   const { data: order, isLoading: loadingOrder } = useInspectionOrder({
     id: id ?? "",
+    relations: ["signatures", "template"],
   });
 
   if (loadingDetail || loadingOrder) {
@@ -30,11 +31,22 @@ export const ReviewAndFinish: React.FC = () => {
 
   return (
     <>
-      <div className="controls">
+      <Box
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        m={2}
+        gap={2}
+      >
+        <Link to={"/dashboard/inspections"}>
+          <Button variant="outlined" startIcon={<ArrowCircleLeftOutlined />}>
+            Back to Inspections
+          </Button>
+        </Link>
         <Button variant="outlined" onClick={handlePrint} startIcon={<Print />}>
-          Print
+          Print Report
         </Button>
-      </div>
+      </Box>
       <div ref={componentRef} className="main-container">
         <div className="container">
           <header className="header">
@@ -74,7 +86,7 @@ export const ReviewAndFinish: React.FC = () => {
                 <tr>
                   <th className="pdf-table-th pdf-table-th-td">Item</th>
                   <th className="pdf-table-th pdf-table-th-td">Condition</th>
-                  <th className="pdf-table-th pdf-table-th-td">Comments</th>
+                  <th className="pdf-table-th pdf-table-th-td">Reason</th>
                   <th className="pdf-table-th pdf-table-th-td">Photo</th>
                 </tr>
               </thead>
@@ -84,10 +96,11 @@ export const ReviewAndFinish: React.FC = () => {
                     <tr>
                       <td className="pdf-table-th">{od.item}</td>
                       <td className="pdf-table-th">
-                        <strong>{od.condition?.name}</strong>:{" "}
+                        <strong>{od.condition?.name}</strong>
+                      </td>
+                      <td className="pdf-table-th">
                         {od.condition?.description}
                       </td>
-                      <td className="pdf-table-th">{od.notes}</td>
                       <td className="pdf-table-th">
                         {od.photoUrl && <p>See figure {idx + 1}</p>}
                       </td>
@@ -106,6 +119,8 @@ export const ReviewAndFinish: React.FC = () => {
                     <figure className="inspection-figure">
                       <figcaption>
                         Figure: {idx + 1} - {od.item}
+                        <br />
+                        {od.notes}
                       </figcaption>
                       <img
                         key={od.id}
@@ -120,7 +135,8 @@ export const ReviewAndFinish: React.FC = () => {
             })}
           </section>
 
-          {order?.template?.signaturesRequired && (
+          {(order?.template?.signaturesRequired ||
+            (order?.signatures && order?.signatures.length > 0)) && (
             <section className="signature">
               <div>
                 <p>Technician Signature</p>

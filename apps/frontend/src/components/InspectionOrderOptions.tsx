@@ -114,7 +114,10 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
 
     if (status === "COMPLETE") {
       return (
-        <Link to={`/inspections/${inspection.id}`} style={{ all: "unset" }}>
+        <Link
+          to={`/inspections/${inspection.id}/review`}
+          style={{ all: "unset" }}
+        >
           <MenuItem>
             <ListItemIcon>
               {isPending ? <CircularProgress size={18} /> : <Start />}
