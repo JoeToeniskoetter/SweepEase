@@ -1,5 +1,6 @@
 import {
   AccountCircleTwoTone,
+  ChatTwoTone,
   ContentPasteTwoTone,
   ListAltTwoTone,
   Logout,
@@ -40,6 +41,7 @@ const tabs = [
     path: "templates",
   },
   { name: "Users", icon: <AccountCircleTwoTone />, path: "users" },
+  { name: "Feedback", icon: <ChatTwoTone />, path: "feedback" },
 ];
 
 export default function ResponsiveDrawer(props: Props) {

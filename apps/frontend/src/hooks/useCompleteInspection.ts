@@ -38,7 +38,7 @@ export const useCompleteInspection = () => {
 
       return resp.data as InspectionOrder;
     },
-    onSuccess(data, variables) {
+    onSuccess(_data, variables) {
       queryClient.invalidateQueries({
         queryKey: ["inspection-order", variables.inspectionId],
       });

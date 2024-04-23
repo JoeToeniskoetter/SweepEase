@@ -17,6 +17,7 @@ import { ReviewAndFinish } from "./pages/ReviewAndFinish/ReviewAndFinish";
 import { Users } from "./pages/Users";
 import { AcceptInvite } from "./pages/AcceptInvite";
 import { ForgotPassword } from "./pages/ForgotPassword";
+import { NotFound } from "./pages/NotFound";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 10000 } },
@@ -51,7 +52,7 @@ function App() {
                 <Route path=":id" element={<Inspect />} />
               </Route>
             </Route>
-            <Route path="*" element={<div>404</div>} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
         <ToastContainer position="top-right" />
