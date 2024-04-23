@@ -5,7 +5,7 @@ dotenv.config();
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
-  ssl: false,
+  ssl: { rejectUnauthorized: false },
   entities: ['dist/**/*.entity.js'],
   migrations: ['dist/src/db/migrations/*.js'],
 };
