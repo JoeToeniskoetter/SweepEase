@@ -14,6 +14,7 @@ import { MailModule } from './mail/mail.module';
 import { APP_GUARD } from '@nestjs/core';
 import { FirebaseAuthGuard } from './firebase/firebase.guard';
 import { RolesGuard } from './role/role.guard';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { RolesGuard } from './role/role.guard';
     InspectionModule,
     UploadModule,
     MailModule,
+    FeedbackModule,
   ],
   providers: [
     FirebaseAuthService,

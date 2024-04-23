@@ -213,7 +213,7 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
             <Grid item xs={12} sm={6} md={4}>
               <PricingOption
                 title="Starter"
-                subtitle="Try SweepEase before you commit!"
+                subtitle="Try SweepInspectr before you commit!"
                 price="Free"
                 options={[
                   "1 Inspection template",

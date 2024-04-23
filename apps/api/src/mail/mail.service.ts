@@ -33,4 +33,18 @@ export class MailService {
       console.error(e);
     }
   }
+
+  async sendMailSimple(subject: string, text: string) {
+    try {
+      const res = await this.transporter.sendMail({
+        to: this.configService.get('EMAIL_USER'),
+        from: this.configService.get('EMAIL_USER'),
+        subject,
+        text,
+      });
+      return res;
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }

@@ -1,6 +1,5 @@
 import {
   AccountCircleTwoTone,
-  ChatTwoTone,
   ContentPasteTwoTone,
   ListAltTwoTone,
   Logout,
@@ -22,6 +21,7 @@ import * as React from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Logo } from "./Logo";
 import { useAuth } from "../context/AuthContext";
+import { Feedback } from "./Feedback";
 
 const drawerWidth = 240;
 
@@ -41,7 +41,6 @@ const tabs = [
     path: "templates",
   },
   { name: "Users", icon: <AccountCircleTwoTone />, path: "users" },
-  { name: "Feedback", icon: <ChatTwoTone />, path: "feedback" },
 ];
 
 export default function ResponsiveDrawer(props: Props) {
@@ -139,6 +138,7 @@ export default function ResponsiveDrawer(props: Props) {
         alignItems={"center"}
         p={2}
       >
+        <Feedback />
         <Typography fontWeight={"light"}>{user?.email}</Typography>
         <Button
           startIcon={<Logout />}
