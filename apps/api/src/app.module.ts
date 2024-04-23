@@ -27,6 +27,7 @@ import { FeedbackModule } from './feedback/feedback.module';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: configService.get('DATABASE_URL'),
+        ssl: false,
         entities: dataSourceOptions.entities,
         migrations: dataSourceOptions.migrations,
         synchronize: false,
