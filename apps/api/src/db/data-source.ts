@@ -4,10 +4,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
-  url: process.env.DATBASE_URL,
-  username: process.env.USERNAME,
-  password: process.env.PASSWORD,
-  database: process.env.DATABASE,
+  url: process.env.DATABASE_URL,
   entities: ['dist/**/*.entity.js'],
   migrations: ['dist/src/db/migrations/*.js'],
 };

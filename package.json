@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "start": "node apps/api/dist/src/main",
+    "start": "cd apps/api && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
