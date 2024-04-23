@@ -9,6 +9,7 @@ import React from "react";
 import { Navbar } from "../components/Navbar";
 import { PricingOption } from "../components/PricingOption";
 import { Link } from "react-router-dom";
+import { BetaOverlay } from "../components/BetaOverlay";
 
 interface LandingPageProps {}
 
@@ -32,6 +33,26 @@ const features = [
   },
 ];
 
+const exampleSections = [
+  {
+    name: "Create an inspection template",
+    description:
+      "Add quick condition options to make the inspection process a breeze.",
+    image: "/template.png",
+  },
+  {
+    name: "Conduct the inspection",
+    description:
+      "Technicians can follow the predefined template to conduct inspections",
+    image: "/inspect.png",
+  },
+  {
+    name: "Review and save",
+    description: "Complete your inspection and save the report details",
+    image: "/report.png",
+  },
+];
+
 export const LandingPage: React.FC<LandingPageProps> = () => {
   return (
     <div>
@@ -47,7 +68,7 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
           width={"100%"}
           textAlign={"center"}
           flexDirection={"column"}
-          minHeight={"30vh"}
+          mt={10}
         >
           <Typography
             sx={{
@@ -64,7 +85,7 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
             inspections
           </Typography>
         </Box>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{ minHeight: "50vh" }}>
           {features.map((feature) => (
             <Grid item xs={12} sm={6} md={4}>
               <Paper
@@ -97,6 +118,55 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
                   <Typography fontWeight={"light"} textAlign={"center"}>
                     {feature.description}
                   </Typography>
+                </Box>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+      <Container maxWidth="xl">
+        <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
+          <Typography variant="h4" fontWeight={"bold"}>
+            How it works
+          </Typography>
+        </Box>
+        <Grid container spacing={0}>
+          {exampleSections.map((sec) => (
+            <Grid item key={sec.name} sm={12} md={4}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 2,
+                  flexDirection: "column",
+                }}
+              >
+                <Box
+                  display={"flex"}
+                  flexDirection={"column"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Typography fontWeight={"bold"} variant="h6">
+                    {sec.name}
+                  </Typography>
+                  <Typography fontWeight={"light"} textAlign={"center"}>
+                    {sec.description}
+                  </Typography>
+                </Box>
+                <Box
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                >
+                  <img
+                    src={sec.image}
+                    width={"100%"}
+                    style={{ borderRadius: 10, display: "flex" }}
+                  />
                 </Box>
               </Paper>
             </Grid>
@@ -138,50 +208,51 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
             Plan sizes that fit your business requirements.
           </Typography>
         </Box>
-        <Grid container spacing={4} justifyContent="center" mb={4}>
-          <Grid item xs={12} sm={6} md={4}>
-            <PricingOption
-              title="Starter"
-              subtitle="Try SweepEase before you commit!"
-              price="Free"
-              options={[
-                "Store up to 200 customers",
-                "Up to 3 months appointment history",
-                "Basic inspection report templates",
-                "No setup, or hidden fees",
-                "Basic email support",
-              ]}
-            />
+        <BetaOverlay>
+          <Grid container spacing={4} justifyContent="center" mb={4}>
+            <Grid item xs={12} sm={6} md={4}>
+              <PricingOption
+                title="Starter"
+                subtitle="Try SweepEase before you commit!"
+                price="Free"
+                options={[
+                  "1 Inspection template",
+                  "Generate up to 10 inspection reports per month",
+                  "Up to 3 months Inspection History",
+                  "Basic email support",
+                ]}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <PricingOption
+                title="Company"
+                subtitle="Relevant for multiple users, extended & premium support."
+                price="$15"
+                monthly
+                options={[
+                  "3 Inspection templates",
+                  "Generate up to 25 inspection reports per month",
+                  "Up to 3 Months Inspection History",
+                  "Basic email support",
+                ]}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <PricingOption
+                title="Enterprise"
+                subtitle="Best for large scale uses and extended redistribution rights."
+                price="$60"
+                monthly
+                options={[
+                  "Unlimited Inspection Templates",
+                  "Unlimited Inspection Report Generation",
+                  "10 Years Inspection History",
+                  "Basic email support",
+                ]}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <PricingOption
-              title="Company"
-              subtitle="Relevant for multiple users, extended & premium support."
-              price="$99"
-              monthly
-              options={[
-                "Store up to 200 customers",
-                "Basic inspection report templates",
-                "No setup, or hidden fees",
-                "Basic email support",
-              ]}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <PricingOption
-              title="Enterprise"
-              subtitle="Best for large scale uses and extended redistribution rights."
-              price="$199"
-              monthly
-              options={[
-                "Store up to 200 customers",
-                "Basic inspection report templates",
-                "No setup, or hidden fees",
-                "Basic email support",
-              ]}
-            />
-          </Grid>
-        </Grid>
+        </BetaOverlay>
       </Container>
     </div>
   );
