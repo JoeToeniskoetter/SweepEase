@@ -97,7 +97,7 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              width: 400,
+              width: 600,
               bgcolor: "background.paper",
               boxShadow: 24,
               borderRadius: 5,
@@ -168,6 +168,15 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
                 )}
               </Button>
             </Box>
+            <Typography variant="caption" fontWeight={"bold"}>
+              Disclaimer: SweepInspectr is a tool designed to assist with
+              chimney sweep inspections and report generation. It is the user’s
+              responsibility to ensure that all inspection templates and
+              resulting reports comply with local laws, codes, and safety
+              standards. SweepInspectr does not guarantee compliance with such
+              regulations and shall not be held liable for any lapses in
+              compliance.
+            </Typography>
           </Box>
         </Modal>
       </Container>
