@@ -406,6 +406,12 @@ export const EditTemplateForm = ({
                 color="error"
                 startIcon={<DeleteOutlined fontSize={"small"} />}
                 onClick={() => {
+                  if (selectedSections.length === fields.length) {
+                    alert(
+                      "Inspection templates must contain at least on inspection item"
+                    );
+                    return;
+                  }
                   remove(selectedSections);
                   setSelectedSections([]);
                 }}

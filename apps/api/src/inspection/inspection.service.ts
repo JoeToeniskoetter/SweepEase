@@ -202,11 +202,14 @@ export class InspectionService {
     }
   }
 
-  findAllInspectionTemplateOptions(currentUser: User) {
-    return this.inspectionTemplateRepo.find({
+  async findAllInspectionTemplateOptions(currentUser: User) {
+    const templates = await this.inspectionTemplateRepo.find({
       where: { company: { id: currentUser.company.id } },
       select: ['id', 'inspectionLevel', 'name'],
+      relations: ['items'],
     });
+
+    return templates.filter((t) => t.items.length > 0);
   }
 
   findAllTemplates(currentUser: User) {

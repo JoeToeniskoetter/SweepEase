@@ -155,7 +155,12 @@ export const InspectionOrderInfoForm: React.FC<
         />
       </Box>
       <Box>
-        <Typography fontWeight={"bold"}>Inspection Template</Typography>
+        <Typography fontWeight={"bold"}>Inspection Template </Typography>
+        {data && data.length === 0 && (
+          <Typography variant="caption" color={"error"}>
+            No templates found that include inspection items
+          </Typography>
+        )}
         <Controller
           control={control}
           name="templateId"
