@@ -19,12 +19,14 @@ import { useInspectionTemplates } from "../hooks/useInspectionTemplates";
 import { InspectionTemplateGrid } from "./InspectionTemplateGrid";
 import { EmptyTemplates } from "./EmptyTemplates";
 import { ProtectedComponent } from "./ProtectedComponent";
+import { useNavigate } from "react-router-dom";
 
 interface InspectionTemplatesProps {}
 
 export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
   const theme = useTheme();
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const navigate = useNavigate();
   const { data, isLoading } = useInspectionTemplates();
   const [templateName, setTemplateName] = useState<string>("");
   const [inspectionLevel, setInspectionLevel] = useState<
@@ -145,11 +147,13 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
                 disabled={templateName.trim() === ""}
                 onClick={async () => {
                   try {
-                    createTemplate({
+                    const newTemplate = await createTemplate({
                       name: templateName,
                       inspectionLevel: inspectionLevel,
                     });
                     setOpenModal(false);
+                    console.log("redirecting");
+                    navigate(`${newTemplate.id}`);
                   } catch (e) {
                     console.error(e);
                   }

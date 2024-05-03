@@ -223,7 +223,7 @@ export class InspectionService {
     const template = this.inspectionTemplateRepo.create({
       company,
       createdBy: currentUser,
-      inspectionLevel: 'Level One',
+      inspectionLevel: createTemplateDto.inspectionLevel,
       name: createTemplateDto.name,
     });
 

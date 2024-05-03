@@ -86,15 +86,15 @@ export const InspectionTemplateGrid: React.FC<InspectionTemplateGridProps> = ({
           </Box>
           <Grid container spacing={2}>
             {templates[key].map((t) => (
-              <Badge
-                badgeContent={
-                  <ProtectedComponent allowedRoles={["ADMIN", "CREATOR"]}>
-                    <InspectionTemplateOptions template={t} key={t.id} />
-                  </ProtectedComponent>
-                }
-                color="primary"
-              >
-                <Grid item lg={2} key={t.id}>
+              <Grid item key={t.id}>
+                <Badge
+                  badgeContent={
+                    <ProtectedComponent allowedRoles={["ADMIN", "CREATOR"]}>
+                      <InspectionTemplateOptions template={t} key={t.id} />
+                    </ProtectedComponent>
+                  }
+                  color="primary"
+                >
                   <Link key={t.id} to={`${t.id}`} style={{ all: "unset" }}>
                     <Box
                       sx={{ minWidth: 200, cursor: "pointer" }}
@@ -138,8 +138,8 @@ export const InspectionTemplateGrid: React.FC<InspectionTemplateGridProps> = ({
                       </Box>
                     </Box>
                   </Link>
-                </Grid>
-              </Badge>
+                </Badge>
+              </Grid>
             ))}
           </Grid>
         </Box>
