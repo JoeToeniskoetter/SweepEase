@@ -36,7 +36,8 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
     mutateAsync: deleteInspectionOrder,
     isPending: isDeletingInspectionOrder,
   } = useDeleteInspectionOrder();
-  const { mutateAsync: startInspection, isPending } = useStartInspection();
+  const { mutateAsync: startInspection, isPending: startingInspection } =
+    useStartInspection();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -60,7 +61,7 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
           }}
         >
           <ListItemIcon>
-            {isPending ? <CircularProgress size={18} /> : <Start />}
+            {startingInspection ? <CircularProgress size={18} /> : <Start />}
           </ListItemIcon>
           <ListItemText>Begin Inspection</ListItemText>
         </MenuItem>,
@@ -71,7 +72,7 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
             }}
           >
             <ListItemIcon>
-              {isPending ? <CircularProgress size={18} /> : <Edit />}
+              <Edit />
             </ListItemIcon>
             <ListItemText>Edit Inspection</ListItemText>
           </MenuItem>
@@ -88,7 +89,7 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
             sx={{ color: "red" }}
           >
             <ListItemIcon>
-              {isPending ? (
+              {isDeletingInspectionOrder ? (
                 <CircularProgress size={18} />
               ) : (
                 <Delete color="error" />
@@ -104,7 +105,7 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
         <Link to={`/inspections/${inspection.id}`} style={{ all: "unset" }}>
           <MenuItem>
             <ListItemIcon>
-              {isPending ? <CircularProgress size={18} /> : <Start />}
+              <Start />
             </ListItemIcon>
             <ListItemText>Resume Inspection</ListItemText>
           </MenuItem>
@@ -120,7 +121,7 @@ export const InspectionOrderOptions: React.FC<InspectionOrderOptionsProps> = ({
         >
           <MenuItem>
             <ListItemIcon>
-              {isPending ? <CircularProgress size={18} /> : <Start />}
+              <Start />
             </ListItemIcon>
             <ListItemText>View Report</ListItemText>
           </MenuItem>

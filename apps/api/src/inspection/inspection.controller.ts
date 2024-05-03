@@ -88,7 +88,7 @@ export class InspectionController {
     return this.inspectionService.update(id, currentUser, updateInspectionDto);
   }
 
-  @Roles([UserRoles.ADMIN, UserRoles.USER])
+  @Roles([UserRoles.ADMIN, UserRoles.CREATOR])
   @Delete(':id')
   remove(@Param('id') id: string, @CurrentUser() user: User) {
     return this.inspectionService.remove(id, user);

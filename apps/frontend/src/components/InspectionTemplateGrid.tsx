@@ -1,4 +1,4 @@
-import { FeedTwoTone } from "@mui/icons-material";
+import { ErrorTwoTone, FeedTwoTone } from "@mui/icons-material";
 import {
   Badge,
   Box,
@@ -122,9 +122,25 @@ export const InspectionTemplateGrid: React.FC<InspectionTemplateGridProps> = ({
                             justifyContent: "center",
                           }}
                         >
-                          <FeedTwoTone
-                            sx={{ color: "#e3e3e3", fontSize: 68 }}
-                          />
+                          {t.itemCount == 0 ? (
+                            <Box
+                              display={"flex"}
+                              flexDirection={"column"}
+                              alignItems={"center"}
+                            >
+                              <ErrorTwoTone
+                                color="error"
+                                sx={{ fontSize: 68 }}
+                              />
+                              <Typography variant="caption">
+                                No inspection items
+                              </Typography>
+                            </Box>
+                          ) : (
+                            <FeedTwoTone
+                              sx={{ color: "#e3e3e3", fontSize: 68 }}
+                            />
+                          )}
                         </CardContent>
                       </Card>
                       <Box>
