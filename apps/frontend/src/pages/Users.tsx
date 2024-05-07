@@ -4,6 +4,7 @@ import {
   Container,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -46,15 +47,37 @@ export const Users: React.FC<UsersProps> = () => {
           justifyContent={"flex-end"}
           mt={2}
         >
-          <ProtectedComponent allowedRoles={["ADMIN", "CREATOR"]}>
-            <Button
-              onClick={() => setInviteUserModalOpen(true)}
-              startIcon={<AddCircleOutline />}
-              variant="outlined"
-            >
-              Invite user
-            </Button>
-          </ProtectedComponent>
+          <Box display={"flex"} flexDirection={"column"}>
+            <ProtectedComponent allowedRoles={["ADMIN", "CREATOR"]}>
+              <Button
+                onClick={() => setInviteUserModalOpen(true)}
+                startIcon={<AddCircleOutline />}
+                variant="outlined"
+              >
+                Invite user
+              </Button>
+              <Tooltip
+                title={
+                  <React.Fragment>
+                    <Typography color="inherit">Roles</Typography>
+                    <p>
+                      <strong>Creator & Admin: </strong>
+                      Create/Edit templates. Invite Users. Create inspection
+                      orders
+                    </p>
+                    <p>
+                      <strong>User: </strong>
+                      Conduct Inspections
+                    </p>
+                  </React.Fragment>
+                }
+              >
+                <Typography variant="body2" fontWeight={"bold"} mt={2}>
+                  What can each role do?
+                </Typography>
+              </Tooltip>
+            </ProtectedComponent>
+          </Box>
         </Box>
         <Box sx={{ width: "100%" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }} mb={4}>
