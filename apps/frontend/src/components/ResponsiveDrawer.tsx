@@ -22,7 +22,6 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { Logo } from "./Logo";
 import { useAuth } from "../context/AuthContext";
 import { Feedback } from "./Feedback";
-import { useProfile } from "../hooks/useProfile";
 import { WelcomePopup } from "./WelcomePopup";
 
 const drawerWidth = 240;
@@ -47,7 +46,6 @@ const tabs = [
 
 export default function ResponsiveDrawer(props: Props) {
   const { signOut, user } = useAuth();
-  const { data: profile } = useProfile({ enabled: user !== null });
   const theme = useTheme();
   const location = useLocation();
   const { window } = props;
