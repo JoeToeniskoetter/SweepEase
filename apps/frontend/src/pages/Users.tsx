@@ -37,7 +37,7 @@ export const Users: React.FC<UsersProps> = () => {
           Users
         </Typography>
         <Typography sx={{ color: "white" }} fontWeight={"light"}>
-          View and manager your users here
+          View and manage your users here
         </Typography>
       </Box>
       <Container maxWidth="lg">

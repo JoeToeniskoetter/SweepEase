@@ -115,7 +115,7 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
               Create Template
             </Typography>
             <Typography fontWeight={"light"}>
-              Add something information about this template
+              Add some information about this template
             </Typography>
             <Box display={"flex"} flexDirection={"column"} gap={2} mt={2}>
               <TextField
@@ -153,7 +153,7 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
                     });
                     setOpenModal(false);
                     console.log("redirecting");
-                    navigate(`${newTemplate.id}`);
+                    navigate(`${newTemplate.id}?edit=true`);
                   } catch (e) {
                     console.error(e);
                   }

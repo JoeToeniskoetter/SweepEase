@@ -57,7 +57,7 @@ export const BetaOverlay = (props: props) => {
           </Typography>
           <Typography variant="body1" sx={{ marginBottom: 3 }}>
             Sign up today for exclusive early access to SweepInspectr. Use all
-            our features for free during the beta phase and help shape the
+            of our features for free during the beta phase and help shape the
             future of our product!
           </Typography>
           <Button

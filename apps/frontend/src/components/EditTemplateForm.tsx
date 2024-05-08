@@ -84,12 +84,16 @@ const TemplateFormSchema = z.object({
 export const EditTemplateForm = ({
   template,
   id,
+  edit,
+  setEdit,
 }: {
   template?: InspectionTemplate;
   id: string;
+  edit: boolean;
+  setEdit: (canEdit: boolean) => void;
 }) => {
   const theme = useTheme();
-  const [edit, setEdit] = useState<boolean>(false);
+  // const [edit, setEdit] = useState<boolean>(false);
   const { mutateAsync: updateTemplate, isPending, error } = useUpdateTemplate();
   const onSubmit = async (values: TemplateForm) => {
     try {
@@ -121,6 +125,7 @@ export const EditTemplateForm = ({
     reset,
     watch,
     formState: { isDirty, errors },
+    getValues,
   } = useForm<TemplateForm>({
     resolver: zodResolver(TemplateFormSchema),
     defaultValues: {
@@ -254,6 +259,7 @@ export const EditTemplateForm = ({
           </Tooltip>
         </Box>
         <Box>
+          {/* <pre> {JSON.stringify(getValues().items, null, 4)}</pre> */}
           <Box py={2}>
             <Box display={"flex"} gap={1}>
               <InfoTwoTone color="secondary" />
@@ -504,11 +510,11 @@ export const EditTemplateForm = ({
                           )}
                           <TextField
                             disabled={!edit}
+                            {...register(`items.${index}.name`)}
                             onClick={(e) => e.stopPropagation()}
                             variant={variant}
                             label="Item Name"
                             placeholder="Flu Liner"
-                            {...register(`items.${index}.name`)}
                             key={field.id}
                             fullWidth
                             error={
@@ -556,7 +562,7 @@ export const EditTemplateForm = ({
                                 event.preventDefault();
                                 event.stopPropagation();
                                 update(index, {
-                                  ...field,
+                                  ...getValues().items[index],
                                   options: [
                                     ...field.options,
                                     { name: "", description: "" },
