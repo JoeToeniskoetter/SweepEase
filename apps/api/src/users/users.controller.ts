@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CurrentUser } from 'src/user/user.decorator';
 import { User } from './entities/user.entity';
@@ -25,5 +25,10 @@ export class UsersController {
     @Param('id') id: string,
   ) {
     return this.usersService.updateUser(currentUser, updateUserDto, id);
+  }
+
+  @Post('/complete-first-login')
+  completeFirstLogin(@CurrentUser() currentUser: User) {
+    return this.usersService.completeFirstLogin(currentUser);
   }
 }

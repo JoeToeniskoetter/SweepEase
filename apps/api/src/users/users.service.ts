@@ -201,4 +201,9 @@ export class UsersService {
 
     this.logger.log(res);
   }
+
+  completeFirstLogin(currentUser: User) {
+    currentUser.firstLogin = false;
+    return this.userRepo.save(currentUser);
+  }
 }

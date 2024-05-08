@@ -31,6 +31,9 @@ export class User extends BaseEntity {
   @Column({ name: 'role', enum: UserRoles, default: UserRoles.USER })
   role: UserRoles;
 
+  @Column({ name: 'first_login', default: true })
+  firstLogin: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

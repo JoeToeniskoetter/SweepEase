@@ -5,6 +5,7 @@ interface Profile {
   createdAt: string;
   updatedAt: string;
   company: Company | null;
+  firstLogin: boolean;
 }
 
 interface SweepInspectrUser {
