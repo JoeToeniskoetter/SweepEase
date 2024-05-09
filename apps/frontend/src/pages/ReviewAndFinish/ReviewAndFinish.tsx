@@ -126,7 +126,7 @@ export const ReviewAndFinish: React.FC = () => {
                         key={od.id}
                         src={od.photoUrl}
                         alt="Photo of {{area}}"
-                        style={{ borderRadius: 5, maxHeight: 400 }}
+                        style={{ borderRadius: 5, height: 400 }}
                       />
                     </figure>
                   </div>
