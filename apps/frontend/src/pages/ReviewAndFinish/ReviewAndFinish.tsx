@@ -8,6 +8,7 @@ import { Logo } from "../../components/Logo";
 import { format } from "date-fns";
 import { useReactToPrint } from "react-to-print";
 import { ArrowCircleLeftOutlined, Print } from "@mui/icons-material";
+import { useProfile } from "../../hooks/useProfile";
 
 export const ReviewAndFinish: React.FC = () => {
   const componentRef = useRef(null);
@@ -15,7 +16,7 @@ export const ReviewAndFinish: React.FC = () => {
     content: () => componentRef.current,
   });
   const { id } = useParams();
-
+  const { data: profile } = useProfile({ enabled: true });
   const { data: apiDetails, isLoading: loadingDetail } =
     useInspectionOrderDetails({
       id: id ?? "",
@@ -57,7 +58,7 @@ export const ReviewAndFinish: React.FC = () => {
               {format(new Date(order?.createdAt ?? ""), "MM/dd/yyyy")}
             </p>
             <p>
-              <strong>Inspector:</strong> {"Joe"}
+              <strong>Inspected By:</strong> {profile?.company?.name}
             </p>
           </header>
 
