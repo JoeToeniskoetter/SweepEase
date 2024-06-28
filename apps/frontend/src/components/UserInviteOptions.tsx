@@ -1,4 +1,4 @@
-import { MoreHoriz, Refresh } from "@mui/icons-material";
+import { CancelOutlined, MoreHoriz, Refresh } from "@mui/icons-material";
 import {
   CircularProgress,
   IconButton,
@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useResendInvite } from "../hooks/useResendInvite";
+import { useCancelInvite } from "../hooks/useCancelInvite";
 
 interface InspectionOrderOptionsProps {
   id: string;
@@ -20,6 +21,8 @@ export const UserInviteOptions: React.FC<InspectionOrderOptionsProps> = ({
   invite,
 }) => {
   const { mutateAsync: resend, isPending } = useResendInvite();
+  const { mutateAsync: cancelInvite, isPending: isCanceling } =
+    useCancelInvite();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -31,21 +34,38 @@ export const UserInviteOptions: React.FC<InspectionOrderOptionsProps> = ({
 
   const renderOptions = () => {
     return (
-      <MenuItem
-        onClick={async () => {
-          await resend({ id: invite.id });
-          handleClose();
-        }}
-      >
-        <ListItemIcon>
-          {isPending ? (
-            <CircularProgress sx={{ color: "black" }} size={18} />
-          ) : (
-            <Refresh />
-          )}
-        </ListItemIcon>
-        <ListItemText>Resend</ListItemText>
-      </MenuItem>
+      <>
+        <MenuItem
+          onClick={async () => {
+            await resend({ id: invite.id });
+            handleClose();
+          }}
+        >
+          <ListItemIcon>
+            {isPending ? (
+              <CircularProgress sx={{ color: "black" }} size={18} />
+            ) : (
+              <Refresh />
+            )}
+          </ListItemIcon>
+          <ListItemText>Resend</ListItemText>
+        </MenuItem>
+        <MenuItem
+          onClick={async () => {
+            await cancelInvite({ id: invite.id });
+            handleClose();
+          }}
+        >
+          <ListItemIcon>
+            {isCanceling ? (
+              <CircularProgress sx={{ color: "black" }} size={18} />
+            ) : (
+              <CancelOutlined />
+            )}
+          </ListItemIcon>
+          <ListItemText>Cancel Invite</ListItemText>
+        </MenuItem>
+      </>
     );
   };
   return (

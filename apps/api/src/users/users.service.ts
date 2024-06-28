@@ -206,4 +206,8 @@ export class UsersService {
     currentUser.firstLogin = false;
     return this.userRepo.save(currentUser);
   }
+
+  deleteInvite(id: string) {
+    return this.userInviteRepo.softDelete({ id });
+  }
 }

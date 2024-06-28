@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CurrentUser } from 'src/user/user.decorator';
 import { User, UserRoles } from './entities/user.entity';
@@ -36,5 +36,11 @@ export class UserInviteController {
   @Post(':id/resend')
   resendInvite(@Param('id') id: string, @CurrentUser() currentUser: User) {
     return this.usersService.resendInvite(id, currentUser);
+  }
+
+  @Roles([UserRoles.CREATOR, UserRoles.ADMIN])
+  @Delete(':id')
+  deleteInvite(@Param('id') id: string) {
+    return this.usersService.deleteInvite(id);
   }
 }
