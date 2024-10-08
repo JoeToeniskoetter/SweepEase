@@ -4,7 +4,15 @@ import {
   ChevronRight,
   TableChartTwoTone,
 } from "@mui/icons-material";
-import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  Paper,
+  SvgIcon,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { Navbar } from "../components/Navbar";
 import { PricingOption } from "../components/PricingOption";
@@ -55,123 +63,182 @@ const exampleSections = [
 
 export const LandingPage: React.FC<LandingPageProps> = () => {
   return (
-    <div>
+    <Box display={"flex"} flexDirection={"column"} gap={10}>
       <Navbar sx={{}} />
       <Container
         maxWidth="lg"
-        sx={{ display: "flex", flexDirection: "column", gap: 5 }}
+        sx={{ display: "flex", flexDirection: "column" }}
       >
-        <Box
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
-          width={"100%"}
-          textAlign={"center"}
-          flexDirection={"column"}
-          mt={10}
-        >
-          <Typography
-            sx={{
-              fontSize: 60,
-              fontWeight: "1000",
-              letterSpacing: "-1.5px",
-              lineHeight: "60px",
-            }}
+        <Box>
+          <Box
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            width={"100%"}
+            textAlign={"center"}
+            flexDirection={"column"}
+            mt={10}
           >
-            One stop shop for{" "}
-            <span style={{ fontFamily: "lobster", color: "#F57F37" }}>
-              Chimney Sweep
-            </span>{" "}
-            inspections
-          </Typography>
-        </Box>
-        <Grid container spacing={2} sx={{ minHeight: "50vh" }}>
-          {features.map((feature) => (
-            <Grid item xs={12} sm={6} md={4}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 3,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 2,
-                  flexDirection: "column",
-                  height: 150,
-                }}
-              >
-                <Box
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  width={"100%"}
+            <Typography
+              sx={{
+                fontSize: 60,
+                fontWeight: "1000",
+                letterSpacing: "-1.5px",
+                lineHeight: "60px",
+              }}
+            >
+              One stop shop for{" "}
+              <span style={{ fontFamily: "lobster", color: "#F57F37" }}>
+                Chimney Sweep
+              </span>{" "}
+              inspections
+            </Typography>
+          </Box>
+          <Grid
+            container
+            spacing={2}
+            sx={{ minHeight: "50vh" }}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
+            {features.map((feature) => (
+              <Grid item xs={12} sm={6} md={4}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 3,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 2,
+                    flexDirection: "column",
+                  }}
                 >
-                  {feature.icon}
-                </Box>
-                <Box
-                  display={"flex"}
-                  flexDirection={"column"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                >
-                  <Typography fontWeight={"bold"}>{feature.title}</Typography>
-                  <Typography fontWeight={"light"} textAlign={"center"}>
-                    {feature.description}
-                  </Typography>
-                </Box>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-      <Container maxWidth="xl">
-        <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
-          <Typography variant="h4" fontWeight={"bold"}>
-            How it works
-          </Typography>
-        </Box>
-        <Grid container spacing={0}>
-          {exampleSections.map((sec) => (
-            <Grid item key={sec.name} sm={12} md={4}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 3,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 2,
-                  flexDirection: "column",
-                }}
-              >
-                <Box
-                  display={"flex"}
-                  flexDirection={"column"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                >
-                  <Typography fontWeight={"bold"} variant="h6">
-                    {sec.name}
-                  </Typography>
-                  <Typography fontWeight={"light"} textAlign={"center"}>
-                    {sec.description}
-                  </Typography>
-                </Box>
-                <Box
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                >
-                  <img
-                    src={sec.image}
+                  <Box
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
                     width={"100%"}
-                    style={{ borderRadius: 10, display: "flex" }}
-                  />
-                </Box>
-              </Paper>
+                  >
+                    <SvgIcon sx={{ fontSize: 80 }}>{feature.icon}</SvgIcon>
+                  </Box>
+                  <Box
+                    display={"flex"}
+                    flexDirection={"column"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
+                    <Typography
+                      fontWeight={"bold"}
+                      variant="h4"
+                      textAlign={"center"}
+                    >
+                      {feature.title}
+                    </Typography>
+                    <Typography
+                      fontWeight={"light"}
+                      textAlign={"center"}
+                      variant="h6"
+                    >
+                      {feature.description}
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+            ))}
+            <Grid
+              xs={12}
+              item
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <Button
+                onClick={() => console.log("clicked")}
+                variant="contained"
+                size="large"
+                component={Link}
+                sx={{
+                  borderRadius: 2,
+                  color: "white",
+                  padding: 2,
+                }}
+                to={"/signin"}
+              >
+                GET STARTED TODAY
+                <ChevronRight />
+              </Button>
             </Grid>
-          ))}
-        </Grid>
+          </Grid>
+        </Box>
+      </Container>
+      <Box
+        sx={{
+          bgcolor: "primary.light",
+        }}
+        py={5}
+      >
+        <Container>
+          <Grid container spacing={0}>
+            <Grid item xs={12}>
+              <Box
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                <Typography variant="h4" fontWeight={"bold"} color="white">
+                  How it works
+                </Typography>
+              </Box>
+            </Grid>
+            {exampleSections.map((sec) => (
+              <Grid item key={sec.name} sm={12} md={4}>
+                <Box
+                  sx={{
+                    p: 3,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 2,
+                    flexDirection: "column",
+                  }}
+                >
+                  <Box
+                    display={"flex"}
+                    flexDirection={"column"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
+                    <Typography variant="h5" fontWeight={"bold"}>
+                      {sec.name}
+                    </Typography>
+                    <Typography
+                      fontWeight={"light"}
+                      textAlign={"center"}
+                      variant="h6"
+                    >
+                      {sec.description}
+                    </Typography>
+                  </Box>
+                  <Box
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                  >
+                    <img
+                      src={sec.image}
+                      width={"100%"}
+                      style={{ borderRadius: 10, display: "flex" }}
+                    />
+                  </Box>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+      <Box display={"flex"} flexDirection={"column"} gap={2}>
         <Box
           display={"flex"}
           alignItems={"center"}
@@ -183,7 +250,7 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
             variant="contained"
             component={Link}
             sx={{
-              backgroundColor: "#F57F37",
+              backgroundColor: "primary.main",
               textTransform: "none",
               borderRadius: 2,
               color: "white",
@@ -201,7 +268,7 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
           justifyContent={"center"}
           pb={4}
         >
-          <Typography fontWeight={800} fontSize={30}>
+          <Typography variant="h4" fontWeight={"bold"}>
             Simple Straight Forward Pricing
           </Typography>
           <Typography fontWeight={"light"}>
@@ -253,7 +320,8 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
             </Grid>
           </Grid>
         </BetaOverlay>
-      </Container>
-    </div>
+      </Box>
+      {/* </Container> */}
+    </Box>
   );
 };

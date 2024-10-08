@@ -4,7 +4,6 @@ import React, { useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useInspectionOrderDetails } from "../../hooks/useInspectionOrderDetails";
 import { useInspectionOrder } from "../../hooks/useInspectionOrder";
-import { Logo } from "../../components/Logo";
 import { format } from "date-fns";
 import { useReactToPrint } from "react-to-print";
 import { ArrowCircleLeftOutlined, Print } from "@mui/icons-material";
@@ -51,7 +50,6 @@ export const ReviewAndFinish: React.FC = () => {
       <div ref={componentRef} className="main-container">
         <div className="container">
           <header className="header">
-            <Logo variant="dark" />
             <h1 className="title">Inspection Report</h1>
             <p>
               <strong>Date:</strong>{" "}
@@ -63,7 +61,7 @@ export const ReviewAndFinish: React.FC = () => {
           </header>
 
           <section className="section">
-            <h2 className="subtitle">Client Information</h2>
+            <h2 className="subtitle">Customer Information</h2>
             <p>
               <strong>Name:</strong> {order?.customerName}
             </p>
