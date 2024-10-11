@@ -44,6 +44,7 @@ interface InspectionTemplate {
   inspectionLevel: "Level 1" | "Level 2" | "Level 3";
   signaturesRequired: boolean;
   items: [];
+  canEdit: boolean;
   itemCount: number;
   createdAt: string;
   updatedAt: string;

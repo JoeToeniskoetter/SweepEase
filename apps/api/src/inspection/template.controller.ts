@@ -14,6 +14,7 @@ import { CreateTemplateDto } from './dto/create-template.dto';
 import { UpdateTemplateDto } from './dto/update-template.dto';
 import { InspectionService } from './inspection.service';
 import { Roles } from 'src/role/roles.decorator';
+import { CopyTemplateDto } from './dto/copy-template.dto';
 
 @Controller('inspection-templates')
 export class TemplateController {
@@ -67,5 +68,16 @@ export class TemplateController {
   deleteTemplate(@CurrentUser() user: User, @Param('id') id: string) {
     this.logger.log('deleting template');
     return this.inspectionService.deleteTemplate(id, user);
+  }
+
+  @Roles([UserRoles.ADMIN, UserRoles.CREATOR])
+  @Post('/copy/:id')
+  copyTemplate(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+    @Body() copyTemplateDto: CopyTemplateDto,
+  ) {
+    this.logger.log('copying template');
+    return this.inspectionService.copyTemplate(user, id, copyTemplateDto);
   }
 }

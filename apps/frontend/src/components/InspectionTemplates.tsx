@@ -1,6 +1,7 @@
 import { AddCircleOutline, Close } from "@mui/icons-material";
 import {
   Alert,
+  AppBar,
   Box,
   Button,
   CircularProgress,
@@ -20,6 +21,7 @@ import { InspectionTemplateGrid } from "./InspectionTemplateGrid";
 import { EmptyTemplates } from "./EmptyTemplates";
 import { ProtectedComponent } from "./ProtectedComponent";
 import { useNavigate } from "react-router-dom";
+import { DRAWER_WIDTH } from "../constants";
 
 interface InspectionTemplatesProps {}
 
@@ -37,6 +39,12 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
 
   return (
     <>
+      {/* <AppBar
+        variant="elevation"
+        sx={{
+          marginLeft: DRAWER_WIDTH,
+        }}
+      > */}
       <Box
         display={"flex"}
         alignItems={"start"}
@@ -53,6 +61,7 @@ export const InspectionTemplates: React.FC<InspectionTemplatesProps> = () => {
           View, edit, and save your templates.
         </Typography>
       </Box>
+      {/* </AppBar> */}
       <Container
         sx={{
           display: "flex",

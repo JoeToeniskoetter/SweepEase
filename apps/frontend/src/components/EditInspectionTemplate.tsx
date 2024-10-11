@@ -1,4 +1,4 @@
-import { Alert, CircularProgress } from "@mui/material";
+import { Alert, Button, CircularProgress } from "@mui/material";
 import React from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useInspectionTemplate } from "../hooks/useTemplate";
@@ -27,6 +27,11 @@ export const EditInspectionTemplate: React.FC = () => {
     <div>
       {error && <Alert severity="error">Error loading template</Alert>}
       {isLoading && <CircularProgress />}
+      {!template?.canEdit && (
+        <Alert severity="warning" action={<Button>Copy</Button>}>
+          This is a starter template. To edit, you can create a copy here
+        </Alert>
+      )}
       <EditTemplateForm
         template={template}
         id={id || ""}

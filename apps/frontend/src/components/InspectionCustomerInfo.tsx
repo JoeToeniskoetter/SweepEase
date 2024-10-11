@@ -1,11 +1,24 @@
 import { InfoTwoTone } from "@mui/icons-material";
 import { Typography, Divider, Box } from "@mui/material";
+import { common } from "@mui/material/colors";
 import { format } from "date-fns";
 import React from "react";
 
 interface InspectionCustomerInfoProps {
   inspection?: InspectionOrder;
 }
+
+const CustomerInfoLabel: React.FC<{ label: string }> = ({ label }) => {
+  return (
+    <Typography
+      fontWeight="bold"
+      textTransform={"uppercase"}
+      color={common.black[100]}
+    >
+      {label}
+    </Typography>
+  );
+};
 
 export const InspectionCustomerInfo: React.FC<InspectionCustomerInfoProps> = ({
   inspection,
@@ -25,22 +38,22 @@ export const InspectionCustomerInfo: React.FC<InspectionCustomerInfoProps> = ({
       <Divider />
       <Box display={"flex"} flexDirection={"column"} gap={1} p={1}>
         <Box>
-          <Typography fontWeight="bold">Customer name:</Typography>
+          <CustomerInfoLabel label={"customer name"} />
           <Typography>{inspection?.customerName}</Typography>
         </Box>
         <Box>
-          <Typography fontWeight="bold">Address:</Typography>
+          <CustomerInfoLabel label={"address"} />
           <Typography>{inspection?.address}</Typography>
           <Typography>
             {inspection?.city}, {inspection?.state} {inspection?.zip}
           </Typography>
         </Box>
         <Box>
-          <Typography fontWeight="bold">Phone:</Typography>
+          <CustomerInfoLabel label={"phone"} />
           <Typography>{inspection?.phone || "-"}</Typography>
         </Box>
         <Box>
-          <Typography fontWeight="bold">Inspection Date:</Typography>
+          <CustomerInfoLabel label={"inspection date"} />
           <Typography>
             {format(new Date(inspection?.createdAt ?? new Date()), "MM/d/yyyy")}
           </Typography>

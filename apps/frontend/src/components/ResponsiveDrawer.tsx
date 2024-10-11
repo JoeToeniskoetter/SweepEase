@@ -23,8 +23,7 @@ import { Logo } from "./Logo";
 import { useAuth } from "../context/AuthContext";
 import { Feedback } from "./Feedback";
 import { WelcomePopup } from "./WelcomePopup";
-
-const drawerWidth = 240;
+import { DRAWER_WIDTH } from "../constants";
 
 interface Props {
   window?: () => Window;
@@ -168,8 +167,8 @@ export default function ResponsiveDrawer(props: Props) {
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
+          ml: { sm: `${DRAWER_WIDTH}px` },
           borderBottom: 1,
           borderColor: "rgb(229, 231, 235);",
         }}
@@ -196,7 +195,7 @@ export default function ResponsiveDrawer(props: Props) {
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
       >
         <Drawer
           container={container}
@@ -211,19 +210,19 @@ export default function ResponsiveDrawer(props: Props) {
             display: { xs: "block", sm: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: drawerWidth,
+              width: DRAWER_WIDTH,
             },
           }}
         >
           {drawer}
         </Drawer>
         <Drawer
-          variant="permanent"
+          variant="persistent"
           sx={{
             display: { xs: "none", sm: "block" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: drawerWidth,
+              width: DRAWER_WIDTH,
             },
           }}
           open
@@ -235,7 +234,7 @@ export default function ResponsiveDrawer(props: Props) {
         component="main"
         sx={{
           flexGrow: 1,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
           bgcolor: theme.palette.background.default,
         }}
       >
