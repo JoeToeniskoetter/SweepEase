@@ -154,9 +154,11 @@ export const Inspect: React.FC<InspectProps> = () => {
           }}
         >
           <Box display={"flex"} justifyContent={"space-between"}>
-            <Typography variant="h5" fontWeight={"bold"} color={"white"}>
-              Inspection:{" "}
-              <span style={{ fontWeight: "lighter" }}>{inspection?.id}</span>
+            <Typography variant="h6" fontWeight={"bold"} color={"white"}>
+              INSPECTION:{" "}
+              <Typography component={"span"} textTransform={"uppercase"}>
+                {inspection?.id}
+              </Typography>
             </Typography>
             {inspection?.status && (
               <InspectionOrderStatus status={inspection?.status} />

@@ -35,6 +35,17 @@ function groupTemplates(
   const result: Record<string, InspectionTemplate[]> = {};
 
   templates.forEach((template) => {
+    if (!template.canEdit) {
+      if ("Starter Templates" in result) {
+        result["Starter Templates"] = [
+          ...result["Starter Templates"],
+          template,
+        ];
+      } else {
+        result["Starter Templates"] = [template];
+      }
+      return;
+    }
     if (template.inspectionLevel in result) {
       result[template.inspectionLevel] = [
         ...result[template.inspectionLevel],
@@ -112,7 +123,6 @@ export const InspectionTemplateGrid: React.FC<InspectionTemplateGridProps> = ({
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          height: 120,
                         }}
                       >
                         <CardContent
@@ -137,21 +147,26 @@ export const InspectionTemplateGrid: React.FC<InspectionTemplateGridProps> = ({
                               </Typography>
                             </Box>
                           ) : (
-                            <FeedTwoTone
-                              sx={{ color: "#e3e3e3", fontSize: 68 }}
-                            />
+                            <Box>
+                              <FeedTwoTone
+                                sx={{ color: "#e3e3e3", fontSize: 68 }}
+                              />
+                              <Box>
+                                <Typography variant="body1">
+                                  Name: {t.name}
+                                </Typography>
+                                <Typography fontSize={12}>
+                                  Inspection Items: {t.itemCount}
+                                </Typography>
+                                <Typography fontSize={12}>
+                                  Created:{" "}
+                                  {format(new Date(t.createdAt), "MM/dd/yyyy")}
+                                </Typography>
+                              </Box>
+                            </Box>
                           )}
                         </CardContent>
                       </Card>
-                      <Box>
-                        <Typography>Name: {t.name}</Typography>
-                        <Typography fontWeight={"light"} fontSize={12}>
-                          Inspection Items: {t.itemCount}
-                        </Typography>
-                        <Typography fontWeight={"light"} fontSize={12}>
-                          Created: {format(new Date(t.createdAt), "MM/dd/yyyy")}
-                        </Typography>
-                      </Box>
                     </Box>
                   </Link>
                 </Badge>

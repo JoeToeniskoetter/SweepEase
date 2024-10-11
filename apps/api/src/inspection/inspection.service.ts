@@ -26,6 +26,7 @@ import {
   paginate,
   PaginateQuery,
 } from 'nestjs-paginate';
+import { CopyTemplateDto } from './dto/copy-template.dto';
 
 @Injectable()
 export class InspectionService {
@@ -215,7 +216,9 @@ export class InspectionService {
   findAllTemplates(currentUser: User) {
     return this.inspectionTemplateRepo
       .createQueryBuilder('template')
-      .where({ company: { id: currentUser.company.id } })
+      .where('company_id = :companyId or company_id is null', {
+        companyId: currentUser.company.id,
+      })
       .loadRelationCountAndMap('template.itemCount', 'template.items')
       .getMany();
   }
@@ -436,5 +439,38 @@ export class InspectionService {
     }
 
     await this.inspectionRepo.softRemove(inspection);
+  }
+
+  async copyTemplate(user: User, id: string, dto: CopyTemplateDto) {
+    const foundTemplate = await this.inspectionTemplateRepo.findOne({
+      where: { id: id },
+      relations: ['items', 'items.options'],
+    });
+
+    if (!foundTemplate) {
+      throw new NotFoundException();
+    }
+
+    const template = this.inspectionTemplateRepo.create({
+      ...foundTemplate,
+      id: undefined,
+      name: dto.name,
+      inspectionLevel: dto.inspectionLevel,
+      canEdit: true,
+      company: { id: user.company.id },
+      items: foundTemplate.items.map((item) => {
+        return this.inspectionTemplateItemRepo.create({
+          ...item,
+          id: undefined,
+          options: item.options.map((option) => {
+            return this.inspectionTemplateOptionsRepo.create({
+              ...option,
+              id: undefined,
+            });
+          }),
+        });
+      }),
+    });
+    return this.inspectionTemplateRepo.save(template);
   }
 }

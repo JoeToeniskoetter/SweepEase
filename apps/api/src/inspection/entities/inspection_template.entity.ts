@@ -33,6 +33,9 @@ export class InspectionTemplate {
   @Column({ name: 'signatures_required', default: false })
   signaturesRequired: boolean;
 
+  @Column({ default: true })
+  canEdit: boolean;
+
   @ManyToOne(() => Company)
   @JoinColumn({ name: 'company_id' })
   company: Company;

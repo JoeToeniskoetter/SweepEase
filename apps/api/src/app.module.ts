@@ -15,6 +15,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { FirebaseAuthGuard } from './firebase/firebase.guard';
 import { RolesGuard } from './role/role.guard';
 import { FeedbackModule } from './feedback/feedback.module';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 @Module({
   imports: [
@@ -30,8 +31,9 @@ import { FeedbackModule } from './feedback/feedback.module';
         entities: dataSourceOptions.entities,
         ssl: { rejectUnauthorized: false },
         migrations: dataSourceOptions.migrations,
-        synchronize: false,
-        logging: false,
+        synchronize: true,
+        logging: true,
+        namingStrategy: new SnakeNamingStrategy(),
       }),
       inject: [ConfigService],
     }),

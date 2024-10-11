@@ -1,4 +1,4 @@
-import { Delete, Edit, MoreHoriz } from "@mui/icons-material";
+import { ContentCopy, Delete, Edit, MoreHoriz } from "@mui/icons-material";
 import {
   Box,
   CircularProgress,
@@ -14,6 +14,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDeleteTemplate } from "../hooks/useDeleteTemplate";
 import { ConfirmationDialog } from "./ConfirmationDialog";
+import { CopyTemplateDialog } from "./CopyTemplateDialog";
 
 interface InspectionTemplateOptionsProps {
   template: InspectionTemplate;
@@ -22,6 +23,8 @@ interface InspectionTemplateOptionsProps {
 export const InspectionTemplateOptions: React.FC<
   InspectionTemplateOptionsProps
 > = ({ template }) => {
+  const [copyTemplateDialogOpen, setCopyTemplateDialogOpen] =
+    useState<boolean>(false);
   const [confirmationDialogOpen, setConfirmationDialogOpen] =
     useState<boolean>(false);
   const { mutateAsync: deleteTemplate, isPending } = useDeleteTemplate();
@@ -33,6 +36,7 @@ export const InspectionTemplateOptions: React.FC<
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   return (
     <>
       <IconButton
@@ -57,27 +61,37 @@ export const InspectionTemplateOptions: React.FC<
       >
         <Box sx={{ maxWidth: "100%" }}>
           <MenuList>
-            <Link to={template.id} style={{ all: "unset" }}>
-              <MenuItem>
+            {template.canEdit && (
+              <Link to={template.id} style={{ all: "unset" }}>
+                <MenuItem>
+                  <ListItemIcon>
+                    <Edit fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Edit</ListItemText>
+                </MenuItem>
+              </Link>
+            )}
+            {template.canEdit && (
+              <MenuItem
+                onClick={() => {
+                  setConfirmationDialogOpen(true);
+                }}
+              >
                 <ListItemIcon>
-                  <Edit fontSize="small" />
+                  {isPending ? (
+                    <CircularProgress size={18} />
+                  ) : (
+                    <Delete fontSize="small" color="error" />
+                  )}
                 </ListItemIcon>
-                <ListItemText>Edit</ListItemText>
+                <ListItemText sx={{ color: "red" }}>Delete</ListItemText>
               </MenuItem>
-            </Link>
-            <MenuItem
-              onClick={() => {
-                setConfirmationDialogOpen(true);
-              }}
-            >
+            )}
+            <MenuItem onClick={() => setCopyTemplateDialogOpen(true)}>
               <ListItemIcon>
-                {isPending ? (
-                  <CircularProgress size={18} />
-                ) : (
-                  <Delete fontSize="small" color="error" />
-                )}
+                <ContentCopy fontSize="small" />
               </ListItemIcon>
-              <ListItemText sx={{ color: "red" }}>Delete</ListItemText>
+              <ListItemText>Copy</ListItemText>
             </MenuItem>
           </MenuList>
         </Box>
@@ -107,6 +121,11 @@ export const InspectionTemplateOptions: React.FC<
         }}
         open={confirmationDialogOpen}
         title="Delete template?"
+      />
+      <CopyTemplateDialog
+        template={template}
+        onClose={() => setCopyTemplateDialogOpen(false)}
+        open={copyTemplateDialogOpen}
       />
     </>
   );
