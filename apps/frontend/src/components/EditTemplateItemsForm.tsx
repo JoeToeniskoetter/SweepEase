@@ -30,7 +30,7 @@ import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { TemplateForm } from "./EditTemplateForm";
 
 interface EditTemplateItemsFormProps {
-  methods: UseFormReturn<TemplateForm, any, undefined>;
+  methods: UseFormReturn<TemplateForm, unknown, undefined>;
   arrayItemsFieldKey: "fireplaceItems" | "chimneyItems";
   edit: boolean;
 }
@@ -243,8 +243,8 @@ export const EditTemplateItemsForm: React.FC<EditTemplateItemsFormProps> = ({
                         }
                         helperText={
                           (methods.formState.errors[arrayItemsFieldKey] &&
-                            methods.formState.errors[arrayItemsFieldKey]?.name
-                              ?.message) ??
+                            methods.formState.errors[arrayItemsFieldKey][index]
+                              ?.name?.message) ??
                           ""
                         }
                       />
