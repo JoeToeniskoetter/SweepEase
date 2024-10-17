@@ -1,58 +1,57 @@
-import { closestCorners, DndContext, DragEndEvent } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   AddCircleOutline,
   AssignmentTwoTone,
-  Delete,
-  DeleteOutlined,
   Edit,
-  ExpandMore,
   FireplaceTwoTone,
   HistoryEduTwoTone,
+  HouseTwoTone,
   InfoTwoTone,
   Save,
 } from "@mui/icons-material";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Alert,
   Box,
   Button,
-  Checkbox,
   CircularProgress,
   Container,
   Divider,
   FormControl,
   FormControlLabel,
   FormHelperText,
-  IconButton,
   MenuItem,
   Radio,
   RadioGroup,
+  Slide,
+  Tab,
+  Tabs,
   TextField,
   Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
 import { useState } from "react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
 import { useUpdateTemplate } from "../hooks/useUpdateTemplate";
-import { DraggableItem } from "./DraggableItem";
+import { EditTemplateItemsForm } from "./EditTemplateItemsForm";
 import { ProtectedComponent } from "./ProtectedComponent";
 
-interface TemplateForm {
+export interface TemplateForm {
   name: string;
   inspectionLevel: string;
   signaturesRequired: boolean;
-  items: {
+  chimneyItems: {
     id?: string;
+    type: "CHIMNEY" | "FIREPLACE";
+    name: string;
+    position: number;
+    options: { id?: string; name: string; description: string }[];
+  }[];
+  fireplaceItems: {
+    id?: string;
+    type: "CHIMNEY" | "FIREPLACE";
     name: string;
     position: number;
     options: { id?: string; name: string; description: string }[];
@@ -63,10 +62,28 @@ const TemplateFormSchema = z.object({
   name: z.string().min(1),
   inspectionLevel: z.enum(["Level One", "Level Two", "Level Three"]),
   signaturesRequired: z.boolean(),
-  items: z.array(
+  chimneyItems: z.array(
     z.object({
       id: z.string().optional(),
       name: z.string().min(1, { message: "item name is required" }),
+      type: z.enum(["CHIMNEY", "FIREPLACE"]),
+      position: z.number(),
+      options: z.array(
+        z.object({
+          id: z.string().optional(),
+          name: z.string().min(1, { message: "option name is required" }),
+          description: z
+            .string()
+            .min(1, { message: "option description is required" }),
+        })
+      ),
+    })
+  ),
+  fireplaceItems: z.array(
+    z.object({
+      id: z.string().optional(),
+      name: z.string().min(1, { message: "item name is required" }),
+      type: z.enum(["CHIMNEY", "FIREPLACE"]),
       position: z.number(),
       options: z.array(
         z.object({
@@ -94,14 +111,26 @@ export const EditTemplateForm = ({
 }) => {
   const theme = useTheme();
   // const [edit, setEdit] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<number>(0);
   const { mutateAsync: updateTemplate, isPending, error } = useUpdateTemplate();
   const onSubmit = async (values: TemplateForm) => {
     try {
-      values.items = values.items.map((item, idx) => ({
-        ...item,
+      const chimneyItems = values.chimneyItems.map((i, idx) => ({
+        ...i,
         position: idx + 1,
       }));
-      await toast.promise(updateTemplate({ ...values, id: id }), {
+      const fireplaceItems = values.fireplaceItems.map((i, idx) => ({
+        ...i,
+        position: idx + 1,
+      }));
+      const newTemplate = {
+        id: template?.id,
+        inspectionLevel: values.inspectionLevel,
+        signaturesRequired: values.signaturesRequired,
+        name: values.name,
+        items: [...chimneyItems, ...fireplaceItems],
+      };
+      await toast.promise(updateTemplate({ ...newTemplate, id: id }), {
         success: "Template saved",
         pending: "Saving template",
         error: "Error while saving template",
@@ -116,8 +145,17 @@ export const EditTemplateForm = ({
       console.error(e);
     }
   };
-  const [selectedSections, setSelectedSections] = useState<number[]>([]);
-  const [openItems, setOpenItems] = useState<Set<number>>(new Set());
+  const methods = useForm<TemplateForm>({
+    resolver: zodResolver(TemplateFormSchema),
+    defaultValues: {
+      name: template?.name,
+      fireplaceItems: template?.items.filter((f) => f.type === "FIREPLACE"),
+      chimneyItems: template?.items.filter((f) => f.type === "CHIMNEY"),
+      signaturesRequired: template?.signaturesRequired,
+      inspectionLevel: template?.inspectionLevel,
+    },
+    reValidateMode: "onChange",
+  });
   const {
     control,
     register,
@@ -125,55 +163,7 @@ export const EditTemplateForm = ({
     reset,
     watch,
     formState: { isDirty, errors },
-    getValues,
-  } = useForm<TemplateForm>({
-    resolver: zodResolver(TemplateFormSchema),
-    defaultValues: {
-      name: template?.name,
-      items: template?.items,
-      signaturesRequired: template?.signaturesRequired,
-      inspectionLevel: template?.inspectionLevel,
-    },
-    reValidateMode: "onChange",
-  });
-  const { fields, append, remove, update, move } = useFieldArray({
-    control,
-    name: "items",
-  });
-
-  const variant = "filled";
-
-  const findPos = (id: string) => {
-    return fields.findIndex((f) => f.id === id);
-  };
-
-  function handleDragEnd(event: DragEndEvent) {
-    const { over, active } = event;
-    if (active.id === over?.id) return;
-    const activeIdx = findPos(active.id.toString());
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-
-    const overIdx = findPos(over?.id.toString());
-
-    move(activeIdx, overIdx);
-  }
-
-  const hasOptionNameError = (index: number, i: number): boolean => {
-    const hasError =
-      errors &&
-      errors?.items &&
-      errors.items[index] &&
-      errors.items[index]!.options &&
-      errors.items[index]!.options![i] &&
-      errors.items[index]!.options![i]!.name &&
-      errors.items[index]!.options![i]!.name?.message != undefined;
-
-    if (hasError !== undefined) {
-      return hasError;
-    }
-    return false;
-  };
+  } = methods;
 
   return (
     <>
@@ -355,326 +345,92 @@ export const EditTemplateForm = ({
             </FormControl>
           )}
         />
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          justifyContent={"center"}
-        >
-          <Box display={"flex"} justifyContent={"space-between"}>
-            <Box display={"flex"} py={2} flexDirection={"column"}>
-              <Box display={"flex"} gap={1}>
-                <AssignmentTwoTone color="secondary" />
-                <Typography fontWeight={"bold"}>Inspection Items</Typography>
-              </Box>
-              <Typography variant="body2">
-                Create items your technitician should inspect
-              </Typography>
-            </Box>
-            <Box
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
-            >
-              <Tooltip title={!edit ? "Select edit to make changes" : ""}>
-                <span>
-                  <Button
-                    size="small"
-                    startIcon={<AddCircleOutline fontSize={"small"} />}
-                    onClick={() => {
-                      append({
-                        name: "",
-                        position: fields.length + 1,
-                        options: [
-                          { id: "", name: "NA", description: "Not applicable" },
-                          {
-                            id: "",
-                            name: "Not Acceptable",
-                            description:
-                              "This item is not in working condition",
-                          },
-                          {
-                            id: "",
-                            name: "Acceptable",
-                            description:
-                              "This item is in acceptable working condition",
-                          },
-                        ],
-                      });
-                      setOpenItems(new Set(openItems.add(fields.length)));
-                    }}
-                    disabled={!edit}
-                  >
-                    Add Item
-                  </Button>
-                </span>
-              </Tooltip>
-              <Button
-                color="error"
-                startIcon={<DeleteOutlined fontSize={"small"} />}
-                onClick={() => {
-                  if (selectedSections.length === fields.length) {
-                    alert(
-                      "Inspection templates must contain at least on inspection item"
-                    );
-                    return;
-                  }
-                  remove(selectedSections);
-                  setSelectedSections([]);
-                }}
-                disabled={selectedSections.length < 1}
-              >
-                Remove{" "}
-                {selectedSections.length ? `${selectedSections.length}` : ""}
-                Sections
-              </Button>
-            </Box>
+        <Box display={"flex"} gap={0.5} flexDirection={"column"} pt={4}>
+          <Box display={"flex"} gap={1}>
+            <AssignmentTwoTone color="secondary" />
+            <Typography fontWeight={"bold"}>Inspection Items</Typography>
           </Box>
-          <Divider />
+          <Typography variant="body2">
+            Create items your technitician should inspect
+          </Typography>
         </Box>
-        <Box display={"flex"} flexDirection={"column"}>
-          <DndContext
-            onDragEnd={handleDragEnd}
-            collisionDetection={closestCorners}
-          >
-            <SortableContext
-              items={fields}
-              strategy={verticalListSortingStrategy}
-            >
-              {/* Draggbale start */}
-              {fields.map((field, index) => (
-                <DraggableItem
-                  id={field.id}
-                  key={field.id}
-                  showDragHandle={edit}
-                >
-                  <Accordion
-                    elevation={0}
-                    expanded={openItems.has(index)}
-                    key={field.id}
-                    sx={{
-                      bgcolor: theme.palette.background.default,
-                      width: "100%",
-                      ...(errors.items &&
-                        errors.items[index] && {
-                          boxShadow: "1px 1px 1px 1px #ff6b66",
-                        }),
-                    }}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMore fontSize={"large"} />}
-                      aria-controls="panel1-content"
-                      id="panel1-header"
-                      onClick={() => {
-                        const newSet = new Set(openItems);
-                        if (openItems.has(index)) {
-                          newSet.delete(index);
-                        } else {
-                          newSet.add(index);
-                        }
-                        setOpenItems(newSet);
-                      }}
-                    >
-                      <Box
-                        width={"100%"}
-                        display={"flex"}
-                        flexDirection={"column"}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                          width={"100%"}
-                        >
-                          <Typography>{index + 1}.</Typography>
-                          {edit && (
-                            <Checkbox
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                //@ts-ignore
-                                if (e.target.checked) {
-                                  setSelectedSections([
-                                    ...selectedSections,
-                                    index,
-                                  ]);
-                                } else {
-                                  setSelectedSections([
-                                    ...selectedSections.filter(
-                                      (s) => s != index
-                                    ),
-                                  ]);
-                                }
-                              }}
-                            />
-                          )}
-                          <TextField
-                            disabled={!edit}
-                            {...register(`items.${index}.name`)}
-                            onClick={(e) => e.stopPropagation()}
-                            variant={variant}
-                            label="Item Name"
-                            placeholder="Flu Liner"
-                            key={field.id}
-                            fullWidth
-                            error={
-                              errors.items !== undefined &&
-                              errors.items[index]?.name?.message !== undefined
-                            }
-                            helperText={
-                              (errors?.items &&
-                                errors?.items[index]?.name?.message) ??
-                              ""
-                            }
-                          />
-                        </Box>
-                      </Box>
-                    </AccordionSummary>
-                    <AccordionDetails
-                      sx={{ display: "flex", justifyContent: "end" }}
-                    >
-                      <Box
-                        display={"flex"}
-                        flexDirection={"column"}
-                        width={"75%"}
-                      >
-                        <Box py={1} display={"flex"} flexDirection={"column"}>
-                          <Box
-                            display={"flex"}
-                            justifyContent={"space-between"}
-                          >
-                            <Box display={"flex"} flexDirection={"column"}>
-                              <Box display={"flex"} gap={1}>
-                                <FireplaceTwoTone color="secondary" />
-                                <Typography fontWeight={"bold"}>
-                                  Condition Options
-                                </Typography>
-                              </Box>
-                              <Typography variant="body2">
-                                Create options to easily select during
-                                inspection
-                              </Typography>
-                            </Box>
-                            <Button
-                              size="small"
-                              startIcon={<AddCircleOutline />}
-                              onClick={(event) => {
-                                event.preventDefault();
-                                event.stopPropagation();
-                                update(index, {
-                                  ...getValues().items[index],
-                                  options: [
-                                    ...field.options,
-                                    { name: "", description: "" },
-                                  ],
-                                });
-                              }}
-                              disabled={!edit}
-                            >
-                              Add Option
-                            </Button>
-                          </Box>
-                          <Divider />
-                        </Box>
-                        <Box
-                          display={"flex"}
-                          justifyContent={"flex-end"}
-                          alignItems={"start"}
-                          flexDirection={"column"}
-                          gap={2}
-                        >
-                          {field.options.map((option, i) => {
-                            return (
-                              <Box
-                                display={"flex"}
-                                gap={1}
-                                alignItems={"end"}
-                                justifyContent={"center"}
-                                key={`items.${index}.options.${i}.name`}
-                                width={"100%"}
-                              >
-                                <TextField
-                                  fullWidth
-                                  disabled={!edit}
-                                  variant={variant}
-                                  label={option.name || "Option Name"}
-                                  size="small"
-                                  placeholder="name"
-                                  {...register(
-                                    `items.${index}.options.${i}.name`
-                                  )}
-                                  error={hasOptionNameError(index, i)}
-                                  helperText={
-                                    (errors &&
-                                      errors!.items &&
-                                      errors.items[index] &&
-                                      errors.items[index]!.options &&
-                                      errors!.items[index]!.options![i] &&
-                                      errors!.items[index]!.options![i]!.name
-                                        ?.message) ??
-                                    ""
-                                  }
-                                />
-                                <TextField
-                                  fullWidth
-                                  disabled={!edit}
-                                  variant="filled"
-                                  multiline
-                                  label="Description"
-                                  size="small"
-                                  placeholder="description"
-                                  {...register(
-                                    `items.${index}.options.${i}.description`
-                                  )}
-                                  error={
-                                    errors &&
-                                    errors?.items &&
-                                    errors.items[index] &&
-                                    errors.items[index]!.options &&
-                                    errors.items[index]!.options![i] &&
-                                    errors.items[index]!.options![i]!
-                                      .description &&
-                                    errors.items[index]!.options![i]!
-                                      .description?.message != undefined
-                                  }
-                                  helperText={
-                                    (errors &&
-                                      errors!.items &&
-                                      errors.items[index] &&
-                                      errors.items[index]!.options &&
-                                      errors!.items[index]!.options![i] &&
-                                      errors!.items[index]!.options![i]!
-                                        .description?.message) ??
-                                    ""
-                                  }
-                                />
-                                {edit && (
-                                  <IconButton
-                                    onClick={() => {
-                                      update(index, {
-                                        ...field,
-                                        options: field.options.filter(
-                                          (_o, idx) => idx !== i
-                                        ),
-                                      });
-                                    }}
-                                  >
-                                    <Delete color="error" />
-                                  </IconButton>
-                                )}
-                              </Box>
-                            );
-                          })}
-                        </Box>
-                      </Box>
-                    </AccordionDetails>
-                  </Accordion>
-                </DraggableItem>
-              ))}
-            </SortableContext>
-          </DndContext>
-        </Box>
+        <Divider />
+        <Tabs
+          value={activeTab}
+          onChange={(_, nv) => setActiveTab(nv)}
+          variant="fullWidth"
+          indicatorColor="secondary"
+        >
+          <Tab
+            label={
+              <Typography color={activeTab === 0 ? "white" : undefined}>
+                chimney inspection items
+              </Typography>
+            }
+            value={0}
+            sx={{
+              bgcolor: activeTab === 0 ? "secondary.main" : undefined,
+              borderTopLeftRadius: 15,
+              borderTopRightRadius: 15,
+            }}
+            icon={
+              <HouseTwoTone
+                sx={{ color: activeTab === 0 ? "white" : undefined }}
+              />
+            }
+            iconPosition="start"
+          ></Tab>
+          <Tab
+            label={
+              <Typography color={activeTab === 1 ? "white" : undefined}>
+                Fireplace inspection items
+              </Typography>
+            }
+            value={1}
+            sx={{
+              bgcolor: activeTab === 1 ? "secondary.main" : undefined,
+              borderTopLeftRadius: 15,
+              borderTopRightRadius: 15,
+            }}
+            icon={
+              <FireplaceTwoTone
+                sx={{ color: activeTab === 1 ? "white" : undefined }}
+              />
+            }
+            iconPosition="start"
+          />
+        </Tabs>
+        <TabPanel activeTab={activeTab} index={0}>
+          <Slide in={activeTab === 0} direction="left">
+            <Box>
+              <EditTemplateItemsForm
+                arrayItemsFieldKey="chimneyItems"
+                methods={methods}
+                edit={edit}
+              />
+            </Box>
+          </Slide>
+        </TabPanel>
+        <TabPanel activeTab={activeTab} index={1}>
+          <Slide in={activeTab === 1} direction="right">
+            <Box>
+              <EditTemplateItemsForm
+                arrayItemsFieldKey="fireplaceItems"
+                methods={methods}
+                edit={edit}
+              />
+            </Box>
+          </Slide>
+        </TabPanel>
       </Container>
     </>
   );
+};
+
+const TabPanel: React.FC<{
+  activeTab: number;
+  index: number;
+  children: React.ReactNode;
+}> = ({ activeTab, index, children }) => {
+  return <div hidden={activeTab !== index}>{children}</div>;
 };

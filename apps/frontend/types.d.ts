@@ -43,7 +43,7 @@ interface InspectionTemplate {
   name: string;
   inspectionLevel: "Level 1" | "Level 2" | "Level 3";
   signaturesRequired: boolean;
-  items: [];
+  items: InspectionItem[];
   canEdit: boolean;
   itemCount: number;
   createdAt: string;
@@ -95,6 +95,7 @@ interface InspectionTemplateOption {
 interface InspectionItem {
   id: string;
   name: string;
+  type: "CHIMNEY" | "FIREPLACE";
   options: Option[];
 }
 

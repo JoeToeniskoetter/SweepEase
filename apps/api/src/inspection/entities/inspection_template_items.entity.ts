@@ -10,6 +10,11 @@ import {
 import { InspectionTemplateOptions } from './inspection_template_options.entity';
 import { InspectionTemplate } from './inspection_template.entity';
 
+export enum InspectionItemType {
+  CHIMNEY = 'CHIMNEY',
+  FIREPLACE = 'FIREPLACE',
+}
+
 @Entity()
 export class InspectionTemplateItem extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -20,6 +25,9 @@ export class InspectionTemplateItem extends BaseEntity {
 
   @Column({ name: 'position' })
   position: number;
+
+  @Column({ enum: InspectionItemType, nullable: false })
+  type: InspectionItemType;
 
   @ManyToOne(() => InspectionTemplate, (template) => template.id)
   @JoinColumn({ name: 'template_id' })

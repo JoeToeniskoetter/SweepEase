@@ -11,6 +11,7 @@ import {
   ValidationOptions,
 } from 'class-validator';
 import { InspectionLevel } from '../entities/inspection_template.entity';
+import { InspectionItemType } from '../entities/inspection_template_items.entity';
 
 export function IsNonPrimitiveArray(validationOptions?: ValidationOptions) {
   return (object: any, propertyName: string) => {
@@ -62,6 +63,9 @@ export class InspectionTemplateSectionDto {
 
   @IsNumber()
   position: number;
+
+  @IsEnum(InspectionItemType)
+  type: InspectionItemType;
 
   @ValidateNested({ each: true })
   @IsNonPrimitiveArray()

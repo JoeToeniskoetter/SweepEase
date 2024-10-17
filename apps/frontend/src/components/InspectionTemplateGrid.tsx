@@ -92,7 +92,7 @@ export const InspectionTemplateGrid: React.FC<InspectionTemplateGridProps> = ({
         <Box width={"100%"} key={key}>
           <Box display={"flex"} pb={2}>
             <Typography fontWeight={"bold"} variant="h6">
-              {key}
+              {key.toUpperCase()}
             </Typography>
           </Box>
           <Grid container spacing={2}>

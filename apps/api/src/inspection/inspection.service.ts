@@ -274,6 +274,7 @@ export class InspectionService {
           ...(item.id && { id: item.id }),
           name: item.name,
           position: item.position,
+          type: item.type,
           template: { id },
           options: newOptions,
         });
@@ -458,6 +459,7 @@ export class InspectionService {
       inspectionLevel: dto.inspectionLevel,
       canEdit: true,
       company: { id: user.company.id },
+      createdBy: { id: user.id },
       items: foundTemplate.items.map((item) => {
         return this.inspectionTemplateItemRepo.create({
           ...item,

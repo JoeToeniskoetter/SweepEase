@@ -2,9 +2,13 @@ import {
   InspectionLevel,
   InspectionTemplate,
 } from 'src/inspection/entities/inspection_template.entity';
-import { InspectionTemplateItem } from 'src/inspection/entities/inspection_template_items.entity';
+import {
+  InspectionItemType,
+  InspectionTemplateItem,
+} from 'src/inspection/entities/inspection_template_items.entity';
 import { InspectionTemplateOptions } from 'src/inspection/entities/inspection_template_options.entity';
 import { DataSource } from 'typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { v4 as uuid } from 'uuid';
 
 // Create a new TypeORM data source (adjust the config as per your setup)
@@ -16,6 +20,7 @@ const dataSource = new DataSource({
   password: 'postgrespw',
   database: 'sweep_ease',
   entities: ['dist/**/*.entity.js'],
+  namingStrategy: new SnakeNamingStrategy(),
 });
 
 async function seedLevel1() {
@@ -32,6 +37,7 @@ async function seedLevel1() {
       // Chimney Exterior
       {
         name: 'Structure Condition',
+        type: InspectionItemType.CHIMNEY,
         position: 1,
         options: [
           {
@@ -46,6 +52,7 @@ async function seedLevel1() {
       },
       {
         name: 'Crown Condition',
+        type: InspectionItemType.CHIMNEY,
         position: 2,
         options: [
           { name: 'Intact', description: 'No visible damage to chimney crown' },
@@ -57,6 +64,7 @@ async function seedLevel1() {
       },
       {
         name: 'Cap Condition',
+        type: InspectionItemType.CHIMNEY,
         position: 3,
         options: [
           {
@@ -71,6 +79,7 @@ async function seedLevel1() {
       },
       {
         name: 'Flashing Condition',
+        type: InspectionItemType.CHIMNEY,
         position: 4,
         options: [
           {
@@ -86,6 +95,7 @@ async function seedLevel1() {
       // Fireplace Components
       {
         name: 'Firebox Condition',
+        type: InspectionItemType.FIREPLACE,
         position: 5,
         options: [
           { name: 'Intact', description: 'No visible damage to the firebox' },
@@ -97,6 +107,7 @@ async function seedLevel1() {
       },
       {
         name: 'Hearth Condition',
+        type: InspectionItemType.FIREPLACE,
         position: 6,
         options: [
           { name: 'Intact', description: 'No visible damage to the hearth' },
@@ -108,6 +119,7 @@ async function seedLevel1() {
       },
       {
         name: 'Damper Condition',
+        type: InspectionItemType.FIREPLACE,
         position: 7,
         options: [
           {
@@ -123,6 +135,7 @@ async function seedLevel1() {
       // Chimney Interior
       {
         name: 'Flue Liner Condition',
+        type: InspectionItemType.FIREPLACE,
         position: 8,
         options: [
           {
@@ -137,6 +150,7 @@ async function seedLevel1() {
       },
       {
         name: 'Smoke Chamber Condition',
+        type: InspectionItemType.FIREPLACE,
         position: 9,
         options: [
           {
@@ -151,6 +165,7 @@ async function seedLevel1() {
       },
       {
         name: 'Thimble Condition',
+        type: InspectionItemType.FIREPLACE,
         position: 10,
         options: [
           { name: 'Present', description: 'Thimble is present and functional' },
@@ -160,6 +175,7 @@ async function seedLevel1() {
       // Combustible Clearances
       {
         name: 'Clearance to Combustibles',
+        type: InspectionItemType.FIREPLACE,
         position: 11,
         options: [
           {
@@ -189,6 +205,7 @@ async function seedLevel1() {
       item.name = itemData.name;
       item.position = itemData.position;
       item.template = template;
+      item.type = itemData.type;
 
       const savedItem = await itemRepository.save(item);
 
@@ -225,6 +242,7 @@ async function seedLevel2() {
     {
       name: 'Structure Condition',
       position: 1,
+      type: InspectionItemType.CHIMNEY,
       options: [
         { name: 'Intact', description: 'No visible damage' },
         { name: 'Cracked', description: 'Visible cracks in the structure' },
@@ -233,6 +251,7 @@ async function seedLevel2() {
     {
       name: 'Crown Condition',
       position: 2,
+      type: InspectionItemType.CHIMNEY,
       options: [
         { name: 'Intact', description: 'No visible damage' },
         { name: 'Cracked', description: 'Visible cracks or damage' },
@@ -241,6 +260,7 @@ async function seedLevel2() {
     {
       name: 'Flashing Condition',
       position: 3,
+      type: InspectionItemType.CHIMNEY,
       options: [
         {
           name: 'Intact',
@@ -252,6 +272,7 @@ async function seedLevel2() {
     {
       name: 'Cap Condition',
       position: 4,
+      type: InspectionItemType.CHIMNEY,
       options: [
         {
           name: 'Present',
@@ -264,6 +285,7 @@ async function seedLevel2() {
     {
       name: 'Firebox Condition',
       position: 1,
+      type: InspectionItemType.FIREPLACE,
       options: [
         { name: 'Intact', description: 'Firebox has no visible damage' },
         { name: 'Cracked', description: 'Cracks visible in the firebox' },
@@ -271,6 +293,7 @@ async function seedLevel2() {
     },
     {
       name: 'Hearth Condition',
+      type: InspectionItemType.FIREPLACE,
       position: 2,
       options: [
         { name: 'Intact', description: 'Hearth has no visible damage' },
@@ -279,6 +302,7 @@ async function seedLevel2() {
     },
     {
       name: 'Damper Condition',
+      type: InspectionItemType.FIREPLACE,
       position: 3,
       options: [
         {
@@ -290,6 +314,7 @@ async function seedLevel2() {
     },
     {
       name: 'Fireplace Doors Condition',
+      type: InspectionItemType.FIREPLACE,
       position: 4,
       options: [
         { name: 'Functional', description: 'Doors are functional and intact' },
@@ -298,6 +323,7 @@ async function seedLevel2() {
     },
     {
       name: 'Gas Logs Condition',
+      type: InspectionItemType.FIREPLACE,
       position: 5,
       options: [
         { name: 'Functional', description: 'Gas logs are functional and safe' },
@@ -307,6 +333,7 @@ async function seedLevel2() {
     // Chimney Interior
     {
       name: 'Flue Liner Condition',
+      type: InspectionItemType.FIREPLACE,
       position: 1,
       options: [
         {
@@ -318,6 +345,7 @@ async function seedLevel2() {
     },
     {
       name: 'Smoke Chamber Condition',
+      type: InspectionItemType.FIREPLACE,
       position: 2,
       options: [
         { name: 'Intact', description: 'Smoke chamber has no visible damage' },
@@ -326,6 +354,7 @@ async function seedLevel2() {
     },
     {
       name: 'Thimble Condition',
+      type: InspectionItemType.FIREPLACE,
       position: 3,
       options: [
         { name: 'Present', description: 'Thimble is present and functional' },
@@ -335,6 +364,7 @@ async function seedLevel2() {
     // Venting System
     {
       name: 'Vent Pipes Condition',
+      type: InspectionItemType.FIREPLACE,
       position: 1,
       options: [
         {
@@ -349,6 +379,7 @@ async function seedLevel2() {
     },
     {
       name: 'Termination Point Condition',
+      type: InspectionItemType.FIREPLACE,
       position: 2,
       options: [
         {
@@ -365,6 +396,7 @@ async function seedLevel2() {
     {
       name: 'Attic Structure Condition',
       position: 1,
+      type: InspectionItemType.CHIMNEY,
       options: [
         {
           name: 'Intact',
@@ -379,6 +411,7 @@ async function seedLevel2() {
     {
       name: 'Basement Structure Condition',
       position: 2,
+      type: InspectionItemType.CHIMNEY,
       options: [
         {
           name: 'Intact',
@@ -394,6 +427,7 @@ async function seedLevel2() {
     {
       name: 'Chimney Clearance Condition',
       position: 1,
+      type: InspectionItemType.CHIMNEY,
       options: [
         {
           name: 'Adequate',
@@ -408,31 +442,12 @@ async function seedLevel2() {
     {
       name: 'Framing Clearance Condition',
       position: 2,
+      type: InspectionItemType.CHIMNEY,
       options: [
         { name: 'Adequate', description: 'Framing clearances are adequate' },
         {
           name: 'Too Close',
           description: 'Framing is too close to the chimney',
-        },
-      ],
-    },
-    // Repairs and Recommendations
-    {
-      name: 'Repair Required',
-      position: 1,
-      options: [
-        { name: 'Yes', description: 'Repair is required for this item' },
-        { name: 'No', description: 'No repair needed' },
-      ],
-    },
-    {
-      name: 'Next Steps',
-      position: 2,
-      options: [
-        { name: 'Monitor', description: 'Monitor condition over time' },
-        {
-          name: 'Further Inspection',
-          description: 'Further inspection recommended',
         },
       ],
     },
@@ -452,6 +467,7 @@ async function seedLevel2() {
     item.name = itemData.name;
     item.position = itemData.position;
     item.template = template;
+    item.type = itemData.type;
 
     const savedItem = await itemRepository.save(item);
 
