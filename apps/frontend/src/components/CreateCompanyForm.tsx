@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useCreateCompany } from "../hooks/useCreateCompany";
 
 interface CreateCompanyFormProps {
@@ -18,7 +18,8 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
   onSave,
 }) => {
   const { mutateAsync: createCompany, error, isPending } = useCreateCompany();
-  const { register, handleSubmit } = useForm<CreateCompanyInput>();
+  const { register, handleSubmit, control, watch } =
+    useForm<CreateCompanyInput>();
 
   const onSubmit = async (data: CreateCompanyInput) => {
     try {
@@ -28,6 +29,21 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
       console.error(e);
     }
   };
+
+  const logo = watch("logo");
+  const renderPhoto = () => {
+    if (logo) {
+      console.log("have photo from form", logo);
+      return (
+        <Box py={2}>
+          <img src={URL.createObjectURL(logo)} width={250} />
+        </Box>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <Box
       display={"flex"}
@@ -86,6 +102,34 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
         variant="outlined"
         placeholder="(555)-555-5555"
       />
+      <Controller
+        name="logo"
+        control={control}
+        render={({ field }) => (
+          <>
+            <Typography>Company Logo</Typography>
+            <TextField
+              type="file"
+              inputProps={{ accept: "image/*" }}
+              fullWidth
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const files = e.target.files;
+
+                if (!files || files?.length == 0) {
+                  return;
+                }
+
+                const firstFile = files[0];
+
+                if (e.target.files && e.target.files.length > 0) {
+                  field.onChange(firstFile);
+                }
+              }}
+            />
+          </>
+        )}
+      />
+      {renderPhoto()}
       {error && <Alert severity="error">Failed to create company</Alert>}
       <Button
         variant="contained"

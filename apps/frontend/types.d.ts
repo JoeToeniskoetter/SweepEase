@@ -36,6 +36,7 @@ interface CreateCompanyInput {
   state: string;
   zip: string;
   phone: string;
+  logo?: File;
 }
 
 interface InspectionTemplate {

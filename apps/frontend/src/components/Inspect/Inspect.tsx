@@ -31,6 +31,8 @@ import { SignatureModal } from "../SignatureModal";
 import "./Inspect.css";
 import { InspectionCompleteModal } from "../InspectionCompleteModal";
 import { InspectionSignatureSection } from "../InspectionSignatureSection";
+import { useProfile } from "../../hooks/useProfile";
+import { useCompany } from "../../hooks/useCompany";
 
 interface InspectProps {}
 
@@ -43,6 +45,8 @@ export const Inspect: React.FC<InspectProps> = () => {
   const { data: inspectionOrderDetails, isLoading } = useInspectionOrderDetails(
     { id: id ?? "" }
   );
+  const { data: me } = useProfile({ enabled: true });
+  const { data: company } = useCompany({ id: me?.company?.id });
   const [openInspectionCompleteModal, setOpenInspectionCompleteModal] =
     useState<boolean>(false);
   const [customerSignatureFile, setCustomerSignatureFile] = useState<File>();
@@ -171,6 +175,7 @@ export const Inspect: React.FC<InspectProps> = () => {
           sx={{ borderBottomLeftRadius: 8, borderBottomRightRadius: 8 }}
         >
           <CardContent>
+            <img src={company.logo} height={100} />
             <InspectionCustomerInfo inspection={inspection} />
             {!review && inspection?.status !== "COMPLETE" && (
               <>

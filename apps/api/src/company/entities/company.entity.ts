@@ -35,6 +35,9 @@ export class Company extends BaseEntity {
   @Column({ name: 'phone', nullable: false })
   phone: string;
 
+  @Column({ nullable: true })
+  logo: string;
+
   @OneToOne(() => User, (user) => user.id)
   @JoinColumn({ name: 'created_by' })
   createdBy: User;
